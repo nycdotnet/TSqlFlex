@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>RedGate.SIPFrameworkShared</id>
+    <version>1.0.1.241</version>
+    <title>RedGate's SSMS add-in framework interfaces</title>
+    <authors>Red Gate Software</authors>
+    <owners>Red Gate Software</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>These are the interfaces that add ins to Red Gate SSMS add in manager must implement. See project documentation for more information: http://www.red-gate.com/ssmsecosystem</description>
+    <copyright>Copyright © Red Gate Software Ltd.</copyright>
+    <references>
+      <reference file="RedGate.SIPFrameworkShared.dll" />
+    </references>
+  </metadata>
+</package>
