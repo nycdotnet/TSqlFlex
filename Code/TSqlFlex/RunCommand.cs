@@ -47,7 +47,7 @@ namespace TSqlFlex
             form.Show();
         }
 
-        public string Caption { get { return "TSQLFlex"; } }
+        public string Caption { get { return "T-SQL Flex"; } }
         public string Tooltip { get { return "Runs a command for scripting"; } }
         public ICommandImage Icon { get { return commandImage; } }
         public string[] DefaultBindings { get { return new string[] {}; } }
