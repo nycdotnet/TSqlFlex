@@ -39,6 +39,11 @@ namespace TSqlFlex
         public string Name { get { return "Open_TSQL_Flex"; } }
         public void Execute()
         {
+            if (form == null || form.IsDisposed)
+            {
+                form = new frmMain();
+                SetSelectedDBNode(currentNode);
+            }
             form.Show();
         }
 
