@@ -8,10 +8,12 @@ namespace TSqlFlex
 {
     class RunCommand : ISharedCommand
     {
-        private readonly ISsmsFunctionalityProvider4 ssmsProvider;
+        private readonly ISsmsFunctionalityProvider6 ssmsProvider;
         private readonly ICommandImage commandImage = new CommandImageNone();
         private ObjectExplorerNodeDescriptorBase currentNode = null;
-        private frmMain form = new frmMain();
+        private IToolWindow formWindow;
+        private FlexMainWindow flexMainWindow = new FlexMainWindow();
+        private Guid formGuid = new Guid("579fa20c-38cb-4da6-9f57-6651d10e31d0");
 
         public void SetSelectedDBNode(ObjectExplorerNodeDescriptorBase theSelectedNode)
         {
@@ -21,13 +23,13 @@ namespace TSqlFlex
             IConnectionInfo ci = null;
             if (objectExplorerNode != null
                     && objectExplorerNode.HasConnection
-                    && objectExplorerNode.TryGetConnection(out ci)) //there should be a TryGetConnection2 or just get rid of IConnectionInfo "1"...
+                    && objectExplorerNode.TryGetConnection(out ci))
             {
-                form.SetConnection(new SqlConnectionStringBuilder(ci.ConnectionString));
+                flexMainWindow.SetConnection(new SqlConnectionStringBuilder(ci.ConnectionString));
             }
         }
 
-        public RunCommand(ISsmsFunctionalityProvider4 provider)
+        public RunCommand(ISsmsFunctionalityProvider6 provider)
         {
             ssmsProvider = provider;
             if (ssmsProvider == null)
@@ -36,17 +38,25 @@ namespace TSqlFlex
             }
         }
 
-        public string Name { get { return "Open_TSQL_Flex"; } }
         public void Execute()
         {
-            if (form == null || form.IsDisposed)
+            if (flexMainWindow == null || flexMainWindow.IsDisposed)
             {
-                form = new frmMain();
+                flexMainWindow = new FlexMainWindow();
                 SetSelectedDBNode(currentNode);
             }
-            form.Show();
+
+            if (formWindow == null)
+            {
+                formWindow = ssmsProvider.ToolWindow.Create(flexMainWindow, this.Caption, formGuid, false);
+                formWindow.Window.Dock();
+                formWindow.Window.WindowState = WindowState.Maximize;
+            }
+
+            formWindow.Activate(true);
         }
 
+        public string Name { get { return "Open_TSQL_Flex"; } }
         public string Caption { get { return "T-SQL Flex"; } }
         public string Tooltip { get { return "Runs a command for scripting"; } }
         public ICommandImage Icon { get { return commandImage; } }

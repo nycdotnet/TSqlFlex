@@ -5,14 +5,13 @@ namespace TSqlFlex
 {
     public class Extension : ISsmsAddin
     {
-
         private ObjectExplorerNodeDescriptorBase currentNode;
-        private ISsmsFunctionalityProvider4 ssmsProvider;
+        private ISsmsFunctionalityProvider6 ssmsProvider;
         private RunCommand runCommand;
 
         public void OnLoad(ISsmsExtendedFunctionalityProvider provider)
         {
-            ssmsProvider = provider as ISsmsFunctionalityProvider4;
+            ssmsProvider = provider as ISsmsFunctionalityProvider6;
             if (ssmsProvider == null)
             {
                 throw new ArgumentException("Could not initialize SIP provider for TSqlFlex extension.");

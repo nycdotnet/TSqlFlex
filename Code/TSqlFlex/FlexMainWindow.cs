@@ -1,25 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Data;
 using System.Data.SqlClient;
-using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
 namespace TSqlFlex
 {
-    public partial class frmMain : Form
+    public partial class FlexMainWindow : UserControl
     {
+
         private SqlConnectionStringBuilder connString = null;
 
-        public frmMain()
+        public FlexMainWindow()
         {
             InitializeComponent();
         }
-
+    
         public void SetConnection(SqlConnectionStringBuilder theConnectionString)
         {
             connString = theConnectionString;
@@ -36,13 +36,10 @@ namespace TSqlFlex
             }
         }
 
-        private void frmMain_Load(object sender, EventArgs e)
-        {
-
-        }
-
         private void cmdRunNRollback_Click(object sender, EventArgs e)
         {
+            //todo: check for a valid connection here.
+            //todo: refactor so all of the code is not behind the button.
             StringBuilder buffer = new StringBuilder("");
             DataTable schemaTable;
             SqlTransaction transaction = null;
@@ -65,7 +62,8 @@ namespace TSqlFlex
                             {
                                 foreach (DataColumn myProperty in schemaTable.Columns)
                                 {
-                                    if (myField[myProperty].ToString().Length > 0) { 
+                                    if (myField[myProperty].ToString().Length > 0)
+                                    {
                                         buffer.Append("--" + myProperty.ColumnName + " = " + myField[myProperty].ToString() + "\r\n");
                                     }
                                 }
@@ -97,9 +95,15 @@ namespace TSqlFlex
 
         private void btnCopyToClipboard_Click(object sender, EventArgs e)
         {
-            if (txtOutput.Text.Length > 0) {
+            if (txtOutput.Text.Length > 0)
+            {
                 Clipboard.SetText(txtOutput.Text);
             }
+        }
+
+        private void btnCopyToNewWindow_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Not yet implemented.");
         }
 
     }

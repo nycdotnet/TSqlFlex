@@ -1,13 +1,13 @@
 ﻿namespace TSqlFlex
 {
-    partial class frmMain
+    partial class FlexMainWindow
     {
-        /// <summary>
+        /// <summary> 
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
+        /// <summary> 
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
@@ -20,31 +20,42 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
+        #region Component Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
+        /// <summary> 
+        /// Required method for Designer support - do not modify 
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
+            this.btnCopyToNewWindow = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panelTop = new System.Windows.Forms.Panel();
             this.lblConnectionInfo = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.cmdRunNRollback = new System.Windows.Forms.Button();
             this.txtSqlInput = new System.Windows.Forms.TextBox();
             this.panelBottom = new System.Windows.Forms.Panel();
             this.btnCopyToClipboard = new System.Windows.Forms.Button();
             this.txtOutput = new System.Windows.Forms.TextBox();
-            this.btnCopyToNewWindow = new System.Windows.Forms.Button();
+            this.cmdRunNRollback = new System.Windows.Forms.Button();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.panelTop.SuspendLayout();
             this.panelBottom.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // btnCopyToNewWindow
+            // 
+            this.btnCopyToNewWindow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCopyToNewWindow.Location = new System.Drawing.Point(979, 3);
+            this.btnCopyToNewWindow.Name = "btnCopyToNewWindow";
+            this.btnCopyToNewWindow.Size = new System.Drawing.Size(121, 23);
+            this.btnCopyToNewWindow.TabIndex = 3;
+            this.btnCopyToNewWindow.Text = "Copy to new window";
+            this.btnCopyToNewWindow.UseVisualStyleBackColor = true;
+            this.btnCopyToNewWindow.Click += new System.EventHandler(this.btnCopyToNewWindow_Click);
             // 
             // splitContainer1
             // 
@@ -62,9 +73,9 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.panelBottom);
-            this.splitContainer1.Size = new System.Drawing.Size(759, 537);
-            this.splitContainer1.SplitterDistance = 267;
-            this.splitContainer1.TabIndex = 0;
+            this.splitContainer1.Size = new System.Drawing.Size(1112, 548);
+            this.splitContainer1.SplitterDistance = 272;
+            this.splitContainer1.TabIndex = 1;
             // 
             // panelTop
             // 
@@ -75,7 +86,7 @@
             this.panelTop.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelTop.Location = new System.Drawing.Point(0, 0);
             this.panelTop.Name = "panelTop";
-            this.panelTop.Size = new System.Drawing.Size(759, 267);
+            this.panelTop.Size = new System.Drawing.Size(1112, 272);
             this.panelTop.TabIndex = 0;
             // 
             // lblConnectionInfo
@@ -108,16 +119,6 @@
             this.label1.Text = "Enter a SQL command in the top section.  Click \"Run \'n\' Rollback\" to script out t" +
     "he data.";
             // 
-            // cmdRunNRollback
-            // 
-            this.cmdRunNRollback.Location = new System.Drawing.Point(3, 3);
-            this.cmdRunNRollback.Name = "cmdRunNRollback";
-            this.cmdRunNRollback.Size = new System.Drawing.Size(101, 23);
-            this.cmdRunNRollback.TabIndex = 1;
-            this.cmdRunNRollback.Text = "&Run \'n\' Rollback";
-            this.cmdRunNRollback.UseVisualStyleBackColor = true;
-            this.cmdRunNRollback.Click += new System.EventHandler(this.cmdRunNRollback_Click);
-            // 
             // txtSqlInput
             // 
             this.txtSqlInput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -128,7 +129,7 @@
             this.txtSqlInput.Multiline = true;
             this.txtSqlInput.Name = "txtSqlInput";
             this.txtSqlInput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtSqlInput.Size = new System.Drawing.Size(759, 196);
+            this.txtSqlInput.Size = new System.Drawing.Size(1112, 201);
             this.txtSqlInput.TabIndex = 0;
             this.txtSqlInput.WordWrap = false;
             // 
@@ -141,13 +142,13 @@
             this.panelBottom.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelBottom.Location = new System.Drawing.Point(0, 0);
             this.panelBottom.Name = "panelBottom";
-            this.panelBottom.Size = new System.Drawing.Size(759, 266);
+            this.panelBottom.Size = new System.Drawing.Size(1112, 272);
             this.panelBottom.TabIndex = 1;
             // 
             // btnCopyToClipboard
             // 
             this.btnCopyToClipboard.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCopyToClipboard.Location = new System.Drawing.Point(515, 3);
+            this.btnCopyToClipboard.Location = new System.Drawing.Point(868, 3);
             this.btnCopyToClipboard.Name = "btnCopyToClipboard";
             this.btnCopyToClipboard.Size = new System.Drawing.Size(105, 23);
             this.btnCopyToClipboard.TabIndex = 2;
@@ -167,29 +168,27 @@
             this.txtOutput.Name = "txtOutput";
             this.txtOutput.ReadOnly = true;
             this.txtOutput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtOutput.Size = new System.Drawing.Size(759, 234);
+            this.txtOutput.Size = new System.Drawing.Size(1112, 240);
             this.txtOutput.TabIndex = 1;
             this.txtOutput.WordWrap = false;
             // 
-            // btnCopyToNewWindow
+            // cmdRunNRollback
             // 
-            this.btnCopyToNewWindow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCopyToNewWindow.Location = new System.Drawing.Point(626, 3);
-            this.btnCopyToNewWindow.Name = "btnCopyToNewWindow";
-            this.btnCopyToNewWindow.Size = new System.Drawing.Size(121, 23);
-            this.btnCopyToNewWindow.TabIndex = 3;
-            this.btnCopyToNewWindow.Text = "Copy to new window";
-            this.btnCopyToNewWindow.UseVisualStyleBackColor = true;
+            this.cmdRunNRollback.Location = new System.Drawing.Point(3, 3);
+            this.cmdRunNRollback.Name = "cmdRunNRollback";
+            this.cmdRunNRollback.Size = new System.Drawing.Size(101, 23);
+            this.cmdRunNRollback.TabIndex = 1;
+            this.cmdRunNRollback.Text = "&Run \'n\' Rollback";
+            this.cmdRunNRollback.UseVisualStyleBackColor = true;
+            this.cmdRunNRollback.Click += new System.EventHandler(this.cmdRunNRollback_Click);
             // 
-            // frmMain
+            // FlexMainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(759, 537);
             this.Controls.Add(this.splitContainer1);
-            this.Name = "frmMain";
-            this.Text = "T-SQL Flex ALPHA";
-            this.Load += new System.EventHandler(this.frmMain_Load);
+            this.Name = "FlexMainWindow";
+            this.Size = new System.Drawing.Size(1112, 548);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.ResumeLayout(false);
@@ -203,17 +202,16 @@
 
         #endregion
 
+        private System.Windows.Forms.Button btnCopyToNewWindow;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Panel panelTop;
-        private System.Windows.Forms.Panel panelBottom;
-        private System.Windows.Forms.TextBox txtSqlInput;
-        private System.Windows.Forms.Button cmdRunNRollback;
+        private System.Windows.Forms.Label lblConnectionInfo;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox txtOutput;
-        private System.Windows.Forms.Label lblConnectionInfo;
+        private System.Windows.Forms.TextBox txtSqlInput;
+        private System.Windows.Forms.Panel panelBottom;
         private System.Windows.Forms.Button btnCopyToClipboard;
-        private System.Windows.Forms.Button btnCopyToNewWindow;
-
+        private System.Windows.Forms.TextBox txtOutput;
+        private System.Windows.Forms.Button cmdRunNRollback;
     }
 }
