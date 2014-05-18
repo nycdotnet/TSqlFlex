@@ -9,17 +9,19 @@ namespace TSqlFlex.Core
 {
     public class FlexResultSet
     {
-        private FlexResultSet() {}
-
         public List<DataTable> schemaTables = null;
         public List<Exception> exceptions = null;
         public List<FlexResult> results = null;
+        
+        public FlexResultSet() {
+            schemaTables = new List<DataTable>();
+            exceptions = new List<Exception>();
+            results = new List<FlexResult>();        
+        }
 
         public static FlexResultSet AnalyzeResultWithRollback(SqlConnection openConnection, string sqlCommandText) {
+
             FlexResultSet resultSet = new FlexResultSet();
-            resultSet.schemaTables = new List<DataTable>();
-            resultSet.exceptions = new List<Exception>();
-            resultSet.results = new List<FlexResult>();
 
             if (openConnection.State != System.Data.ConnectionState.Open)
             {
