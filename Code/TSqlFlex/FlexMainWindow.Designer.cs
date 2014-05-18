@@ -131,6 +131,7 @@
             this.txtSqlInput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.txtSqlInput.Size = new System.Drawing.Size(1112, 201);
             this.txtSqlInput.TabIndex = 0;
+            this.txtSqlInput.Text = "SELECT ID FROM MyStuff; SELECT Name, Price from MyStuff;";
             this.txtSqlInput.WordWrap = false;
             // 
             // panelBottom
