@@ -69,6 +69,24 @@ namespace TSqlFlex.Core
             return resultSet;
         }
 
+        //todo: Support this query:
+        /*  
+         SELECT CAST(1 AS BIGINT) [aBigInt], CAST(1.0 AS NUMERIC(1,1)) AS [aNumeric], CAST(1 AS BIT) AS [aBit],
+         * CAST(1 AS SMALLINT) AS [aSmallInt], CAST(1.0 AS DECIMAL(1,1)) AS [aDecimal], CAST(1.0 AS SMALLMONEY) as [aSmallMoney],
+         * CAST(1 AS INT) as [anInt], CAST(1 as TINYINT) as [aTinyInt], CAST(1 as MONEY) as [aMoney], 
+         * CAST(1 as FLOAT(53)) as [aFloat], CAST(1 as REAL),
+         * CAST('2000-01-01T00:00:00' as DATE) as [aDate], CAST('2000-01-01T00:00:00+01:00:00' as DATETIMEOFFSET) as [aDateTimeOffset],
+         * CAST('2000-01-01T00:00:00' as DATETIME2) as [aDateTime2], CAST('2000-01-01T00:00:00' as SMALLDATETIME) as [aSmallDateTime],
+         * CAST('2000-01-01T00:00:00' as DATETIME) as [aDateTime], CAST('2000-01-01T00:00:00' as TIME) as [aTime],
+         * CAST('ABC' as CHAR(3)) as [aCHAR], CAST('ABC' as VARCHAR(3)) as [aVarChar], CAST('ABC' as TEXT) as [aText],
+         * CAST(N'ABC' as NCHAR(3)) as [anNCHAR], CAST(N'ABC' as NVARCHAR(3)) as [anNVarCHAR], CAST(N'ABC' as NTEXT) as [anNText],
+         * CAST(1 as BINARY) as [aBinary], CAST(1 as VARBINARY) as [aVarBinary], CAST(1 as IMAGE) as [anImage],
+         * CAST(0 AS TIMESTAMP) as [aTimestamp], CAST('/' as HIERARCHYID) as [aHierarchyID], NewID() as [aUniqueIdentifier],
+         * CAST(1 as sql_variant), cast('<a />' as XML),
+         *  (geography::STGeomFromText('LINESTRING(-122.360 47.656, -122.343 47.656 )', 4326)) as [aGeography],
+         *  (geometry::STGeomFromText('LINESTRING (100 100, 20 180, 180 180)', 0)) as [aGeometry]
+         * */
+
 
         public string ScriptResultAsCreateTable(int resultIndex, string tableName)
         {
