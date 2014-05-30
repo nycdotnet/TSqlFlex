@@ -116,7 +116,13 @@ namespace TSqlFlex.Core
                 {
                     return "(MAX)";
                 }
-                return "(" + columnSize + ")";
+                return "(" + columnSize.ToString() + ")";
+            }
+            else if (dataTypeName == "numeric" || dataTypeName == "decimal")
+            {
+                int numericPrecision = (short)fieldInfo[3];
+                int numericScale = (short)fieldInfo[4];
+                return "(" + numericPrecision.ToString() + "," + numericScale.ToString() + ")";
             }
             return "";
         }

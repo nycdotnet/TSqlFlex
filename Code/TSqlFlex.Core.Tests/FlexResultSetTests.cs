@@ -48,16 +48,56 @@ namespace TSqlFlex.Core.Tests
         }
 
         [Test()]
+        public void BIGINT_ScriptsCorrectly()
+        {
+            FlexResultSet fsr = new FlexResultSet();
+
+            var dt = FakeSchemaDataTable();
+
+            dt.LoadDataRow(FakeColumn("BIGINTNotNull", "MyStuff", 8, "bigint", false,0,0), false);
+            dt.LoadDataRow(FakeColumn("BIGINTNull", "MyStuff", 8, "bigint", true, 0, 0), false);
+
+            fsr.schemaTables.Add(dt);
+
+            var expected = @"CREATE TABLE MyTable(
+    BIGINTNotNull bigint NOT NULL,
+    BIGINTNull bigint NULL
+);
+";
+            Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+        }
+
+        [Test()]
+        public void NUMERIC_ScriptsCorrectly()
+        {
+            FlexResultSet fsr = new FlexResultSet();
+
+            var dt = FakeSchemaDataTable();
+
+            dt.LoadDataRow(FakeColumn("Numeric2_1NotNull", "MyStuff", 17, "numeric", false, 2, 1), false);
+            dt.LoadDataRow(FakeColumn("Numeric2_1Null", "MyStuff", 17, "numeric", true, 4, 3), false);
+
+            fsr.schemaTables.Add(dt);
+
+            var expected = @"CREATE TABLE MyTable(
+    Numeric2_1NotNull numeric(2,1) NOT NULL,
+    Numeric2_1Null numeric(4,3) NULL
+);
+";
+            Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+        }
+
+        [Test()]
         public void NVARCHAR_ScriptsCorrectly()
         {
             FlexResultSet fsr = new FlexResultSet();
 
             var dt = FakeSchemaDataTable();
-            
-            dt.LoadDataRow(FakeColumn("Name100NotNull", "MyStuff", 100, "nvarchar", false), false);
-            dt.LoadDataRow(FakeColumn("NameMaxNotNull", "MyStuff", Int32.MaxValue, "nvarchar", false), false);
-            dt.LoadDataRow(FakeColumn("Name100Null", "MyStuff", 100, "nvarchar", true), false);
-            dt.LoadDataRow(FakeColumn("NameMaxNull", "MyStuff", Int32.MaxValue, "nvarchar", true), false);
+
+            dt.LoadDataRow(FakeColumn("Name100NotNull", "MyStuff", 100, "nvarchar", false, 0, 0), false);
+            dt.LoadDataRow(FakeColumn("NameMaxNotNull", "MyStuff", Int32.MaxValue, "nvarchar", false, 0, 0), false);
+            dt.LoadDataRow(FakeColumn("Name100Null", "MyStuff", 100, "nvarchar", true, 0, 0), false);
+            dt.LoadDataRow(FakeColumn("NameMaxNull", "MyStuff", Int32.MaxValue, "nvarchar", true, 0, 0), false);
 
             fsr.schemaTables.Add(dt);
 
@@ -68,9 +108,34 @@ namespace TSqlFlex.Core.Tests
     NameMaxNull nvarchar(MAX) NULL
 );
 ";
-
             Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
         }
+
+        [Test()]
+        public void VARCHAR_ScriptsCorrectly()
+        {
+            FlexResultSet fsr = new FlexResultSet();
+
+            var dt = FakeSchemaDataTable();
+
+            dt.LoadDataRow(FakeColumn("Name100NotNull", "MyStuff", 100, "varchar", false, 0, 0), false);
+            dt.LoadDataRow(FakeColumn("NameMaxNotNull", "MyStuff", Int32.MaxValue, "varchar", false, 0, 0), false);
+            dt.LoadDataRow(FakeColumn("Name100Null", "MyStuff", 100, "varchar", true, 0, 0), false);
+            dt.LoadDataRow(FakeColumn("NameMaxNull", "MyStuff", Int32.MaxValue, "varchar", true, 0, 0), false);
+
+            fsr.schemaTables.Add(dt);
+
+            var expected = @"CREATE TABLE MyTable(
+    Name100NotNull varchar(100) NOT NULL,
+    NameMaxNotNull varchar(MAX) NOT NULL,
+    Name100Null varchar(100) NULL,
+    NameMaxNull varchar(MAX) NULL
+);
+";
+            Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+        }
+
+
 
         public static DataTable FakeSchemaDataTable() {
             var dt = new DataTable("test");
@@ -108,9 +173,9 @@ namespace TSqlFlex.Core.Tests
             return dt;
         }
 
-        public static object[] FakeColumn(string ColumnName, string TableName, int ColumnSize, string DataType, bool AllowNulls)
+        public static object[] FakeColumn(string ColumnName, string TableName, int ColumnSize, string DataType, bool AllowNulls, short NumericPrecision, short NumericScale)
         {
-            return new object[] { ColumnName, (int)0, (int)ColumnSize, (short)255, (short)255, false, false, System.DBNull.Value, DBNull.Value, ColumnName, DBNull.Value, TableName, typeof(String), AllowNulls, (int)12, false, false, false, false, false, false, false, false, typeof(System.Data.SqlTypes.SqlString), DataType, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, (int)12, false };
+            return new object[] { ColumnName, (int)0, (int)ColumnSize, NumericPrecision, NumericScale, false, false, System.DBNull.Value, DBNull.Value, ColumnName, DBNull.Value, TableName, typeof(String), AllowNulls, (int)12, false, false, false, false, false, false, false, false, typeof(System.Data.SqlTypes.SqlString), DataType, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, (int)12, false };
         }
     }
 }
