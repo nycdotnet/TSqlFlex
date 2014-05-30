@@ -88,6 +88,132 @@ namespace TSqlFlex.Core.Tests
         }
 
         [Test()]
+        public void BIT_ScriptsCorrectly()
+        {
+            FlexResultSet fsr = new FlexResultSet();
+
+            var dt = FakeSchemaDataTable();
+
+            dt.LoadDataRow(FakeColumn("BitNotNull", "MyStuff", 1, "bit", false, 255, 255), false);
+            dt.LoadDataRow(FakeColumn("BitNull", "MyStuff", 1, "bit", true, 255, 255), false);
+
+            fsr.schemaTables.Add(dt);
+
+            var expected = @"CREATE TABLE MyTable(
+    BitNotNull bit NOT NULL,
+    BitNull bit NULL
+);
+";
+            Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+        }
+
+        [Test()]
+        public void SMALLINT_ScriptsCorrectly()
+        {
+            FlexResultSet fsr = new FlexResultSet();
+
+            var dt = FakeSchemaDataTable();
+
+            dt.LoadDataRow(FakeColumn("SmallIntNotNull", "MyStuff", 16, "smallint", false, 255, 255), false);
+            dt.LoadDataRow(FakeColumn("SmallIntNull", "MyStuff", 16, "smallint", true, 255, 255), false);
+
+            fsr.schemaTables.Add(dt);
+
+            var expected = @"CREATE TABLE MyTable(
+    SmallIntNotNull smallint NOT NULL,
+    SmallIntNull smallint NULL
+);
+";
+            Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+        }
+
+
+        [Test()]
+        public void DECIMAL_ScriptsCorrectly()
+        {
+            FlexResultSet fsr = new FlexResultSet();
+
+            var dt = FakeSchemaDataTable();
+
+            dt.LoadDataRow(FakeColumn("decimal2_1NotNull", "MyStuff", 17, "decimal", false, 2, 1), false);
+            dt.LoadDataRow(FakeColumn("decimal2_1Null", "MyStuff", 17, "decimal", true, 4, 3), false);
+
+            fsr.schemaTables.Add(dt);
+
+            var expected = @"CREATE TABLE MyTable(
+    decimal2_1NotNull decimal(2,1) NOT NULL,
+    decimal2_1Null decimal(4,3) NULL
+);
+";
+            Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+        }
+
+
+        [Test()]
+        public void SMALLMONEY_ScriptsCorrectly()
+        {
+            FlexResultSet fsr = new FlexResultSet();
+
+            var dt = FakeSchemaDataTable();
+
+            dt.LoadDataRow(FakeColumn("SmallMoneyNotNull", "MyStuff", 4, "smallmoney", false, 0, 0), false);
+            dt.LoadDataRow(FakeColumn("SmallMoneyNull", "MyStuff", 4, "smallmoney", true, 0, 0), false);
+
+            fsr.schemaTables.Add(dt);
+
+            var expected = @"CREATE TABLE MyTable(
+    SmallMoneyNotNull smallmoney NOT NULL,
+    SmallMoneyNull smallmoney NULL
+);
+";
+            Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+        }
+
+
+        [Test()]
+        public void INT_ScriptsCorrectly()
+        {
+            FlexResultSet fsr = new FlexResultSet();
+
+            var dt = FakeSchemaDataTable();
+
+            dt.LoadDataRow(FakeColumn("IntNotNull", "MyStuff", 32, "int", false, 255, 255), false);
+            dt.LoadDataRow(FakeColumn("IntNull", "MyStuff", 32, "int", true, 255, 255), false);
+
+            fsr.schemaTables.Add(dt);
+
+            var expected = @"CREATE TABLE MyTable(
+    IntNotNull int NOT NULL,
+    IntNull int NULL
+);
+";
+            Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+        }
+
+        [Test()]
+        public void TINYINT_ScriptsCorrectly()
+        {
+            FlexResultSet fsr = new FlexResultSet();
+
+            var dt = FakeSchemaDataTable();
+
+            dt.LoadDataRow(FakeColumn("TinyIntNotNull", "MyStuff", 8, "tinyint", false, 255, 255), false);
+            dt.LoadDataRow(FakeColumn("TinyIntNull", "MyStuff", 8, "tinyint", true, 255, 255), false);
+
+            fsr.schemaTables.Add(dt);
+
+            var expected = @"CREATE TABLE MyTable(
+    TinyIntNotNull tinyint NOT NULL,
+    TinyIntNull tinyint NULL
+);
+";
+            Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+        }
+
+
+
+
+        [Test()]
         public void NVARCHAR_ScriptsCorrectly()
         {
             FlexResultSet fsr = new FlexResultSet();
