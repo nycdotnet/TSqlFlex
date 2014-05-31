@@ -119,7 +119,7 @@ namespace TSqlFlex.Core
         private string DataTypeParameterIfAny(DataRow fieldInfo)
         {
             var dataTypeName = fieldInfo[24].ToString();
-            if (dataTypeName == "nvarchar" || dataTypeName == "varchar" || dataTypeName == "nchar" || dataTypeName == "char")
+            if (dataTypeName == "nvarchar" || dataTypeName == "varchar" || dataTypeName == "nchar" || dataTypeName == "char" || dataTypeName == "binary")
             {
                 int columnSize = (int)fieldInfo[2];    
                 if (columnSize == Int32.MaxValue)

@@ -267,6 +267,212 @@ namespace TSqlFlex.Core.Tests
         }
 
 
+         [Test()]
+         public void DATE_ScriptsCorrectly()
+         {
+             FlexResultSet fsr = new FlexResultSet();
+
+             var dt = FakeSchemaDataTable();
+
+             dt.LoadDataRow(FakeColumn("DateNotNull", "MyStuff", 8, "date", false, 0, 0), false);
+             dt.LoadDataRow(FakeColumn("DateNull", "MyStuff", 8, "date", true, 0, 0), false);
+
+             fsr.schemaTables.Add(dt);
+
+             var expected = @"CREATE TABLE MyTable(
+    DateNotNull date NOT NULL,
+    DateNull date NULL
+);
+";
+             Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+         }
+
+         [Test()]
+         public void DATETIMEOFFSET_ScriptsCorrectly()
+         {
+             FlexResultSet fsr = new FlexResultSet();
+
+             var dt = FakeSchemaDataTable();
+
+             dt.LoadDataRow(FakeColumn("DateTimeOffsetNotNull", "MyStuff", 8, "datetimeoffset", false, 0, 0), false);
+             dt.LoadDataRow(FakeColumn("DateTimeOffsetNull", "MyStuff", 8, "datetimeoffset", true, 0, 0), false);
+
+             fsr.schemaTables.Add(dt);
+
+             var expected = @"CREATE TABLE MyTable(
+    DateTimeOffsetNotNull datetimeoffset NOT NULL,
+    DateTimeOffsetNull datetimeoffset NULL
+);
+";
+             Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+         }
+
+         [Test()]
+         public void DATETIME2_ScriptsCorrectly()
+         {
+             FlexResultSet fsr = new FlexResultSet();
+
+             var dt = FakeSchemaDataTable();
+
+             dt.LoadDataRow(FakeColumn("DateTime2NotNull", "MyStuff", 8, "datetime2", false, 0, 0), false);
+             dt.LoadDataRow(FakeColumn("DateTime2Null", "MyStuff", 8, "datetime2", true, 0, 0), false);
+
+             fsr.schemaTables.Add(dt);
+
+             var expected = @"CREATE TABLE MyTable(
+    DateTime2NotNull datetime2 NOT NULL,
+    DateTime2Null datetime2 NULL
+);
+";
+             Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+         }
+
+         [Test()]
+         public void SMALLDATETIME_ScriptsCorrectly()
+         {
+             FlexResultSet fsr = new FlexResultSet();
+
+             var dt = FakeSchemaDataTable();
+
+             dt.LoadDataRow(FakeColumn("SmallDateTimeNotNull", "MyStuff", 8, "smalldatetime", false, 0, 0), false);
+             dt.LoadDataRow(FakeColumn("SmallDateTimeNull", "MyStuff", 8, "smalldatetime", true, 0, 0), false);
+
+             fsr.schemaTables.Add(dt);
+
+             var expected = @"CREATE TABLE MyTable(
+    SmallDateTimeNotNull smalldatetime NOT NULL,
+    SmallDateTimeNull smalldatetime NULL
+);
+";
+             Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+         }
+
+         [Test()]
+         public void DATETIME_ScriptsCorrectly()
+         {
+             FlexResultSet fsr = new FlexResultSet();
+
+             var dt = FakeSchemaDataTable();
+
+             dt.LoadDataRow(FakeColumn("DateTimeNotNull", "MyStuff", 8, "datetime", false, 0, 0), false);
+             dt.LoadDataRow(FakeColumn("DateTimeNull", "MyStuff", 8, "datetime", true, 0, 0), false);
+
+             fsr.schemaTables.Add(dt);
+
+             var expected = @"CREATE TABLE MyTable(
+    DateTimeNotNull datetime NOT NULL,
+    DateTimeNull datetime NULL
+);
+";
+             Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+         }
+
+         [Test()]
+         public void TIME_ScriptsCorrectly()
+         {
+             FlexResultSet fsr = new FlexResultSet();
+
+             var dt = FakeSchemaDataTable();
+
+             dt.LoadDataRow(FakeColumn("TimeNotNull", "MyStuff", 8, "time", false, 0, 0), false);
+             dt.LoadDataRow(FakeColumn("TimeNull", "MyStuff", 8, "time", true, 0, 0), false);
+
+             fsr.schemaTables.Add(dt);
+
+             var expected = @"CREATE TABLE MyTable(
+    TimeNotNull time NOT NULL,
+    TimeNull time NULL
+);
+";
+             Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+         }
+
+         [Test()]
+         public void CHAR_ScriptsCorrectly()
+         {
+             FlexResultSet fsr = new FlexResultSet();
+
+             var dt = FakeSchemaDataTable();
+
+             dt.LoadDataRow(FakeColumn("Char100NotNull", "MyStuff", 100, "char", false, 0, 0), false);
+             dt.LoadDataRow(FakeColumn("Char100Null", "MyStuff", 100, "char", true, 0, 0), false);
+
+             fsr.schemaTables.Add(dt);
+
+             var expected = @"CREATE TABLE MyTable(
+    Char100NotNull char(100) NOT NULL,
+    Char100Null char(100) NULL
+);
+";
+             Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+         }
+
+
+         [Test()]
+         public void VARCHAR_ScriptsCorrectly()
+         {
+             FlexResultSet fsr = new FlexResultSet();
+
+             var dt = FakeSchemaDataTable();
+
+             dt.LoadDataRow(FakeColumn("Name100NotNull", "MyStuff", 100, "varchar", false, 0, 0), false);
+             dt.LoadDataRow(FakeColumn("NameMaxNotNull", "MyStuff", Int32.MaxValue, "varchar", false, 0, 0), false);
+             dt.LoadDataRow(FakeColumn("Name100Null", "MyStuff", 100, "varchar", true, 0, 0), false);
+             dt.LoadDataRow(FakeColumn("NameMaxNull", "MyStuff", Int32.MaxValue, "varchar", true, 0, 0), false);
+
+             fsr.schemaTables.Add(dt);
+
+             var expected = @"CREATE TABLE MyTable(
+    Name100NotNull varchar(100) NOT NULL,
+    NameMaxNotNull varchar(MAX) NOT NULL,
+    Name100Null varchar(100) NULL,
+    NameMaxNull varchar(MAX) NULL
+);
+";
+             Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+         }
+
+         [Test()]
+         public void TEXT_ScriptsCorrectly()
+         {
+             FlexResultSet fsr = new FlexResultSet();
+
+             var dt = FakeSchemaDataTable();
+
+             dt.LoadDataRow(FakeColumn("TextNotNull", "MyStuff", 0, "text", false, 0, 0), false);
+             dt.LoadDataRow(FakeColumn("TextNull", "MyStuff", 0, "text", true, 0, 0), false);
+
+             fsr.schemaTables.Add(dt);
+
+             var expected = @"CREATE TABLE MyTable(
+    TextNotNull text NOT NULL,
+    TextNull text NULL
+);
+";
+             Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+         }
+
+         [Test()]
+         public void NCHAR_ScriptsCorrectly()
+         {
+             FlexResultSet fsr = new FlexResultSet();
+
+             var dt = FakeSchemaDataTable();
+
+             dt.LoadDataRow(FakeColumn("NChar100NotNull", "MyStuff", 100, "nchar", false, 0, 0), false);
+             dt.LoadDataRow(FakeColumn("NChar100Null", "MyStuff", 100, "nchar", true, 0, 0), false);
+
+             fsr.schemaTables.Add(dt);
+
+             var expected = @"CREATE TABLE MyTable(
+    NChar100NotNull nchar(100) NOT NULL,
+    NChar100Null nchar(100) NULL
+);
+";
+             Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+         }
+
+
         [Test()]
         public void NVARCHAR_ScriptsCorrectly()
         {
@@ -292,29 +498,44 @@ namespace TSqlFlex.Core.Tests
         }
 
         [Test()]
-        public void VARCHAR_ScriptsCorrectly()
+        public void NTEXT_ScriptsCorrectly()
         {
             FlexResultSet fsr = new FlexResultSet();
 
             var dt = FakeSchemaDataTable();
 
-            dt.LoadDataRow(FakeColumn("Name100NotNull", "MyStuff", 100, "varchar", false, 0, 0), false);
-            dt.LoadDataRow(FakeColumn("NameMaxNotNull", "MyStuff", Int32.MaxValue, "varchar", false, 0, 0), false);
-            dt.LoadDataRow(FakeColumn("Name100Null", "MyStuff", 100, "varchar", true, 0, 0), false);
-            dt.LoadDataRow(FakeColumn("NameMaxNull", "MyStuff", Int32.MaxValue, "varchar", true, 0, 0), false);
+            dt.LoadDataRow(FakeColumn("NTextNotNull", "MyStuff", 0, "ntext", false, 0, 0), false);
+            dt.LoadDataRow(FakeColumn("NTextNull", "MyStuff", 0, "ntext", true, 0, 0), false);
 
             fsr.schemaTables.Add(dt);
 
             var expected = @"CREATE TABLE MyTable(
-    Name100NotNull varchar(100) NOT NULL,
-    NameMaxNotNull varchar(MAX) NOT NULL,
-    Name100Null varchar(100) NULL,
-    NameMaxNull varchar(MAX) NULL
+    NTextNotNull ntext NOT NULL,
+    NTextNull ntext NULL
 );
 ";
             Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
         }
 
+        [Test()]
+        public void BINARY_ScriptsCorrectly()
+        {
+            FlexResultSet fsr = new FlexResultSet();
+
+            var dt = FakeSchemaDataTable();
+
+            dt.LoadDataRow(FakeColumn("Binary100NotNull", "MyStuff", 100, "binary", false, 0, 0), false);
+            dt.LoadDataRow(FakeColumn("Binary100Null", "MyStuff", 100, "binary", true, 0, 0), false);
+
+            fsr.schemaTables.Add(dt);
+
+            var expected = @"CREATE TABLE MyTable(
+    Binary100NotNull binary(100) NOT NULL,
+    Binary100Null binary(100) NULL
+);
+";
+            Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+        }
 
 
         public static DataTable FakeSchemaDataTable() {
