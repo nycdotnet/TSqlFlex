@@ -55,6 +55,7 @@
             this.btnCopyToNewWindow.TabIndex = 3;
             this.btnCopyToNewWindow.Text = "Copy to new window";
             this.btnCopyToNewWindow.UseVisualStyleBackColor = true;
+            this.btnCopyToNewWindow.Visible = false;
             this.btnCopyToNewWindow.Click += new System.EventHandler(this.btnCopyToNewWindow_Click);
             // 
             // splitContainer1
@@ -131,7 +132,6 @@
             this.txtSqlInput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.txtSqlInput.Size = new System.Drawing.Size(1112, 201);
             this.txtSqlInput.TabIndex = 0;
-            this.txtSqlInput.Text = "SELECT ID FROM MyStuff; SELECT Name, Price from MyStuff;";
             this.txtSqlInput.WordWrap = false;
             // 
             // panelBottom
@@ -153,7 +153,7 @@
             this.btnCopyToClipboard.Name = "btnCopyToClipboard";
             this.btnCopyToClipboard.Size = new System.Drawing.Size(105, 23);
             this.btnCopyToClipboard.TabIndex = 2;
-            this.btnCopyToClipboard.Text = "Copy to clipboard";
+            this.btnCopyToClipboard.Text = "&Copy to clipboard";
             this.btnCopyToClipboard.UseVisualStyleBackColor = true;
             this.btnCopyToClipboard.Click += new System.EventHandler(this.btnCopyToClipboard_Click);
             // 
@@ -170,7 +170,7 @@
             this.txtOutput.ReadOnly = true;
             this.txtOutput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.txtOutput.Size = new System.Drawing.Size(1112, 240);
-            this.txtOutput.TabIndex = 1;
+            this.txtOutput.TabIndex = 4;
             this.txtOutput.WordWrap = false;
             // 
             // cmdRunNRollback
