@@ -69,21 +69,26 @@ namespace TSqlFlex.Core
             return resultSet;
         }
 
+        //todo: columnnames must be unique in a table.  It's possible to have a result set with duplicate column names, but not a table.
 
         public string ScriptResultAsCreateTable(int resultIndex, string tableName)
         {
-            StringBuilder buffer = new StringBuilder("CREATE TABLE " + tableName + "(\r\n");
+            if (schemaTables[resultIndex] == null)
+            {
+                return "--No schema for result from query.";
+            }
             var rows = schemaTables[resultIndex].Rows;
+            StringBuilder buffer = new StringBuilder("CREATE TABLE " + tableName + "(\r\n");
             for (int fieldIndex = 0; fieldIndex < rows.Count; fieldIndex++)
             {
                 var fieldInfo = rows[fieldIndex];
-                buffer.Append("    " +                           //indentation
-                        FieldNameOrDefault(fieldInfo, fieldIndex) +         //field name
+                buffer.Append("    " +
+                        FieldNameOrDefault(fieldInfo, fieldIndex) +
                         " " +
-                        DataType(fieldInfo) +        //data type
+                        DataType(fieldInfo) +
                         DataTypeParameterIfAny(fieldInfo) + 
                         " " +
-                        NullOrNotNull(fieldInfo[13])      //nullability
+                        NullOrNotNull(fieldInfo[13])
                         );
                 if (fieldIndex + 1 < rows.Count)
                 {

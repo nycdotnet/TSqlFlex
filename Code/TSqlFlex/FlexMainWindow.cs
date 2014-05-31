@@ -14,24 +14,24 @@ namespace TSqlFlex
     public partial class FlexMainWindow : UserControl
     {
 
-        private SqlConnectionStringBuilder connString = null;
+        private SqlConnectionStringBuilder connStringBuilder = null;
 
         public FlexMainWindow()
         {
             InitializeComponent();
         }
     
-        public void SetConnection(SqlConnectionStringBuilder theConnectionString)
+        public void SetConnection(SqlConnectionStringBuilder theConnectionStringBuilder)
         {
-            connString = theConnectionString;
+            connStringBuilder = theConnectionStringBuilder;
             SetConnectionText();
         }
 
         private void SetConnectionText()
         {
-            if (connString != null && connString.DataSource.Length > 0 && connString.InitialCatalog.Length > 0)
+            if (Utils.IsValidConnectionStringBuilder(connStringBuilder))
             {
-                lblConnectionInfo.Text = "Instance: " + connString.DataSource + ", DB: " + connString.InitialCatalog;
+                lblConnectionInfo.Text = "Instance: " + connStringBuilder.DataSource + ", DB: " + connStringBuilder.InitialCatalog;
             } else {
                 lblConnectionInfo.Text = "Not connected.";
             }
@@ -39,16 +39,27 @@ namespace TSqlFlex
 
         private void cmdRunNRollback_Click(object sender, EventArgs e)
         {
-            //bug: check for a valid connection here.  Will throw exception if DB is not selected.
-            using (SqlConnection conn = new SqlConnection(connString.ConnectionString))
+            if (Utils.IsValidConnectionStringBuilder(connStringBuilder))
             {
-                conn.Open();
+                using (SqlConnection conn = new SqlConnection(connStringBuilder.ConnectionString))
+                {
+                    conn.Open();
 
-                FlexResultSet resultSet = FlexResultSet.AnalyzeResultWithRollback(conn, txtSqlInput.Text);
+                    FlexResultSet resultSet = FlexResultSet.AnalyzeResultWithRollback(conn, txtSqlInput.Text);
 
-                txtOutput.Text = resultSet.ScriptResultAsCreateTable(0, "#MyNewTable");
+                    var sb = new StringBuilder();
+                    for (int i = 0; i < resultSet.results.Count; i++)
+                    {
+                        sb.AppendLine(resultSet.ScriptResultAsCreateTable(i, "#Result" + (i + 1).ToString()));
+                        sb.Append("\r\n");
+                    }
 
-                //txtOutput.Text = buffer.ToString();
+                    txtOutput.Text = sb.ToString();
+                }
+            }
+            else
+            {
+                MessageBox.Show("Select the target database in the object tree first.");
             }
         }
 
