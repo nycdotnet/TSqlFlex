@@ -12,9 +12,8 @@ namespace TSqlFlex.Core.Tests
     [TestFixture()]
     public class FlexResultSetTests
     {
-        //todo: Support this query:
         /*
-          --should have every data type that SQL Server 2014 supports, including aliases.
+          --This query has every column data type that SQL Server 2014 supports, including aliases.
           SELECT CAST(1 AS BIGINT) [aBigInt], CAST(1.0 AS NUMERIC(2,1)) AS [aNumeric], CAST(1 AS BIT) AS [aBit],
           CAST(1 AS SMALLINT) AS [aSmallInt], CAST(1.0 AS DECIMAL(2,1)) AS [aDecimal], CAST(1.0 AS SMALLMONEY) as [aSmallMoney],
           CAST(1 AS INT) as [anInt], CAST(1 as TINYINT) as [aTinyInt], CAST(1 as MONEY) as [aMoney], 
@@ -532,6 +531,192 @@ namespace TSqlFlex.Core.Tests
             var expected = @"CREATE TABLE MyTable(
     Binary100NotNull binary(100) NOT NULL,
     Binary100Null binary(100) NULL
+);
+";
+            Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+        }
+
+        [Test()]
+        public void VARBINARY_ScriptsCorrectly()
+        {
+            FlexResultSet fsr = new FlexResultSet();
+
+            var dt = FakeSchemaDataTable();
+
+            dt.LoadDataRow(FakeColumn("VarBin100NotNull", "MyStuff", 100, "varbinary", false, 0, 0), false);
+            dt.LoadDataRow(FakeColumn("VarBinMaxNotNull", "MyStuff", Int32.MaxValue, "varbinary", false, 0, 0), false);
+            dt.LoadDataRow(FakeColumn("VarBin100Null", "MyStuff", 100, "varbinary", true, 0, 0), false);
+            dt.LoadDataRow(FakeColumn("VarBinMaxNull", "MyStuff", Int32.MaxValue, "varbinary", true, 0, 0), false);
+
+            fsr.schemaTables.Add(dt);
+
+            var expected = @"CREATE TABLE MyTable(
+    VarBin100NotNull varbinary(100) NOT NULL,
+    VarBinMaxNotNull varbinary(MAX) NOT NULL,
+    VarBin100Null varbinary(100) NULL,
+    VarBinMaxNull varbinary(MAX) NULL
+);
+";
+            Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+        }
+
+
+        [Test()]
+        public void IMAGE_ScriptsCorrectly()
+        {
+            FlexResultSet fsr = new FlexResultSet();
+
+            var dt = FakeSchemaDataTable();
+
+            dt.LoadDataRow(FakeColumn("ImageNotNull", "MyStuff", 0, "image", false, 0, 0), false);
+            dt.LoadDataRow(FakeColumn("ImageNull", "MyStuff", 0, "image", true, 0, 0), false);
+
+            fsr.schemaTables.Add(dt);
+
+            var expected = @"CREATE TABLE MyTable(
+    ImageNotNull image NOT NULL,
+    ImageNull image NULL
+);
+";
+            Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+        }
+
+
+        [Test()]
+        public void TIMESTAMP_ScriptsCorrectly()
+        {
+            FlexResultSet fsr = new FlexResultSet();
+
+            var dt = FakeSchemaDataTable();
+
+            dt.LoadDataRow(FakeColumn("TimeStampNotNull", "MyStuff", 8, "timestamp", false, 0, 0), false);
+            dt.LoadDataRow(FakeColumn("TimeStampNull", "MyStuff", 8, "timestamp", true, 0, 0), false);
+
+            fsr.schemaTables.Add(dt);
+
+            var expected = @"CREATE TABLE MyTable(
+    TimeStampNotNull timestamp NOT NULL,
+    TimeStampNull timestamp NULL
+);
+";
+            Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+        }
+
+        [Test()]
+        public void HIERARCHYID_ScriptsCorrectly()
+        {
+            FlexResultSet fsr = new FlexResultSet();
+
+            var dt = FakeSchemaDataTable();
+
+            dt.LoadDataRow(FakeColumn("HierarchyIdNotNull", "MyStuff", 8, "dbname.sys.hierarchyid", false, 0, 0), false);
+            dt.LoadDataRow(FakeColumn("HierarchyIdNull", "MyStuff", 8, "dbname.sys.hierarchyid", true, 0, 0), false);
+
+            fsr.schemaTables.Add(dt);
+
+            var expected = @"CREATE TABLE MyTable(
+    HierarchyIdNotNull hierarchyid NOT NULL,
+    HierarchyIdNull hierarchyid NULL
+);
+";
+            Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+        }
+
+        [Test()]
+        public void UNIQUEIDENTIFIER_ScriptsCorrectly()
+        {
+            FlexResultSet fsr = new FlexResultSet();
+
+            var dt = FakeSchemaDataTable();
+
+            dt.LoadDataRow(FakeColumn("UniqueIdentifierNotNull", "MyStuff", 128, "uniqueidentifier", false, 0, 0), false);
+            dt.LoadDataRow(FakeColumn("UniqueIdentifierNull", "MyStuff", 128, "uniqueidentifier", true, 0, 0), false);
+
+            fsr.schemaTables.Add(dt);
+
+            var expected = @"CREATE TABLE MyTable(
+    UniqueIdentifierNotNull uniqueidentifier NOT NULL,
+    UniqueIdentifierNull uniqueidentifier NULL
+);
+";
+            Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+        }
+
+        [Test()]
+        public void SQL_VARIANT_ScriptsCorrectly()
+        {
+            FlexResultSet fsr = new FlexResultSet();
+
+            var dt = FakeSchemaDataTable();
+
+            dt.LoadDataRow(FakeColumn("Sql_VariantNotNull", "MyStuff", 128, "sql_variant", false, 0, 0), false);
+            dt.LoadDataRow(FakeColumn("Sql_VariantNull", "MyStuff", 128, "sql_variant", true, 0, 0), false);
+
+            fsr.schemaTables.Add(dt);
+
+            var expected = @"CREATE TABLE MyTable(
+    Sql_VariantNotNull sql_variant NOT NULL,
+    Sql_VariantNull sql_variant NULL
+);
+";
+            Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+        }
+
+        [Test()]
+        public void XML_ScriptsCorrectly()
+        {
+            FlexResultSet fsr = new FlexResultSet();
+
+            var dt = FakeSchemaDataTable();
+
+            dt.LoadDataRow(FakeColumn("XMLNotNull", "MyStuff", 0, "xml", false, 0, 0), false);
+            dt.LoadDataRow(FakeColumn("XMLNull", "MyStuff", 0, "xml", true, 0, 0), false);
+
+            fsr.schemaTables.Add(dt);
+
+            var expected = @"CREATE TABLE MyTable(
+    XMLNotNull xml NOT NULL,
+    XMLNull xml NULL
+);
+";
+            Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+        }
+
+        [Test()]
+        public void GEOGRAPHY_ScriptsCorrectly()
+        {
+            FlexResultSet fsr = new FlexResultSet();
+
+            var dt = FakeSchemaDataTable();
+
+            dt.LoadDataRow(FakeColumn("GeographyNotNull", "MyStuff", 0, "dbname.sys.geography", false, 0, 0), false);
+            dt.LoadDataRow(FakeColumn("GeographyNull", "MyStuff", 0, "dbname.sys.geography", true, 0, 0), false);
+
+            fsr.schemaTables.Add(dt);
+
+            var expected = @"CREATE TABLE MyTable(
+    GeographyNotNull geography NOT NULL,
+    GeographyNull geography NULL
+);
+";
+            Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+        }
+
+        [Test()]
+        public void GEOMETRY_ScriptsCorrectly()
+        {
+            FlexResultSet fsr = new FlexResultSet();
+
+            var dt = FakeSchemaDataTable();
+
+            dt.LoadDataRow(FakeColumn("GeometryNotNull", "MyStuff", 0, "dbname.sys.geometry", false, 0, 0), false);
+            dt.LoadDataRow(FakeColumn("GeometryNull", "MyStuff", 0, "dbname.sys.geometry", true, 0, 0), false);
+
+            fsr.schemaTables.Add(dt);
+
+            var expected = @"CREATE TABLE MyTable(
+    GeometryNotNull geometry NOT NULL,
+    GeometryNull geometry NULL
 );
 ";
             Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));

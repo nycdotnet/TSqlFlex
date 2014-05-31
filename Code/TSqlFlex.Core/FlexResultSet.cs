@@ -113,13 +113,25 @@ namespace TSqlFlex.Core
             {
                 return "float";  //this could be a float or a real.  There is no simple way to tell via ado.net.  Will try to keep it consistent with float.
             }
-            return fieldInfo[24].ToString();
+            else if (fieldName.EndsWith(".sys.hierarchyid"))
+            {
+                return "hierarchyid";
+            }
+            else if (fieldName.EndsWith(".sys.geography"))
+            {
+                return "geography";
+            }
+            else if (fieldName.EndsWith(".sys.geometry"))
+            {
+                return "geometry"; 
+            }
+            return fieldName;
         }
 
         private string DataTypeParameterIfAny(DataRow fieldInfo)
         {
             var dataTypeName = fieldInfo[24].ToString();
-            if (dataTypeName == "nvarchar" || dataTypeName == "varchar" || dataTypeName == "nchar" || dataTypeName == "char" || dataTypeName == "binary")
+            if (dataTypeName == "nvarchar" || dataTypeName == "varchar" || dataTypeName == "nchar" || dataTypeName == "char" || dataTypeName == "binary" || dataTypeName == "varbinary")
             {
                 int columnSize = (int)fieldInfo[2];    
                 if (columnSize == Int32.MaxValue)
