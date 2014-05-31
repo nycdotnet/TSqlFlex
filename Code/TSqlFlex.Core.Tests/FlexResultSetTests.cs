@@ -18,7 +18,7 @@ namespace TSqlFlex.Core.Tests
           SELECT CAST(1 AS BIGINT) [aBigInt], CAST(1.0 AS NUMERIC(2,1)) AS [aNumeric], CAST(1 AS BIT) AS [aBit],
           CAST(1 AS SMALLINT) AS [aSmallInt], CAST(1.0 AS DECIMAL(2,1)) AS [aDecimal], CAST(1.0 AS SMALLMONEY) as [aSmallMoney],
           CAST(1 AS INT) as [anInt], CAST(1 as TINYINT) as [aTinyInt], CAST(1 as MONEY) as [aMoney], 
-          CAST(1 as FLOAT(53)) as [aFloat], CAST(1 as REAL),
+          CAST(1 as FLOAT(53)) as [aFloat], CAST(1 as FLOAT(24)) as [aFloat], CAST(1 as REAL),
           CAST('2000-01-01T00:00:00' as DATE) as [aDate], CAST('2000-01-01T00:00:00+01:00' as DATETIMEOFFSET) as [aDateTimeOffset],
           CAST('2000-01-01T00:00:00' as DATETIME2) as [aDateTime2], CAST('2000-01-01T00:00:00' as SMALLDATETIME) as [aSmallDateTime],
           CAST('2000-01-01T00:00:00' as DATETIME) as [aDateTime], CAST('2000-01-01T00:00:00' as TIME) as [aTime],
@@ -136,13 +136,16 @@ namespace TSqlFlex.Core.Tests
             var dt = FakeSchemaDataTable();
 
             dt.LoadDataRow(FakeColumn("decimal2_1NotNull", "MyStuff", 17, "decimal", false, 2, 1), false);
-            dt.LoadDataRow(FakeColumn("decimal2_1Null", "MyStuff", 17, "decimal", true, 4, 3), false);
-
+            dt.LoadDataRow(FakeColumn("decimal2_1Null", "MyStuff", 17, "decimal", true, 2, 1), false);
+            dt.LoadDataRow(FakeColumn("decimal4_3NotNull", "MyStuff", 17, "decimal", false, 4, 3), false);
+            dt.LoadDataRow(FakeColumn("decimal4_3Null", "MyStuff", 17, "decimal", true, 4, 3), false);
             fsr.schemaTables.Add(dt);
 
             var expected = @"CREATE TABLE MyTable(
     decimal2_1NotNull decimal(2,1) NOT NULL,
-    decimal2_1Null decimal(4,3) NULL
+    decimal2_1Null decimal(2,1) NULL,
+    decimal4_3NotNull decimal(4,3) NOT NULL,
+    decimal4_3Null decimal(4,3) NULL
 );
 ";
             Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
@@ -210,7 +213,58 @@ namespace TSqlFlex.Core.Tests
             Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
         }
 
+        [Test()]
+        public void MONEY_ScriptsCorrectly()
+        {
+            FlexResultSet fsr = new FlexResultSet();
 
+            var dt = FakeSchemaDataTable();
+
+            dt.LoadDataRow(FakeColumn("MoneyNotNull", "MyStuff", 8, "money", false, 0, 0), false);
+            dt.LoadDataRow(FakeColumn("MoneyNull", "MyStuff", 8, "money", true, 0, 0), false);
+
+            fsr.schemaTables.Add(dt);
+
+            var expected = @"CREATE TABLE MyTable(
+    MoneyNotNull money NOT NULL,
+    MoneyNull money NULL
+);
+";
+            Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+        }
+
+
+         [Test()]
+        public void FLOAT_AND_REAL_ScriptCorrectly()
+        {
+            FlexResultSet fsr = new FlexResultSet();
+
+            var dt = FakeSchemaDataTable();
+
+            dt.LoadDataRow(FakeColumn("Float53NotNull", "MyStuff", 64, "float", false, 2, 1), false);
+            dt.LoadDataRow(FakeColumn("Float53Null", "MyStuff", 64, "float", true, 2, 1), false);
+            dt.LoadDataRow(FakeColumn("Float40NotNull", "MyStuff", 64, "float", false, 2, 1), false);
+            dt.LoadDataRow(FakeColumn("Float40Null", "MyStuff", 64, "float", true, 2, 1), false);
+            dt.LoadDataRow(FakeColumn("Float24NotNull", "MyStuff", 32, "real", false, 4, 3), false);
+            dt.LoadDataRow(FakeColumn("Float24Null", "MyStuff", 32, "real", true, 4, 3), false);
+            dt.LoadDataRow(FakeColumn("Float17NotNull", "MyStuff", 32, "real", false, 4, 3), false);
+            dt.LoadDataRow(FakeColumn("Float17Null", "MyStuff", 32, "real", true, 4, 3), false);
+            fsr.schemaTables.Add(dt);
+
+            var expected = @"CREATE TABLE MyTable(
+    Float53NotNull float(53) NOT NULL,
+    Float53Null float(53) NULL,
+    Float40NotNull float(53) NOT NULL,
+    Float40Null float(53) NULL,
+    Float24NotNull float(24) NOT NULL,
+    Float24Null float(24) NULL,
+    Float17NotNull float(24) NOT NULL,
+    Float17Null float(24) NULL
+);
+";
+
+            Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
+        }
 
 
         [Test()]

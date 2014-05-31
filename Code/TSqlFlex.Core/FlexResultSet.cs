@@ -80,7 +80,7 @@ namespace TSqlFlex.Core
                 buffer.Append("    " +                           //indentation
                         FieldNameOrDefault(fieldInfo, fieldIndex) +         //field name
                         " " +
-                        fieldInfo[24].ToString() +        //data type
+                        DataType(fieldInfo) +        //data type
                         DataTypeParameterIfAny(fieldInfo) + 
                         " " +
                         NullOrNotNull(fieldInfo[13])      //nullability
@@ -106,6 +106,16 @@ namespace TSqlFlex.Core
             return r;
         }
 
+        private string DataType(DataRow fieldInfo)
+        {
+            var fieldName = fieldInfo[24].ToString();
+            if (fieldName == "real")
+            {
+                return "float";  //this could be a float or a real.  There is no simple way to tell via ado.net.  Will try to keep it consistent with float.
+            }
+            return fieldInfo[24].ToString();
+        }
+
         private string DataTypeParameterIfAny(DataRow fieldInfo)
         {
             var dataTypeName = fieldInfo[24].ToString();
@@ -123,6 +133,15 @@ namespace TSqlFlex.Core
                 int numericPrecision = (short)fieldInfo[3];
                 int numericScale = (short)fieldInfo[4];
                 return "(" + numericPrecision.ToString() + "," + numericScale.ToString() + ")";
+            }
+            else if (dataTypeName == "real")
+            {
+                return "(24)";
+            }
+            else if (dataTypeName == "float")
+            {
+                //from MSDN: SQL Server treats n as one of two possible values. If 1<=n<=24, n is treated as 24. If 25<=n<=53, n is treated as 53.
+                return "(53)";
             }
             return "";
         }
