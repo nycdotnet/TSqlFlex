@@ -105,10 +105,10 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(12, 25);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(435, 13);
+            this.label2.Size = new System.Drawing.Size(468, 13);
             this.label2.TabIndex = 3;
             this.label2.Text = "This is alpha software and will probably delete your database somehow.  For test " +
-    "use only!!!";
+    "use only!!! v0.0.1-alpha";
             // 
             // label1
             // 
