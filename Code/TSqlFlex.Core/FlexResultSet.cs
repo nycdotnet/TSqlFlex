@@ -146,7 +146,7 @@ namespace TSqlFlex.Core
                 buffer.Append("  (");
                 for (int columnIndex = 0; columnIndex < columnCount; columnIndex++)
                 {
-                    buffer.Append(valueAsTSQLLiteral(data[rowIndex][columnIndex], schema.Rows[columnIndex]));
+                    buffer.Append(valueAsTSQLLiteral(data[rowIndex][columnIndex], schema.Rows[columnIndex].ItemArray));
                     if (columnIndex + 1 < columnCount)
                     {
                         buffer.Append(",");
@@ -165,7 +165,7 @@ namespace TSqlFlex.Core
             return buffer.ToString();
         }
 
-        private string valueAsTSQLLiteral(object data, DataRow fieldInfo)
+        public static string valueAsTSQLLiteral(object data, object[] fieldInfo)
         {
             if (data == null)
             {
@@ -180,6 +180,21 @@ namespace TSqlFlex.Core
             else if (fieldTypeName == "nchar" || fieldTypeName == "nvarchar")
             {
                 return "N'" + data.ToString() + "'";
+            }
+            else if (fieldTypeName == "bigint" || fieldTypeName == "numeric")
+            {
+                return data.ToString();
+            }
+            else if (fieldTypeName == "bit")
+            {
+                if ((bool)data == true)
+                {
+                    return "1";
+                }
+                else
+                {
+                    return "0";
+                }
             }
 
             return "'" + data.ToString() + "'";

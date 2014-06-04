@@ -42,7 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FlexResultSetTests.cs" />
+    <Compile Include="DataScriptingTests.cs" />
+    <Compile Include="SchemaScriptingTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
