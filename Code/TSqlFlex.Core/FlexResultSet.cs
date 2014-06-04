@@ -9,13 +9,11 @@ namespace TSqlFlex.Core
 {
     public class FlexResultSet
     {
-        public List<DataTable> schemaTables = null;
-        public List<Exception> exceptions = null;
+        const int DATA_TYPE_FIELD_INDEX = 24;
+
         public List<FlexResult> results = null;
         
         public FlexResultSet() {
-            schemaTables = new List<DataTable>();
-            exceptions = new List<Exception>();
             results = new List<FlexResult>();        
         }
 
@@ -26,7 +24,6 @@ namespace TSqlFlex.Core
             if (openConnection.State != System.Data.ConnectionState.Open)
             {
                 var emptySqlConn = new ArgumentException("The SqlConnection must be open.");
-                resultSet.exceptions.Add(emptySqlConn);
                 throw emptySqlConn;
             }
             
@@ -40,18 +37,37 @@ namespace TSqlFlex.Core
                 {
                     do
                     {
-                        //todo: what if first SQL command has an exception - will the second one run/return results?
-                        var st = reader.GetSchemaTable();
-                        resultSet.schemaTables.Add(st);
-                        FlexResult thisResultSet = new FlexResult();
-                        int fieldCount = reader.FieldCount;
-                        while (reader.Read())
+                        FlexResult result = new FlexResult();
+
+                        try
                         {
-                            Object[] values = new Object[fieldCount];
-                            reader.GetValues(values);
-                            thisResultSet.Add(values);
+                            var st = reader.GetSchemaTable();
+                            result.schema = st;
                         }
-                        resultSet.results.Add(thisResultSet);
+                        catch (Exception ex)
+                        {
+                            result.exceptions.Add(ex);
+                        }
+
+                        try
+                        {
+                            int fieldCount = reader.FieldCount;
+                            var data = new List<Object[]>();
+                            while (reader.Read())
+                            {
+                                Object[] values = new Object[fieldCount];
+                                reader.GetValues(values);
+                                data.Add(values);
+                            }
+                            result.data = data;
+                        }
+                        catch (Exception ex)
+                        {
+                            result.exceptions.Add(ex);
+                        }
+
+
+                        resultSet.results.Add(result);
 
                     } while (reader.NextResult());
                     reader.Close();
@@ -59,7 +75,7 @@ namespace TSqlFlex.Core
             }
             catch (Exception ex)
             {
-                resultSet.exceptions.Add(ex);
+                throw ex;
             }
             finally
             {
@@ -73,11 +89,12 @@ namespace TSqlFlex.Core
 
         public string ScriptResultAsCreateTable(int resultIndex, string tableName)
         {
-            if (schemaTables[resultIndex] == null)
+            //todo: bug with SELECT * FROM INFORMATION_SCHEMA.Tables - possibly hidden fields??
+            if (results[resultIndex].schema == null)
             {
                 return "--No schema for result from query.";
             }
-            var rows = schemaTables[resultIndex].Rows;
+            var rows = results[resultIndex].schema.Rows;
             StringBuilder buffer = new StringBuilder("CREATE TABLE " + tableName + "(\r\n");
             for (int fieldIndex = 0; fieldIndex < rows.Count; fieldIndex++)
             {
@@ -101,6 +118,75 @@ namespace TSqlFlex.Core
             return buffer.ToString();
         }
 
+        public string ScriptResultDataAsInsert100(int resultIndex, string tableName)
+        {
+            var schema = results[resultIndex].schema;
+
+            if (schema == null)
+            {
+                return "--No schema for result from query.";
+            }
+
+            var data = results[resultIndex].data;
+
+            if (data == null)
+            {
+                return "--No data for result from query.";
+            }
+
+            int columnCount = schema.Rows.Count;
+            int rowCount = data.Count;
+
+            StringBuilder buffer = new StringBuilder();
+
+            buffer.Append("INSERT INTO " + tableName + " VALUES\r\n");
+
+            for (int rowIndex = 0; rowIndex < rowCount; rowIndex++)
+            {
+                buffer.Append("  (");
+                for (int columnIndex = 0; columnIndex < columnCount; columnIndex++)
+                {
+                    buffer.Append(valueAsTSQLLiteral(data[rowIndex][columnIndex], schema.Rows[columnIndex]));
+                    if (columnIndex + 1 < columnCount)
+                    {
+                        buffer.Append(",");
+                    }
+                }
+                if (rowIndex + 1 == rowCount)
+                {
+                    buffer.Append(");\r\n\r\n");
+                }
+                else
+                {
+                    buffer.Append("),\r\n");
+                }
+            }
+
+            return buffer.ToString();
+        }
+
+        private string valueAsTSQLLiteral(object data, DataRow fieldInfo)
+        {
+            if (data == null)
+            {
+                return "NULL"; //todo: this may or may not be accurate - need to check to see if nulls are preserved in this way.
+            }
+            var fieldTypeName = fieldInfo[DATA_TYPE_FIELD_INDEX].ToString();
+
+            if (fieldTypeName == "char" || fieldTypeName == "varchar")
+            {
+                return "'" + data.ToString() + "'";
+            }
+            else if (fieldTypeName == "nchar" || fieldTypeName == "nvarchar")
+            {
+                return "N'" + data.ToString() + "'";
+            }
+
+            return "'" + data.ToString() + "'";
+        }
+
+
+
         private string FieldNameOrDefault(DataRow fieldInfo, int fieldIndex)
         {
             var r = fieldInfo[0].ToString();
@@ -113,29 +199,29 @@ namespace TSqlFlex.Core
 
         private string DataType(DataRow fieldInfo)
         {
-            var fieldName = fieldInfo[24].ToString();
-            if (fieldName == "real")
+            var fieldTypeName = fieldInfo[DATA_TYPE_FIELD_INDEX].ToString();
+            if (fieldTypeName == "real")
             {
                 return "float";  //this could be a float or a real.  There is no simple way to tell via ado.net.  Will try to keep it consistent with float.
             }
-            else if (fieldName.EndsWith(".sys.hierarchyid"))
+            else if (fieldTypeName.EndsWith(".sys.hierarchyid"))
             {
                 return "hierarchyid";
             }
-            else if (fieldName.EndsWith(".sys.geography"))
+            else if (fieldTypeName.EndsWith(".sys.geography"))
             {
                 return "geography";
             }
-            else if (fieldName.EndsWith(".sys.geometry"))
+            else if (fieldTypeName.EndsWith(".sys.geometry"))
             {
                 return "geometry"; 
             }
-            return fieldName;
+            return fieldTypeName;
         }
 
         private string DataTypeParameterIfAny(DataRow fieldInfo)
         {
-            var dataTypeName = fieldInfo[24].ToString();
+            var dataTypeName = fieldInfo[DATA_TYPE_FIELD_INDEX].ToString();
             if (dataTypeName == "nvarchar" || dataTypeName == "varchar" || dataTypeName == "nchar" || dataTypeName == "char" || dataTypeName == "binary" || dataTypeName == "varbinary")
             {
                 int columnSize = (int)fieldInfo[2];    

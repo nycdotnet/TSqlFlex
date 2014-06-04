@@ -52,6 +52,8 @@ namespace TSqlFlex
                     {
                         sb.AppendLine(resultSet.ScriptResultAsCreateTable(i, "#Result" + (i + 1).ToString()));
                         sb.Append("\r\n");
+                        sb.AppendLine(resultSet.ScriptResultDataAsInsert100(i, "#Result" + (i + 1).ToString()));
+                        sb.Append("\r\n");
                     }
 
                     txtOutput.Text = sb.ToString();
