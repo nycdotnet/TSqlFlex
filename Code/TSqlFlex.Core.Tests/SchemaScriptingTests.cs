@@ -10,7 +10,7 @@ using TSqlFlex.Core;
 namespace TSqlFlex.Core.Tests
 {
     [TestFixture()]
-    public class FlexResultSetTests
+    public class SchemaScriptingTests
     {
         /*
           --This query has every column data type that SQL Server 2014 supports, including aliases.
