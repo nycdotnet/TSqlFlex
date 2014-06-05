@@ -181,9 +181,14 @@ namespace TSqlFlex.Core
             {
                 return "N'" + data.ToString() + "'";
             }
-            else if (fieldTypeName == "bigint" || fieldTypeName == "numeric")
+            else if (fieldTypeName == "bigint" || fieldTypeName == "numeric" || fieldTypeName == "smallint" || fieldTypeName == "decimal" || fieldTypeName == "smallmoney" ||
+                fieldTypeName == "int" || fieldTypeName == "tinyint" || fieldTypeName == "float" || fieldTypeName == "real" || fieldTypeName == "money")
             {
                 return data.ToString();
+            }
+            else if (fieldTypeName == "date") {
+                DateTime d = (DateTime)data;
+                return "'" + d.ToString("yyyy-MM-dd") + "'";
             }
             else if (fieldTypeName == "bit")
             {
