@@ -190,6 +190,11 @@ namespace TSqlFlex.Core
                 DateTime d = (DateTime)data;
                 return "'" + d.ToString("yyyy-MM-dd") + "'";
             }
+            else if (fieldTypeName == "datetimeoffset")
+            {
+                DateTimeOffset d = (DateTimeOffset)data;
+                return "'" + d.ToString("yyyy-MM-ddTHH:mm:sszzzz") + "'";
+            }
             else if (fieldTypeName == "bit")
             {
                 if ((bool)data == true)
@@ -265,6 +270,21 @@ namespace TSqlFlex.Core
             {
                 //from MSDN: SQL Server treats n as one of two possible values. If 1<=n<=24, n is treated as 24. If 25<=n<=53, n is treated as 53.
                 return "(53)";
+            }
+            else if (dataTypeName == "datetimeoffset")
+            {
+                int numericPrecision = (short)fieldInfo[4];
+                //see: http://msdn.microsoft.com/en-us/library/bb630289.aspx
+                
+                if (numericPrecision <= 2 )
+                {
+                    return "(2)";
+                }
+                if (numericPrecision <=4)
+                {
+                    return "(4)";
+                }
+                return "";
             }
             return "";
         }

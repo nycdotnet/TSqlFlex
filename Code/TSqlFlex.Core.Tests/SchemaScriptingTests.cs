@@ -306,15 +306,23 @@ namespace TSqlFlex.Core.Tests
 
              var dt = FakeSchemaDataTable();
 
-             dt.LoadDataRow(FakeColumn("DateTimeOffsetNotNull", "MyStuff", 8, "datetimeoffset", false, 0, 0), false);
-             dt.LoadDataRow(FakeColumn("DateTimeOffsetNull", "MyStuff", 8, "datetimeoffset", true, 0, 0), false);
+             dt.LoadDataRow(FakeColumn("DateTimeOffset_7NotNull", "MyStuff", 80, "datetimeoffset", false, 0, 7), false);
+             dt.LoadDataRow(FakeColumn("DateTimeOffset_7Null", "MyStuff", 80, "datetimeoffset", true, 0, 7), false);
+             dt.LoadDataRow(FakeColumn("DateTimeOffset_2NotNull", "MyStuff", 80, "datetimeoffset", false, 0, 2), false);
+             dt.LoadDataRow(FakeColumn("DateTimeOffset_2Null", "MyStuff", 80, "datetimeoffset", true, 0, 2), false);
+             dt.LoadDataRow(FakeColumn("DateTimeOffset_4NotNull", "MyStuff", 80, "datetimeoffset", false, 0, 4), false);
+             dt.LoadDataRow(FakeColumn("DateTimeOffset_4Null", "MyStuff", 80, "datetimeoffset", true, 0, 4), false);
 
              fsr.results.Add(new FlexResult());
              fsr.results[0].schema = dt;
 
              var expected = @"CREATE TABLE MyTable(
-    DateTimeOffsetNotNull datetimeoffset NOT NULL,
-    DateTimeOffsetNull datetimeoffset NULL
+    DateTimeOffset_7NotNull datetimeoffset NOT NULL,
+    DateTimeOffset_7Null datetimeoffset NULL,
+    DateTimeOffset_2NotNull datetimeoffset(2) NOT NULL,
+    DateTimeOffset_2Null datetimeoffset(2) NULL,
+    DateTimeOffset_4NotNull datetimeoffset(4) NOT NULL,
+    DateTimeOffset_4Null datetimeoffset(4) NULL
 );
 ";
              Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));

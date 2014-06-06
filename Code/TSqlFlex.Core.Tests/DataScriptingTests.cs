@@ -172,10 +172,19 @@ namespace TSqlFlex.Core.Tests
         [Test()]
         public void DATE_Data_ScriptsCorrectly()
         {
-            DateTime baseData = new DateTime(2000,1,1);
+            DateTime baseData = new DateTime(2000,10,31);
             object data = baseData;
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "date", false, 0, 0);
-            Assert.AreEqual("'2000-01-01'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "date");
+            Assert.AreEqual("'2000-10-31'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "date");
+        }
+
+        [Test()]
+        public void DATETIMEOFFSET_Data_ScriptsCorrectly()
+        {
+            DateTimeOffset baseData = new DateTimeOffset(2000, 10, 31, 2, 33, 44, new TimeSpan(3,0,0));
+            object data = baseData;
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "datetimeoffset", false, 0, 0);
+            Assert.AreEqual("'2000-10-31T02:33:44+03:00'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "datetimeoffset");
         }
 
     }
