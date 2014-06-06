@@ -193,7 +193,29 @@ namespace TSqlFlex.Core
             else if (fieldTypeName == "datetimeoffset")
             {
                 DateTimeOffset d = (DateTimeOffset)data;
-                return "'" + d.ToString("yyyy-MM-ddTHH:mm:sszzzz") + "'";
+                if (d.ToString("fffffff") == "0000000")
+                {
+                    return "'" + d.ToString("yyyy-MM-ddTHH:mm:sszzzz") + "'";
+                }
+                return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss.fffffffzzzz") + "'";
+            }
+            else if (fieldTypeName == "datetime2")
+            {
+                DateTime d = (DateTime)data;
+                if (d.ToString("fffffff") == "0000000")
+                {
+                    return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss") + "'";
+                }
+                return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss.fffffff") + "'";
+            }
+            else if (fieldTypeName == "datetime")
+            {
+                DateTime d = (DateTime)data;
+                if (d.ToString("fff") == "000")
+                {
+                    return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss") + "'";
+                }
+                return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss.fff") + "'";
             }
             else if (fieldTypeName == "bit")
             {

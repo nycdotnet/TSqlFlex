@@ -184,7 +184,24 @@ namespace TSqlFlex.Core.Tests
             DateTimeOffset baseData = new DateTimeOffset(2000, 10, 31, 2, 33, 44, new TimeSpan(3,0,0));
             object data = baseData;
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "datetimeoffset", false, 0, 0);
-            Assert.AreEqual("'2000-10-31T02:33:44+03:00'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "datetimeoffset");
+            Assert.AreEqual("'2000-10-31T02:33:44+03:00'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "datetimeoffset no fractional seconds");
+
+            baseData = baseData.AddTicks(1234567);
+            data = baseData;
+            Assert.AreEqual("'2000-10-31T02:33:44.1234567+03:00'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "datetimeoffset fractional seconds");
+        }
+
+        [Test()]
+        public void DATETIME2_Data_ScriptsCorrectly()
+        {
+            DateTime baseData = new DateTime(2000, 10, 31, 2, 33, 44);
+            object data = baseData;
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "datetime2", false, 0, 0);
+            Assert.AreEqual("'2000-10-31T02:33:44'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "datetime2 no fractional seconds");
+
+            baseData = baseData.AddTicks(1234567);
+            data = baseData;
+            Assert.AreEqual("'2000-10-31T02:33:44.1234567'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "datetime2 fractional seconds");
         }
 
     }
