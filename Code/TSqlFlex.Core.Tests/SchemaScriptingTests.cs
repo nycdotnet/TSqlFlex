@@ -398,15 +398,23 @@ namespace TSqlFlex.Core.Tests
 
              var dt = FakeSchemaDataTable();
 
-             dt.LoadDataRow(FakeColumn("TimeNotNull", "MyStuff", 8, "time", false, 0, 0), false);
-             dt.LoadDataRow(FakeColumn("TimeNull", "MyStuff", 8, "time", true, 0, 0), false);
+             dt.LoadDataRow(FakeColumn("TimeNotNull", "MyStuff", 8, "time", false, 0, 7), false);
+             dt.LoadDataRow(FakeColumn("TimeNull", "MyStuff", 8, "time", true, 0, 7), false);
+             dt.LoadDataRow(FakeColumn("Time2NotNull", "MyStuff", 8, "time", false, 0, 2), false);
+             dt.LoadDataRow(FakeColumn("Time2Null", "MyStuff", 8, "time", true, 0, 2), false);
+             dt.LoadDataRow(FakeColumn("Time4NotNull", "MyStuff", 8, "time", false, 0, 4), false);
+             dt.LoadDataRow(FakeColumn("Time4Null", "MyStuff", 8, "time", true, 0, 4), false);
 
              fsr.results.Add(new FlexResult());
              fsr.results[0].schema = dt;
 
              var expected = @"CREATE TABLE MyTable(
     TimeNotNull time NOT NULL,
-    TimeNull time NULL
+    TimeNull time NULL,
+    Time2NotNull time(2) NOT NULL,
+    Time2Null time(2) NULL,
+    Time4NotNull time(4) NOT NULL,
+    Time4Null time(4) NULL
 );
 ";
              Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));

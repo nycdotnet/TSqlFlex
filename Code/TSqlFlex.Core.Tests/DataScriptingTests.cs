@@ -204,5 +204,123 @@ namespace TSqlFlex.Core.Tests
             Assert.AreEqual("'2000-10-31T02:33:44.1234567'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "datetime2 fractional seconds");
         }
 
+        [Test()]
+        public void SMALLDATETIME_Data_ScriptsCorrectly()
+        {
+            DateTime baseData = new DateTime(2000, 10, 31, 2, 33, 0);
+            object data = baseData;
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "smalldatetime", false, 0, 0);
+            Assert.AreEqual("'2000-10-31T02:33:00'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "smalldatetime");
+        }
+
+        [Test()]
+        public void DATETIME_Data_ScriptsCorrectly()
+        {
+            DateTime baseData = new DateTime(2000, 10, 31, 2, 33, 44);
+            object data = baseData;
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "datetime", false, 0, 0);
+            Assert.AreEqual("'2000-10-31T02:33:44'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "datetime no fractional seconds");
+
+            baseData = baseData.AddTicks(1230000);
+            data = baseData;
+            Assert.AreEqual("'2000-10-31T02:33:44.123'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "datetime fractional seconds");
+        }
+
+        [Test()]
+        public void TIME_Data_ScriptsCorrectly()
+        {
+            DateTime baseData = new DateTime(1900, 1, 1, 2, 33, 44);
+            object data = baseData;
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "time", false, 0, 0);
+            Assert.AreEqual("'02:33:44'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "time no fractional seconds");
+
+            baseData = baseData.AddTicks(1234567);
+            data = baseData;
+            Assert.AreEqual("'02:33:44.1234567'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "time fractional seconds");
+        }
+
+        [Test()]
+        public void CHAR_Data_ScriptsCorrectly()
+        {
+            string baseData = "hello world!   "; //extra spaces to pad to 15 characters are intentional since this is how the data comes back from SQL with the fixed-width type.
+            object data = baseData;
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "char", false, 0, 0);
+            Assert.AreEqual("'hello world!'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "char");
+            
+            baseData = "trailing space ";
+            data = baseData;
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "char", false, 0, 0);
+            Assert.AreEqual("'trailing space'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "char trims trailing space when scripted.");
+        }
+
+        [Test()]
+        public void VARCHAR_Data_ScriptsCorrectly()
+        {
+            string baseData = "hello world!"; 
+            object data = baseData;
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "varchar", false, 0, 0);
+            Assert.AreEqual("'hello world!'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "varchar");
+
+            baseData = "trailing space ";
+            data = baseData;
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "varchar", false, 0, 0);
+            Assert.AreEqual("'trailing space '", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "varchar does not trim trailing space when scripted.");
+        }
+
+        [Test()]
+        public void TEXT_Data_ScriptsCorrectly()
+        {
+            string baseData = "hello world!";
+            object data = baseData;
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "text", false, 0, 0);
+            Assert.AreEqual("'hello world!'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "text");
+
+            baseData = "trailing space ";
+            data = baseData;
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "text", false, 0, 0);
+            Assert.AreEqual("'trailing space '", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "text does not trim trailing space when scripted.");
+        }
+
+        [Test()]
+        public void NCHAR_Data_ScriptsCorrectly()
+        {
+            string baseData = "hello world!   "; //extra spaces to pad to 15 characters are intentional since this is how the data comes back from SQL with the fixed-width type.
+            object data = baseData;
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "nchar", false, 0, 0);
+            Assert.AreEqual("N'hello world!'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "nchar");
+
+            baseData = "trailing space ";
+            data = baseData;
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "nchar", false, 0, 0);
+            Assert.AreEqual("N'trailing space'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "nchar trims trailing space when scripted.");
+        }
+
+        [Test()]
+        public void NVARCHAR_Data_ScriptsCorrectly()
+        {
+            string baseData = "hello world!";
+            object data = baseData;
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "nvarchar", false, 0, 0);
+            Assert.AreEqual("N'hello world!'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "nvarchar");
+
+            baseData = "trailing space ";
+            data = baseData;
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "nvarchar", false, 0, 0);
+            Assert.AreEqual("N'trailing space '", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "nvarchar does not trim trailing space when scripted.");
+        }
+
+        [Test()]
+        public void NTEXT_Data_ScriptsCorrectly()
+        {
+            string baseData = "hello world!";
+            object data = baseData;
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "ntext", false, 0, 0);
+            Assert.AreEqual("N'hello world!'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "ntext");
+
+            baseData = "trailing space ";
+            data = baseData;
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "ntext", false, 0, 0);
+            Assert.AreEqual("N'trailing space '", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "ntext does not trim trailing space when scripted.");
+        }
     }
 }

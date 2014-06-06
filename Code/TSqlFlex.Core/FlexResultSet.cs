@@ -173,11 +173,19 @@ namespace TSqlFlex.Core
             }
             var fieldTypeName = fieldInfo[DATA_TYPE_FIELD_INDEX].ToString();
 
-            if (fieldTypeName == "char" || fieldTypeName == "varchar")
+            if (fieldTypeName == "char")
+            {
+                return "'" + data.ToString().TrimEnd() + "'";
+            }
+            else if (fieldTypeName == "varchar" || fieldTypeName == "text")
             {
                 return "'" + data.ToString() + "'";
             }
-            else if (fieldTypeName == "nchar" || fieldTypeName == "nvarchar")
+            else if (fieldTypeName == "nchar")
+            {
+                return "N'" + data.ToString().TrimEnd() + "'";
+            }
+            else if (fieldTypeName == "nvarchar" || fieldTypeName == "ntext")
             {
                 return "N'" + data.ToString() + "'";
             }
@@ -208,6 +216,15 @@ namespace TSqlFlex.Core
                 }
                 return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss.fffffff") + "'";
             }
+            else if (fieldTypeName == "time")
+            {
+                DateTime d = (DateTime)data;
+                if (d.ToString("fffffff") == "0000000")
+                {
+                    return "'" + d.ToString("HH:mm:ss") + "'";
+                }
+                return "'" + d.ToString("HH:mm:ss.fffffff") + "'";
+            }
             else if (fieldTypeName == "datetime")
             {
                 DateTime d = (DateTime)data;
@@ -216,6 +233,11 @@ namespace TSqlFlex.Core
                     return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss") + "'";
                 }
                 return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss.fff") + "'";
+            }
+            else if (fieldTypeName == "smalldatetime")
+            {
+                DateTime d = (DateTime)data;
+                return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss") + "'";
             }
             else if (fieldTypeName == "bit")
             {
@@ -293,7 +315,7 @@ namespace TSqlFlex.Core
                 //from MSDN: SQL Server treats n as one of two possible values. If 1<=n<=24, n is treated as 24. If 25<=n<=53, n is treated as 53.
                 return "(53)";
             }
-            else if (dataTypeName == "datetimeoffset")
+            else if (dataTypeName == "datetimeoffset" || dataTypeName == "time")
             {
                 int numericPrecision = (short)fieldInfo[4];
                 //see: http://msdn.microsoft.com/en-us/library/bb630289.aspx
