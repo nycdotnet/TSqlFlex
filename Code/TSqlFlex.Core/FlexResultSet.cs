@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using Microsoft.SqlServer.Types;
 
 namespace TSqlFlex.Core
 {
@@ -195,12 +196,7 @@ namespace TSqlFlex.Core
             {
                 return data.ToString();
             }
-            else if (fieldTypeName == "varbinary" || fieldTypeName == "image")
-            {
-                byte[] ba = (byte[])data;
-                return "0x" + BitConverter.ToString(ba).Replace("-", "");
-            }
-            else if (fieldTypeName == "binary")
+            else if (fieldTypeName == "binary" || fieldTypeName == "rowversion" || fieldTypeName == "timestamp")
             {
                 byte[] ba = (byte[])data;
                 string bitsAsHexString = BitConverter.ToString(ba).Replace("-", "");
@@ -263,6 +259,24 @@ namespace TSqlFlex.Core
                 {
                     return "0";
                 }
+            }
+            else if (fieldTypeName == "varbinary" || fieldTypeName == "image")
+            {
+                byte[] ba = (byte[])data;
+                return "0x" + BitConverter.ToString(ba).Replace("-", "");
+            }
+            else if (fieldTypeName.EndsWith("hierarchyid"))
+            {
+                SqlHierarchyId hier = (SqlHierarchyId)data;
+                byte[] ba;
+                using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
+                using (System.IO.BinaryWriter w = new System.IO.BinaryWriter(ms))
+                {
+                    hier.Write(w);
+                    w.Flush();
+                    ba = ms.ToArray();
+                }
+                return "0x" + BitConverter.ToString(ba).Replace("-", "");
             }
 
             return "'" + data.ToString() + "'";

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using TSqlFlex.Core;
+using Microsoft.SqlServer.Types;
 
 
 namespace TSqlFlex.Core.Tests
@@ -365,5 +366,34 @@ namespace TSqlFlex.Core.Tests
             Assert.AreEqual("0x0001E240", FlexResultSet.valueAsTSQLLiteral((object)data, fieldInfo), "image");
         }
 
+
+        [Test()]
+        public void TIMESTAMP_Data_ScriptsCorrectly()
+        {
+            Int32 baseData = 123456;
+            byte[] data = BitConverter.GetBytes(baseData);
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(data);  //SQL Server represents binary as Big Endian
+            }
+
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 8, "timestamp", false, 0, 0);
+            Assert.AreEqual("0x000000000001E240", FlexResultSet.valueAsTSQLLiteral((object)data, fieldInfo), "timestamp");
+        }
+
+        [Test()]
+        public void HIERARCHYID_Data_ScriptsCorrectly()
+        {
+            SqlHierarchyId baseData = SqlHierarchyId.Parse("/");
+            object data = baseData;
+
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 20, "hierarchyid", false, 0, 0);
+            Assert.AreEqual("0x", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "hierarchyid");
+
+            baseData = SqlHierarchyId.Parse("/1/");
+            data = baseData;
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 20, "hierarchyid", false, 0, 0);
+            Assert.AreEqual("0x58", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "hierarchyid");
+        }
     }
 }
