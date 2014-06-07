@@ -165,11 +165,12 @@ namespace TSqlFlex.Core
             return buffer.ToString();
         }
 
+        //todo: may need some refactoring :-)
         public static string valueAsTSQLLiteral(object data, object[] fieldInfo)
         {
             if (data == null)
             {
-                return "NULL"; //todo: this may or may not be accurate - need to check to see if nulls are preserved in this way.
+                return "NULL"; //todo: this may or may not be accurate - need to check to see if nulls are always presented this way in an ADO.NET reader.
             }
             var fieldTypeName = fieldInfo[DATA_TYPE_FIELD_INDEX].ToString();
 
@@ -193,6 +194,19 @@ namespace TSqlFlex.Core
                 fieldTypeName == "int" || fieldTypeName == "tinyint" || fieldTypeName == "float" || fieldTypeName == "real" || fieldTypeName == "money")
             {
                 return data.ToString();
+            }
+            else if (fieldTypeName == "varbinary" || fieldTypeName == "image")
+            {
+                byte[] ba = (byte[])data;
+                return "0x" + BitConverter.ToString(ba).Replace("-", "");
+            }
+            else if (fieldTypeName == "binary")
+            {
+                byte[] ba = (byte[])data;
+                string bitsAsHexString = BitConverter.ToString(ba).Replace("-", "");
+                int charCountToShowAsHex = (int)fieldInfo[2] * 2;
+                bitsAsHexString = bitsAsHexString.PadLeft(charCountToShowAsHex,'0');
+                return "0x" + bitsAsHexString;
             }
             else if (fieldTypeName == "date") {
                 DateTime d = (DateTime)data;
@@ -293,7 +307,7 @@ namespace TSqlFlex.Core
             var dataTypeName = fieldInfo[DATA_TYPE_FIELD_INDEX].ToString();
             if (dataTypeName == "nvarchar" || dataTypeName == "varchar" || dataTypeName == "nchar" || dataTypeName == "char" || dataTypeName == "binary" || dataTypeName == "varbinary")
             {
-                int columnSize = (int)fieldInfo[2];    
+                int columnSize = (int)fieldInfo[2];
                 if (columnSize == Int32.MaxValue)
                 {
                     return "(MAX)";

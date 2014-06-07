@@ -322,5 +322,48 @@ namespace TSqlFlex.Core.Tests
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "ntext", false, 0, 0);
             Assert.AreEqual("N'trailing space '", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "ntext does not trim trailing space when scripted.");
         }
+
+        [Test()]
+        public void BINARY_Data_ScriptsCorrectly()
+        {
+            Int32 baseData = 123456;
+            byte[] data = BitConverter.GetBytes(baseData);
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(data);  //SQL Server represents binary as Big Endian
+            }
+
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 20, "binary", false, 0, 0);
+            Assert.AreEqual("0x000000000000000000000000000000000001E240", FlexResultSet.valueAsTSQLLiteral((object)data, fieldInfo), "binary");
+        }
+
+        [Test()]
+        public void VARBINARY_Data_ScriptsCorrectly()
+        {
+            Int32 baseData = 123456;
+            byte[] data = BitConverter.GetBytes(baseData);
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(data);  //SQL Server represents binary as Big Endian
+            }
+
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 20, "varbinary", false, 0, 0);
+            Assert.AreEqual("0x0001E240", FlexResultSet.valueAsTSQLLiteral((object)data, fieldInfo), "varbinary");
+        }
+
+        [Test()]
+        public void IMAGE_Data_ScriptsCorrectly()
+        {
+            Int32 baseData = 123456;
+            byte[] data = BitConverter.GetBytes(baseData);
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(data);  //SQL Server represents binary as Big Endian
+            }
+
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 20, "image", false, 0, 0);
+            Assert.AreEqual("0x0001E240", FlexResultSet.valueAsTSQLLiteral((object)data, fieldInfo), "image");
+        }
+
     }
 }
