@@ -265,6 +265,11 @@ namespace TSqlFlex.Core
                 byte[] ba = (byte[])data;
                 return "0x" + BitConverter.ToString(ba).Replace("-", "");
             }
+            else if (fieldTypeName == "uniqueidentifier")
+            {
+                Guid g = (Guid)data;
+                return "'" + g.ToString("D").ToUpper() + "'";
+            }
             else if (fieldTypeName.EndsWith("hierarchyid"))
             {
                 SqlHierarchyId hier = (SqlHierarchyId)data;

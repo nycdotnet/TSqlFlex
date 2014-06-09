@@ -395,5 +395,15 @@ namespace TSqlFlex.Core.Tests
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 20, "hierarchyid", false, 0, 0);
             Assert.AreEqual("0x58", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "hierarchyid");
         }
+
+        [Test()]
+        public void UNIQUEIDENTIFIER_Data_ScriptsCorrectly()
+        {
+            Guid baseData = Guid.Parse("9631B0CA-D86F-4CA2-BFA5-93A9980D050A");
+            object data = baseData;
+
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "uniqueidentifier", false, 0, 0);
+            Assert.AreEqual("'9631B0CA-D86F-4CA2-BFA5-93A9980D050A'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "uniqueidentifier");
+        }
     }
 }
