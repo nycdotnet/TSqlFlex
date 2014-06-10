@@ -516,5 +516,12 @@ namespace TSqlFlex.Core.Tests
             Assert.AreEqual("N'LINESTRING (100 100, 20 180, 180 180)'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "geometry");
         }
 
+        [Test()]
+        public void NULL_Data_ScriptsAsNull()
+        {
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "int", false, 0, 0);
+            Assert.AreEqual("NULL", FlexResultSet.valueAsTSQLLiteral((object)System.DBNull.Value, fieldInfo), "int");
+        }
+
     }
 }

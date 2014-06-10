@@ -174,10 +174,11 @@ namespace TSqlFlex.Core
         //todo: may need some refactoring :-)
         public static string valueAsTSQLLiteral(object data, object[] fieldInfo)
         {
-            if (data == null)
+            if (data == null || data is DBNull)
             {
-                return "NULL"; //todo: this may or may not be accurate - need to check to see if nulls are always presented this way in an ADO.NET reader.
+                return "NULL";
             }
+
             var fieldTypeName = fieldInfo[(int)FieldInfo.DataType].ToString();
 
             if (fieldTypeName == "char")
