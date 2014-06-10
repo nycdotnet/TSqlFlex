@@ -17,7 +17,7 @@ namespace TSqlFlex
                 throw new ArgumentException("Could not initialize SIP provider for TSqlFlex extension.");
             }
             runCommand = new RunCommand(ssmsProvider);
-            runCommand.SetSelectedDBNode( currentNode);
+            runCommand.SetSelectedDBNode(currentNode);
 
             ssmsProvider.AddToolbarItem(runCommand);
         }
