@@ -139,7 +139,7 @@ namespace TSqlFlex.Core.Tests
 
             baseData = -200000000.1234M;
             data = baseData;
-            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "smallmoney", false, 10, 4);
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "money", false, 10, 4);
             Assert.AreEqual("-200000000.1234", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "negative money");
         }
 
@@ -153,7 +153,7 @@ namespace TSqlFlex.Core.Tests
 
             baseData = -200000000.1234;
             data = baseData;
-            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "smallmoney", false, 0, 0);
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "float", false, 0, 0);
             Assert.AreEqual("-200000000.1234", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "negative float");
         }
 
@@ -162,12 +162,12 @@ namespace TSqlFlex.Core.Tests
         {
             Single baseData = 200.1234F;
             object data = baseData;
-            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "float", false, 0, 0);
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "real", false, 0, 0);
             Assert.AreEqual("200.1234", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "positive real");
 
             baseData = -200.1234F;
             data = baseData;
-            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "smallmoney", false, 0, 0);
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "real", false, 0, 0);
             Assert.AreEqual("-200.1234", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "negative real");
         }
 
@@ -408,14 +408,89 @@ namespace TSqlFlex.Core.Tests
         }
 
         [Test()]
-        public void SQLVARIANT_Data_ScriptsCorrectly()
+        public void SQLVARIANT_String_Data_ScriptsCorrectly()
         {
             string baseData = "sql variant test";
             object data = baseData;
 
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "sql_variant", false, 0, 0);
-            Assert.AreEqual("'purposefully failing - need to refactor'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "sql_variant");
+            Assert.AreEqual("N'sql variant test'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "sql_variant");
         }
+
+        [Test()]
+        public void SQLVARIANT_Guid_Data_ScriptsCorrectly()
+        {
+            Guid baseData = Guid.Parse("9631B0CA-D86F-4CA2-BFA5-93A9980D050A");
+            object data = baseData;
+
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "sql_variant", false, 0, 0);
+            Assert.AreEqual("'9631B0CA-D86F-4CA2-BFA5-93A9980D050A'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "sql_variant");
+        }
+
+        [Test()]
+        public void SQLVARIANT_Int_Data_ScriptsCorrectly()
+        {
+            int baseData = 1234567;
+            object data = baseData;
+
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "sql_variant", false, 0, 0);
+            Assert.AreEqual("1234567", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "sql_variant");
+        }
+
+        [Test()]
+        public void SQLVARIANT_Decimal_Data_ScriptsCorrectly()
+        {
+            Decimal baseData = 1234567.89M;
+            object data = baseData;
+
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "sql_variant", false, 0, 0);
+            Assert.AreEqual("1234567.89", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "sql_variant");
+        }
+
+        [Test()]
+        public void SQLVARIANT_Bit_Data_ScriptsCorrectly()
+        {
+            bool baseData = false;
+            object data = baseData;
+
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "sql_variant", false, 0, 0);
+            Assert.AreEqual("0", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "sql_variant");
+        }
+
+        [Test()]
+        public void SQLVARIANT_DateTimeOffset_Data_ScriptsCorrectly()
+        {
+            DateTimeOffset baseData = new DateTimeOffset(new DateTime(2014, 5, 30), new TimeSpan(1, 0, 0));
+            object data = baseData;
+
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "sql_variant", false, 0, 0);
+            Assert.AreEqual("'2014-05-30T00:00:00+01:00'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "sql_variant");
+        }
+        
+        [Test()]
+        public void SQLVARIANT_DateTime_Data_ScriptsCorrectly()
+        {
+            DateTime baseData = new DateTime(2014, 5, 30);
+            object data = baseData;
+
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "sql_variant", false, 0, 0);
+            Assert.AreEqual("'2014-05-30T00:00:00'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "sql_variant");
+        }
+
+        [Test()]
+        public void SQLVARIANT_Binary_Data_ScriptsCorrectly()
+        {
+            Int32 baseData = 123456;
+            byte[] data = BitConverter.GetBytes(baseData);
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(data);  //SQL Server represents binary as Big Endian
+            }
+
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 20, "sql_variant", false, 0, 0);
+            Assert.AreEqual("0x0001E240", FlexResultSet.valueAsTSQLLiteral((object)data, fieldInfo), "sql_variant");
+        }
+
 
         [Test()]
         public void XML_Data_ScriptsCorrectly()

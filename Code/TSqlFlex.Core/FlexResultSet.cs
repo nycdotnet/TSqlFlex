@@ -10,7 +10,13 @@ namespace TSqlFlex.Core
 {
     public class FlexResultSet
     {
-        const int DATA_TYPE_FIELD_INDEX = 24;
+        enum FieldInfo : int
+        {
+            Name = 0,
+            FieldLength = 2,
+            AllowsNulls = 13,
+            DataType = 24
+        }
 
         public List<FlexResult> results = null;
         
@@ -106,7 +112,7 @@ namespace TSqlFlex.Core
                         DataType(fieldInfo) +
                         DataTypeParameterIfAny(fieldInfo) + 
                         " " +
-                        NullOrNotNull(fieldInfo[13])
+                        NullOrNotNull(fieldInfo.ItemArray[(int)FieldInfo.AllowsNulls])
                         );
                 if (fieldIndex + 1 < rows.Count)
                 {
@@ -173,23 +179,23 @@ namespace TSqlFlex.Core
             {
                 return "NULL"; //todo: this may or may not be accurate - need to check to see if nulls are always presented this way in an ADO.NET reader.
             }
-            var fieldTypeName = fieldInfo[DATA_TYPE_FIELD_INDEX].ToString();
+            var fieldTypeName = fieldInfo[(int)FieldInfo.DataType].ToString();
 
             if (fieldTypeName == "char")
             {
-                return "'" + data.ToString().TrimEnd() + "'";
+                return getDataAsCharFormat(data);
             }
             else if (fieldTypeName == "varchar" || fieldTypeName == "text")
             {
-                return "'" + data.ToString() + "'";
+                return getDataAsVarcharFormat(data);
             }
             else if (fieldTypeName == "nchar")
             {
-                return "N'" + data.ToString().TrimEnd() + "'";
+                return getDataAsNcharFormat(data);
             }
             else if (fieldTypeName == "nvarchar" || fieldTypeName == "ntext" || fieldTypeName == "xml")
             {
-                return "N'" + data.ToString() + "'";
+                return getDataAsNvarcharFormat(data);
             }
             else if (fieldTypeName == "bigint" || fieldTypeName == "numeric" || fieldTypeName == "smallint" || fieldTypeName == "decimal" || fieldTypeName == "smallmoney" ||
                 fieldTypeName == "int" || fieldTypeName == "tinyint" || fieldTypeName == "float" || fieldTypeName == "real" || fieldTypeName == "money")
@@ -198,116 +204,243 @@ namespace TSqlFlex.Core
             }
             else if (fieldTypeName == "binary" || fieldTypeName == "rowversion" || fieldTypeName == "timestamp")
             {
-                byte[] ba = (byte[])data;
-                string bitsAsHexString = BitConverter.ToString(ba).Replace("-", "");
-                int charCountToShowAsHex = (int)fieldInfo[2] * 2;
-                bitsAsHexString = bitsAsHexString.PadLeft(charCountToShowAsHex,'0');
-                return "0x" + bitsAsHexString;
+                return getDataAsBinaryFormat(data, fieldInfo);
             }
             else if (fieldTypeName == "date") {
-                DateTime d = (DateTime)data;
-                return "'" + d.ToString("yyyy-MM-dd") + "'";
+                return getDataAsDateFormat(data);
             }
             else if (fieldTypeName == "datetimeoffset")
             {
-                DateTimeOffset d = (DateTimeOffset)data;
-                if (d.ToString("fffffff") == "0000000")
-                {
-                    return "'" + d.ToString("yyyy-MM-ddTHH:mm:sszzzz") + "'";
-                }
-                return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss.fffffffzzzz") + "'";
+                return getDataAsDatetimeoffsetFormat(data);
             }
             else if (fieldTypeName == "datetime2")
             {
-                DateTime d = (DateTime)data;
-                if (d.ToString("fffffff") == "0000000")
-                {
-                    return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss") + "'";
-                }
-                return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss.fffffff") + "'";
+                return getDataAsDatetime2Format(data);
             }
             else if (fieldTypeName == "time")
             {
-                DateTime d = (DateTime)data;
-                if (d.ToString("fffffff") == "0000000")
-                {
-                    return "'" + d.ToString("HH:mm:ss") + "'";
-                }
-                return "'" + d.ToString("HH:mm:ss.fffffff") + "'";
+                return getDataAsTimeFormat(data);
             }
             else if (fieldTypeName == "datetime")
             {
-                DateTime d = (DateTime)data;
-                if (d.ToString("fff") == "000")
-                {
-                    return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss") + "'";
-                }
-                return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss.fff") + "'";
+                return getDataAsDatetimeFormat(data);
             }
             else if (fieldTypeName == "smalldatetime")
             {
-                DateTime d = (DateTime)data;
-                return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss") + "'";
+                return getDataAsSmalldatetimeFormat(data);
             }
             else if (fieldTypeName == "bit")
             {
-                if ((bool)data == true)
-                {
-                    return "1";
-                }
-                else
-                {
-                    return "0";
-                }
+                return getDataAsBitFormat(data);
             }
             else if (fieldTypeName == "varbinary" || fieldTypeName == "image")
             {
-                byte[] ba = (byte[])data;
-                return "0x" + BitConverter.ToString(ba).Replace("-", "");
+                return getDataAsVarbinaryFormat(data);
             }
             else if (fieldTypeName == "uniqueidentifier")
             {
-                Guid g = (Guid)data;
-                return "'" + g.ToString("D").ToUpper() + "'";
+                return getDataAsGuidFormat(data);
             }
             else if (fieldTypeName == "sql_variant")
             {
-                //todo: this is a placeholder.  Need to refactor each of the serializations and then figure out how best to call them appropriately.
-                return "'" + data.ToString() + "'";
-
+                return getDataAsSql_variantFormat(data);
             }
             else if (fieldTypeName.EndsWith("hierarchyid"))
             {
-                SqlHierarchyId hier = (SqlHierarchyId)data;
-                byte[] ba;
-                using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
-                using (System.IO.BinaryWriter w = new System.IO.BinaryWriter(ms))
-                {
-                    hier.Write(w);
-                    w.Flush();
-                    ba = ms.ToArray();
-                }
-                return "0x" + BitConverter.ToString(ba).Replace("-", "");
+                return getDataAsHierarchyIdFormat(data);
             }
             else if (fieldTypeName.EndsWith("geography"))
             {
-                SqlGeography geog = (SqlGeography)data;
-                return "N'" + geog.STAsText().ToSqlString().ToString() + "'";
+                return getDataAsGeographyFormat(data);
             }
             else if (fieldTypeName.EndsWith("geometry"))
             {
-                SqlGeometry geom = (SqlGeometry)data;
-                return "N'" + geom.STAsText().ToSqlString().ToString() + "'";
+                return getDataAsGeometryFormat(data);
             }
             //shouldn't get here.  In-place for future data type compatibility.
             return "N'" + data.ToString() + "'";
         }
 
+        private static string getDataAsSql_variantFormat(object data)
+        {
+            //this is a "best guess" kind of thing.
 
+            if (data is SqlGeometry)
+            {
+                return getDataAsGeometryFormat(data);
+            }
+            else if (data is SqlGeography)
+            {
+                return getDataAsGeographyFormat(data);
+            }
+            else if (data is SqlHierarchyId)
+            {
+                return getDataAsHierarchyIdFormat(data);
+            }
+            else if (data is Guid)
+            {
+                return getDataAsGuidFormat(data);
+            }
+            else if (data is byte[])
+            {
+                return getDataAsVarbinaryFormat(data);
+            }
+            else if (data is DateTimeOffset)
+            {
+                return getDataAsDatetimeoffsetFormat(data);
+            }
+            else if (data is DateTime)
+            {
+                return getDataAsDatetimeFormat(data);
+            }
+            else if (data is bool)
+            {
+                return getDataAsBitFormat(data);
+            }
+            else if (data is string)
+            {
+                return "N'" + data.ToString() + "'";
+            }
+
+            //All numeric types
+            return data.ToString();
+            
+        }
+
+        private static string getDataAsGeometryFormat(object data)
+        {
+            SqlGeometry geom = (SqlGeometry)data;
+            return "N'" + geom.STAsText().ToSqlString().ToString() + "'";
+        }
+
+        private static string getDataAsGeographyFormat(object data)
+        {
+            SqlGeography geog = (SqlGeography)data;
+            return "N'" + geog.STAsText().ToSqlString().ToString() + "'";
+        }
+
+        private static string getDataAsHierarchyIdFormat(object data)
+        {
+            SqlHierarchyId hier = (SqlHierarchyId)data;
+            byte[] ba;
+            using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
+            using (System.IO.BinaryWriter w = new System.IO.BinaryWriter(ms))
+            {
+                hier.Write(w);
+                w.Flush();
+                ba = ms.ToArray();
+            }
+            return "0x" + BitConverter.ToString(ba).Replace("-", "");
+        }
+
+        private static string getDataAsGuidFormat(object data)
+        {
+            Guid g = (Guid)data;
+            return "'" + g.ToString("D").ToUpper() + "'";
+        }
+
+        private static string getDataAsVarbinaryFormat(object data)
+        {
+            byte[] ba = (byte[])data;
+            return "0x" + BitConverter.ToString(ba).Replace("-", "");
+        }
+
+        private static string getDataAsBitFormat(object data)
+        {
+            if ((bool)data == true)
+            {
+                return "1";
+            }
+            else
+            {
+                return "0";
+            }
+        }
+
+        private static string getDataAsSmalldatetimeFormat(object data)
+        {
+            DateTime d = (DateTime)data;
+            return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss") + "'";
+        }
+
+        private static string getDataAsDatetimeFormat(object data)
+        {
+            DateTime d = (DateTime)data;
+            if (d.ToString("fff") == "000")
+            {
+                return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss") + "'";
+            }
+            return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss.fff") + "'";
+        }
+
+        private static string getDataAsTimeFormat(object data)
+        {
+            DateTime d = (DateTime)data;
+            if (d.ToString("fffffff") == "0000000")
+            {
+                return "'" + d.ToString("HH:mm:ss") + "'";
+            }
+            return "'" + d.ToString("HH:mm:ss.fffffff") + "'";
+        }
+
+        private static string getDataAsDatetime2Format(object data)
+        {
+            DateTime d = (DateTime)data;
+            if (d.ToString("fffffff") == "0000000")
+            {
+                return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss") + "'";
+            }
+            return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss.fffffff") + "'";
+        }
+
+        private static string getDataAsDatetimeoffsetFormat(object data)
+        {
+            DateTimeOffset d = (DateTimeOffset)data;
+            if (d.ToString("fffffff") == "0000000")
+            {
+                return "'" + d.ToString("yyyy-MM-ddTHH:mm:sszzzz") + "'";
+            }
+            return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss.fffffffzzzz") + "'";
+        }
+
+        private static string getDataAsDateFormat(object data)
+        {
+            DateTime d = (DateTime)data;
+            return "'" + d.ToString("yyyy-MM-dd") + "'";
+        }
+
+        private static string getDataAsBinaryFormat(object data, object[] fieldInfo)
+        {
+            byte[] ba = (byte[])data;
+            string bitsAsHexString = BitConverter.ToString(ba).Replace("-", "");
+            int charCountToShowAsHex = (int)fieldInfo[(int)FieldInfo.FieldLength] * 2;
+            bitsAsHexString = bitsAsHexString.PadLeft(charCountToShowAsHex, '0');
+            return "0x" + bitsAsHexString;
+        }
+
+        private static string getDataAsNvarcharFormat(object data)
+        {
+            return "N'" + data.ToString() + "'";
+        }
+
+        private static string getDataAsNcharFormat(object data)
+        {
+            return "N'" + data.ToString().TrimEnd() + "'";
+        }
+
+        private static string getDataAsVarcharFormat(object data)
+        {
+            return "'" + data.ToString() + "'";
+        }
+
+        private static string getDataAsCharFormat(object data)
+        {
+            return "'" + data.ToString().TrimEnd() + "'";
+        }
 
         private string FieldNameOrDefault(DataRow fieldInfo, int fieldIndex)
         {
-            var r = fieldInfo[0].ToString();
+            var r = fieldInfo[(int)FieldInfo.Name].ToString();
             if (r.Length == 0)
             {
                 return "anonymousColumn" + (fieldIndex + 1).ToString();
@@ -317,7 +450,7 @@ namespace TSqlFlex.Core
 
         private string DataType(DataRow fieldInfo)
         {
-            var fieldTypeName = fieldInfo[DATA_TYPE_FIELD_INDEX].ToString();
+            var fieldTypeName = fieldInfo[(int)FieldInfo.DataType].ToString();
             if (fieldTypeName == "real")
             {
                 return "float";  //this could be a float or a real.  There is no simple way to tell via ado.net.  Will try to keep it consistent with float.
@@ -339,7 +472,7 @@ namespace TSqlFlex.Core
 
         private string DataTypeParameterIfAny(DataRow fieldInfo)
         {
-            var dataTypeName = fieldInfo[DATA_TYPE_FIELD_INDEX].ToString();
+            var dataTypeName = fieldInfo[(int)FieldInfo.DataType].ToString();
             if (dataTypeName == "nvarchar" || dataTypeName == "varchar" || dataTypeName == "nchar" || dataTypeName == "char" || dataTypeName == "binary" || dataTypeName == "varbinary")
             {
                 int columnSize = (int)fieldInfo[2];
