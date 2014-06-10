@@ -18,9 +18,11 @@ namespace TSqlFlex.Core
         }
 
         public List<FlexResult> results = null;
+        public List<Exception> exceptions = null;
         
         public FlexResultSet() {
-            results = new List<FlexResult>();        
+            results = new List<FlexResult>();
+            exceptions = new List<Exception>();
         }
 
         public static FlexResultSet AnalyzeResultWithRollback(SqlConnection openConnection, string sqlCommandText) {
@@ -81,7 +83,8 @@ namespace TSqlFlex.Core
             }
             catch (Exception ex)
             {
-                throw ex;
+                //todo: needs better solution here.  For example what if I am querying from a table that doesn't exist?
+                resultSet.exceptions.Add(ex);
             }
             finally
             {
@@ -145,10 +148,12 @@ namespace TSqlFlex.Core
 
             StringBuilder buffer = new StringBuilder();
 
-            buffer.Append("INSERT INTO " + tableName + " VALUES\r\n");
-
             for (int rowIndex = 0; rowIndex < rowCount; rowIndex++)
             {
+                if (rowIndex % 100 == 0)
+                {
+                    buffer.Append("INSERT INTO " + tableName + " VALUES\r\n");
+                }
                 buffer.Append("  (");
                 for (int columnIndex = 0; columnIndex < columnCount; columnIndex++)
                 {
@@ -158,7 +163,7 @@ namespace TSqlFlex.Core
                         buffer.Append(",");
                     }
                 }
-                if (rowIndex + 1 == rowCount)
+                if (rowIndex + 1 == rowCount || (rowIndex + 1) % 100 == 0)
                 {
                     buffer.Append(");\r\n\r\n");
                 }
@@ -373,9 +378,17 @@ namespace TSqlFlex.Core
             return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss.fff") + "'";
         }
 
+        private interface ITime
+        {
+            int Hours { get; set; }
+            int Minutes { get; set; }
+            int Seconds { get; set; }
+        }
+
         private static string getDataAsTimeFormat(object data)
         {
-            DateTime d = (DateTime)data;
+            ITime t = (ITime)data;
+            DateTime d = new DateTime(1900,1,1,t.Hours, t.Minutes, t.Seconds); //1900, 1, 1, data.Hours, data.Minutes, data.Seconds);
             if (d.ToString("fffffff") == "0000000")
             {
                 return "'" + d.ToString("HH:mm:ss") + "'";

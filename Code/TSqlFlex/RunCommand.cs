@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Data.SqlClient;
-using System.Diagnostics;
-using System.Text;
 using RedGate.SIPFrameworkShared;
 
 namespace TSqlFlex
@@ -11,9 +9,18 @@ namespace TSqlFlex
         private readonly ISsmsFunctionalityProvider6 ssmsProvider;
         private readonly ICommandImage commandImage = new CommandImageNone();
         private ObjectExplorerNodeDescriptorBase currentNode = null;
-        private IToolWindow formWindow;
-        private FlexMainWindow flexMainWindow = new FlexMainWindow();
+
+        private ISsmsTabPage formWindow;
         private Guid formGuid = new Guid("579fa20c-38cb-4da6-9f57-6651d10e31d0");
+
+        private FlexMainWindow TheWindow()
+        {
+            if (formWindow == null)
+            {
+                return null;
+            }
+            return (FlexMainWindow)formWindow.GetUserControl();
+        }
 
         public void SetSelectedDBNode(ObjectExplorerNodeDescriptorBase theSelectedNode)
         {
@@ -25,7 +32,11 @@ namespace TSqlFlex
                     && objectExplorerNode.HasConnection
                     && objectExplorerNode.TryGetConnection(out ci))
             {
-                flexMainWindow.SetConnection(new SqlConnectionStringBuilder(ci.ConnectionString));
+                var w = TheWindow();
+                if (w != null)
+                {
+                    w.SetConnection(new SqlConnectionStringBuilder(ci.ConnectionString));
+                }
             }
         }
 
@@ -40,20 +51,13 @@ namespace TSqlFlex
 
         public void Execute()
         {
-            if (flexMainWindow == null || flexMainWindow.IsDisposed)
-            {
-                flexMainWindow = new FlexMainWindow();
-                SetSelectedDBNode(currentNode);
-            }
-
             if (formWindow == null)
             {
-                formWindow = ssmsProvider.ToolWindow.Create(flexMainWindow, this.Caption, formGuid, false);
-                formWindow.Window.Dock();
-                formWindow.Window.WindowState = WindowState.Maximize;
+                formWindow = ssmsProvider.CreateTabPage(typeof(FlexMainWindow), Caption, formGuid.ToString());
+                SetSelectedDBNode(currentNode);                
             }
 
-            formWindow.Activate(true);
+            formWindow.Activate();
         }
 
         public string Name { get { return "Open_TSQL_Flex"; } }
