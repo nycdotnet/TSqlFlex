@@ -187,7 +187,7 @@ namespace TSqlFlex.Core
             {
                 return "N'" + data.ToString().TrimEnd() + "'";
             }
-            else if (fieldTypeName == "nvarchar" || fieldTypeName == "ntext")
+            else if (fieldTypeName == "nvarchar" || fieldTypeName == "ntext" || fieldTypeName == "xml")
             {
                 return "N'" + data.ToString() + "'";
             }
@@ -270,6 +270,12 @@ namespace TSqlFlex.Core
                 Guid g = (Guid)data;
                 return "'" + g.ToString("D").ToUpper() + "'";
             }
+            else if (fieldTypeName == "sql_variant")
+            {
+                //todo: this is a placeholder.  Need to refactor each of the serializations and then figure out how best to call them appropriately.
+                return "'" + data.ToString() + "'";
+
+            }
             else if (fieldTypeName.EndsWith("hierarchyid"))
             {
                 SqlHierarchyId hier = (SqlHierarchyId)data;
@@ -283,8 +289,18 @@ namespace TSqlFlex.Core
                 }
                 return "0x" + BitConverter.ToString(ba).Replace("-", "");
             }
-
-            return "'" + data.ToString() + "'";
+            else if (fieldTypeName.EndsWith("geography"))
+            {
+                SqlGeography geog = (SqlGeography)data;
+                return "N'" + geog.STAsText().ToSqlString().ToString() + "'";
+            }
+            else if (fieldTypeName.EndsWith("geometry"))
+            {
+                SqlGeometry geom = (SqlGeometry)data;
+                return "N'" + geom.STAsText().ToSqlString().ToString() + "'";
+            }
+            //shouldn't get here.  In-place for future data type compatibility.
+            return "N'" + data.ToString() + "'";
         }
 
 

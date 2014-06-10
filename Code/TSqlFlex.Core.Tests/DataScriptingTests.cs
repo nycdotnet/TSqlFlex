@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -387,12 +388,12 @@ namespace TSqlFlex.Core.Tests
             SqlHierarchyId baseData = SqlHierarchyId.Parse("/");
             object data = baseData;
 
-            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 20, "hierarchyid", false, 0, 0);
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 20, "sys.junk.hierarchyid", false, 0, 0);
             Assert.AreEqual("0x", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "hierarchyid");
 
             baseData = SqlHierarchyId.Parse("/1/");
             data = baseData;
-            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 20, "hierarchyid", false, 0, 0);
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 20, "sys.junk.hierarchyid", false, 0, 0);
             Assert.AreEqual("0x58", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "hierarchyid");
         }
 
@@ -405,5 +406,46 @@ namespace TSqlFlex.Core.Tests
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "uniqueidentifier", false, 0, 0);
             Assert.AreEqual("'9631B0CA-D86F-4CA2-BFA5-93A9980D050A'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "uniqueidentifier");
         }
+
+        [Test()]
+        public void SQLVARIANT_Data_ScriptsCorrectly()
+        {
+            string baseData = "sql variant test";
+            object data = baseData;
+
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "sql_variant", false, 0, 0);
+            Assert.AreEqual("'purposefully failing - need to refactor'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "sql_variant");
+        }
+
+        [Test()]
+        public void XML_Data_ScriptsCorrectly()
+        {
+            string baseData = "<r><n1 myattrib=\"testattrib\">Some Data</n1></r>";
+            object data = baseData;
+
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "xml", false, 0, 0);
+            Assert.AreEqual("N'<r><n1 myattrib=\"testattrib\">Some Data</n1></r>'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "xml");
+        }
+
+        [Test()]
+        public void GEOGRAPHY_Data_ScriptsCorrectly()
+        {
+            SqlGeography baseData = SqlGeography.STGeomFromText(new SqlChars("LINESTRING(-122.360 47.656, -122.343 47.656 )"), 4326);
+            object data = baseData;
+
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "sys.junk.geography", false, 0, 0);
+            Assert.AreEqual("N'LINESTRING (-122.36 47.656, -122.343 47.656)'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "geography");
+        }
+
+        [Test()]
+        public void GEOMETRY_Data_ScriptsCorrectly()
+        {
+            SqlGeometry baseData = SqlGeometry.STGeomFromText(new SqlChars("LINESTRING (100 100, 20 180, 180 180)"), 0);
+            object data = baseData;
+
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "sys.junk.geometry", false, 0, 0);
+            Assert.AreEqual("N'LINESTRING (100 100, 20 180, 180 180)'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "geometry");
+        }
+
     }
 }
