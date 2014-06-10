@@ -136,9 +136,9 @@ namespace TSqlFlex.Core
 
             var data = results[resultIndex].data;
 
-            if (data == null)
+            if (data == null || data.Count == 0)
             {
-                return "--No data for result from query.";
+                return "--No rows were returned from the query.";
             }
 
             int columnCount = schema.Rows.Count;
