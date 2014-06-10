@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
-using TSqlFlex.Core;
 
 namespace TSqlFlex.Core.Tests
 {
@@ -29,17 +24,6 @@ namespace TSqlFlex.Core.Tests
            (geography::STGeomFromText('LINESTRING(-122.360 47.656, -122.343 47.656 )', 4326)) as [aGeography],
            (geometry::STGeomFromText('LINESTRING (100 100, 20 180, 180 180)', 0)) as [aGeometry]
          * */
-
-        [Test()]
-        public void CreatingEmptyFlexResultSet_ResultsInEmptyCollections()
-        {
-            FlexResultSet fsr = new FlexResultSet();
-            Assert.IsNotNull(fsr);
-            
-            Assert.IsNotNull(fsr.results);
-            Assert.AreEqual(0, fsr.results.Count);
-
-       }
 
         [Test()]
         public void BIGINT_ScriptsCorrectly()
