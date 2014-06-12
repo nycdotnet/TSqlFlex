@@ -223,9 +223,23 @@ namespace TSqlFlex.Core.Tests
         }
 
         [Test()]
-        public void TIME_Data_ScriptsCorrectly()
+        public void TIME_LowResolution_Data_ScriptsCorrectly()
         {
-            DateTime baseData = new DateTime(1900, 1, 1, 2, 33, 44);
+            TimeSpan baseData = new TimeSpan(0, 2, 33, 44);
+            object data = baseData;
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "time", false, 0, 0);
+            Assert.AreEqual("'02:33:44'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "time no fractional seconds");
+
+
+            baseData = new TimeSpan(0, 2, 33, 44, 123);
+            data = baseData;
+            Assert.AreEqual("'02:33:44.123'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "time fractional seconds");
+        }
+
+        [Test()]
+        public void TIME_HighResolution_Data_ScriptsCorrectly()
+        {
+            DateTime baseData = new DateTime(1900,1,1,2,33,44);
             object data = baseData;
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "time", false, 0, 0);
             Assert.AreEqual("'02:33:44'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "time no fractional seconds");
@@ -324,10 +338,7 @@ namespace TSqlFlex.Core.Tests
         {
             Int32 baseData = 123456;
             byte[] data = BitConverter.GetBytes(baseData);
-            if (BitConverter.IsLittleEndian)
-            {
-                Array.Reverse(data);  //SQL Server represents binary as Big Endian
-            }
+            EnsureByteArrayIsBigEndianLikeSQLServer(data);
 
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 20, "binary", false, 0, 0);
             Assert.AreEqual("0x000000000000000000000000000000000001E240", FlexResultSet.valueAsTSQLLiteral((object)data, fieldInfo), "binary");
@@ -338,10 +349,7 @@ namespace TSqlFlex.Core.Tests
         {
             Int32 baseData = 123456;
             byte[] data = BitConverter.GetBytes(baseData);
-            if (BitConverter.IsLittleEndian)
-            {
-                Array.Reverse(data);  //SQL Server represents binary as Big Endian
-            }
+            EnsureByteArrayIsBigEndianLikeSQLServer(data);
 
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 20, "varbinary", false, 0, 0);
             Assert.AreEqual("0x0001E240", FlexResultSet.valueAsTSQLLiteral((object)data, fieldInfo), "varbinary");
@@ -352,10 +360,7 @@ namespace TSqlFlex.Core.Tests
         {
             Int32 baseData = 123456;
             byte[] data = BitConverter.GetBytes(baseData);
-            if (BitConverter.IsLittleEndian)
-            {
-                Array.Reverse(data);  //SQL Server represents binary as Big Endian
-            }
+            EnsureByteArrayIsBigEndianLikeSQLServer(data);
 
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 20, "image", false, 0, 0);
             Assert.AreEqual("0x0001E240", FlexResultSet.valueAsTSQLLiteral((object)data, fieldInfo), "image");
@@ -367,10 +372,7 @@ namespace TSqlFlex.Core.Tests
         {
             Int32 baseData = 123456;
             byte[] data = BitConverter.GetBytes(baseData);
-            if (BitConverter.IsLittleEndian)
-            {
-                Array.Reverse(data);  //SQL Server represents binary as Big Endian
-            }
+            EnsureByteArrayIsBigEndianLikeSQLServer(data);
 
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 8, "timestamp", false, 0, 0);
             Assert.AreEqual("0x000000000001E240", FlexResultSet.valueAsTSQLLiteral((object)data, fieldInfo), "timestamp");
@@ -476,10 +478,7 @@ namespace TSqlFlex.Core.Tests
         {
             Int32 baseData = 123456;
             byte[] data = BitConverter.GetBytes(baseData);
-            if (BitConverter.IsLittleEndian)
-            {
-                Array.Reverse(data);  //SQL Server represents binary as Big Endian
-            }
+            EnsureByteArrayIsBigEndianLikeSQLServer(data);
 
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 20, "sql_variant", false, 0, 0);
             Assert.AreEqual("0x0001E240", FlexResultSet.valueAsTSQLLiteral((object)data, fieldInfo), "sql_variant");
@@ -521,6 +520,15 @@ namespace TSqlFlex.Core.Tests
         {
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "int", false, 0, 0);
             Assert.AreEqual("NULL", FlexResultSet.valueAsTSQLLiteral((object)System.DBNull.Value, fieldInfo), "int");
+        }
+
+        private static void EnsureByteArrayIsBigEndianLikeSQLServer(byte[] data)
+        {
+            //SQL Server represents binary as Big Endian
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(data);
+            }
         }
 
     }

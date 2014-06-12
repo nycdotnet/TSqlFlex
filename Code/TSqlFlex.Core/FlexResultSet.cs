@@ -268,7 +268,7 @@ namespace TSqlFlex.Core
 
         private static string getDataAsSql_variantFormat(object data)
         {
-            //this is a "best guess" kind of thing.
+            //SQL-CLR Type Mapping documentation: http://msdn.microsoft.com/en-us/library/bb386947(v=vs.110).aspx
 
             if (data is SqlGeometry)
             {
@@ -297,6 +297,10 @@ namespace TSqlFlex.Core
             else if (data is DateTime)
             {
                 return getDataAsDatetimeFormat(data);
+            }
+            else if (data is TimeSpan)
+            {
+                return getDataAsTimeFormat(data);
             }
             else if (data is bool)
             {
@@ -378,22 +382,37 @@ namespace TSqlFlex.Core
             return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss.fff") + "'";
         }
 
-        private interface ITime
-        {
-            int Hours { get; set; }
-            int Minutes { get; set; }
-            int Seconds { get; set; }
-        }
 
         private static string getDataAsTimeFormat(object data)
         {
-            ITime t = (ITime)data;
-            DateTime d = new DateTime(1900,1,1,t.Hours, t.Minutes, t.Seconds); //1900, 1, 1, data.Hours, data.Minutes, data.Seconds);
-            if (d.ToString("fffffff") == "0000000")
+            if (data is TimeSpan)
             {
-                return "'" + d.ToString("HH:mm:ss") + "'";
+                TimeSpan t = (TimeSpan)data;
+                if (t.Milliseconds == 0)
+                {
+                    return String.Format("'{0}:{1}:{2}'",
+                        t.Hours.ToString().PadLeft(2, '0'),
+                        t.Minutes.ToString().PadLeft(2, '0'),
+                        t.Seconds.ToString().PadLeft(2, '0'));
+                }
+                return String.Format("'{0}:{1}:{2}.{3}'",
+                        t.Hours.ToString().PadLeft(2, '0'),
+                        t.Minutes.ToString().PadLeft(2, '0'),
+                        t.Seconds.ToString().PadLeft(2, '0'),
+                        t.Milliseconds.ToString().PadLeft(3, '0').TrimEnd('0'));
             }
-            return "'" + d.ToString("HH:mm:ss.fffffff") + "'";
+            else if (data is DateTime)
+            {
+                DateTime d = (DateTime)data;
+
+                if (d.ToString("fffffff") == "0000000")
+                {
+                    return "'" + d.ToString("HH:mm:ss") + "'";
+                }
+                return "'" + d.ToString("HH:mm:ss.fffffff").TrimEnd('0') + "'";
+            }
+            
+            return "'" + data.ToString() + "'"; //should not get hit.
         }
 
         private static string getDataAsDatetime2Format(object data)
