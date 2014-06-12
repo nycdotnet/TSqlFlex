@@ -319,13 +319,13 @@ namespace TSqlFlex.Core
         private static string getDataAsGeometryFormat(object data)
         {
             SqlGeometry geom = (SqlGeometry)data;
-            return "N'" + geom.STAsText().ToSqlString().ToString() + "'";
+            return "geometry::STGeomFromText('" + geom.STAsText().ToSqlString().ToString() + "'," + geom.STSrid.ToSqlString().ToString() + ")";
         }
 
         private static string getDataAsGeographyFormat(object data)
         {
             SqlGeography geog = (SqlGeography)data;
-            return "N'" + geog.STAsText().ToSqlString().ToString() + "'";
+            return "geography::STGeomFromText('" + geog.STAsText().ToSqlString().ToString() + "'," + geog.STSrid.ToSqlString().ToString() + ")";
         }
 
         private static string getDataAsHierarchyIdFormat(object data)

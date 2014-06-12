@@ -502,7 +502,7 @@ namespace TSqlFlex.Core.Tests
             object data = baseData;
 
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "sys.junk.geography", false, 0, 0);
-            Assert.AreEqual("N'LINESTRING (-122.36 47.656, -122.343 47.656)'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "geography");
+            Assert.AreEqual("geography::STGeomFromText('LINESTRING (-122.36 47.656, -122.343 47.656)',4326)", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "geography");
         }
 
         [Test()]
@@ -512,7 +512,7 @@ namespace TSqlFlex.Core.Tests
             object data = baseData;
 
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "sys.junk.geometry", false, 0, 0);
-            Assert.AreEqual("N'LINESTRING (100 100, 20 180, 180 180)'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "geometry");
+            Assert.AreEqual("geometry::STGeomFromText('LINESTRING (100 100, 20 180, 180 180)',0)", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "geometry");
         }
 
         [Test()]
