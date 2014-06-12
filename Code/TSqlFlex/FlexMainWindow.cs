@@ -41,7 +41,7 @@ namespace TSqlFlex
                 using (SqlConnection conn = new SqlConnection(connStringBuilder.ConnectionString))
                 {
                     conn.Open();
-
+                    //todo: Need to only take selected text if there is a selection.
                     FlexResultSet resultSet = FlexResultSet.AnalyzeResultWithRollback(conn, txtSqlInput.Text);
 
                     var sb = new StringBuilder();
