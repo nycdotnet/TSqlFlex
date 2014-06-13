@@ -9,7 +9,7 @@ T-SQL Flex should be able to script out the returned schema and data of any T-SQ
 
 
 
-![tsqlflex-0 0 1-alpha](https://cloud.githubusercontent.com/assets/3755379/3141685/44ecfa22-e992-11e3-8f0b-fe49879dae80.png)
+![tsqlflex-0 0 2-alpha](https://cloud.githubusercontent.com/assets/3755379/3254050/41e04522-f1ea-11e3-8d66-088dd6dadbf3.png)
 
 
 **To install T-SQL Flex:**
