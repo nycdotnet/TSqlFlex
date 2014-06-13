@@ -263,6 +263,10 @@ namespace TSqlFlex.Core
                 return getDataAsGeometryFormat(data);
             }
             //shouldn't get here.  In-place for future data type compatibility.
+            if (data is string)
+            {
+                return "N'" + ((string)data).Replace("'","''") + "'";
+            }
             return "N'" + data.ToString() + "'";
         }
 
@@ -308,7 +312,7 @@ namespace TSqlFlex.Core
             }
             else if (data is string)
             {
-                return "N'" + data.ToString() + "'";
+                return "N'" + data.ToString().Replace("'","''") + "'";
             }
 
             //All numeric types
@@ -360,10 +364,7 @@ namespace TSqlFlex.Core
             {
                 return "1";
             }
-            else
-            {
-                return "0";
-            }
+            return "0";
         }
 
         private static string getDataAsSmalldatetimeFormat(object data)
@@ -452,22 +453,22 @@ namespace TSqlFlex.Core
 
         private static string getDataAsNvarcharFormat(object data)
         {
-            return "N'" + data.ToString() + "'";
+            return "N'" + data.ToString().Replace("'","''") + "'";
         }
 
         private static string getDataAsNcharFormat(object data)
         {
-            return "N'" + data.ToString().TrimEnd() + "'";
+            return "N'" + data.ToString().Replace("'", "''").TrimEnd() + "'";
         }
 
         private static string getDataAsVarcharFormat(object data)
         {
-            return "'" + data.ToString() + "'";
+            return "'" + data.ToString().Replace("'", "''") + "'";
         }
 
         private static string getDataAsCharFormat(object data)
         {
-            return "'" + data.ToString().TrimEnd() + "'";
+            return "'" + data.ToString().Replace("'", "''").TrimEnd() + "'";
         }
 
         private string FieldNameOrDefault(DataRow fieldInfo, int fieldIndex)
@@ -477,7 +478,7 @@ namespace TSqlFlex.Core
             {
                 return "anonymousColumn" + (fieldIndex + 1).ToString();
             }
-            return r;
+            return r; //bug: need to escape [ or ] in field names.
         }
 
         private string DataType(DataRow fieldInfo)
