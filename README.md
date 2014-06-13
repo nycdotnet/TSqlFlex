@@ -12,7 +12,7 @@ T-SQL Flex should be able to script out the returned schema and data of any T-SQ
 ![tsqlflex-0 0 1-alpha](https://cloud.githubusercontent.com/assets/3755379/3141685/44ecfa22-e992-11e3-8f0b-fe49879dae80.png)
 
 
-**To try T-SQL Flex:**
+**To install T-SQL Flex:**
   * Download the latest release from the [GitHub releases page](https://github.com/nycdotnet/TSqlFlex/releases).
   * Install the [Red Gate SIP framework](http://documentation.red-gate.com/display/MA/Redistributing+the+framework).
   * Create a new registry string value (REG_SZ) in the appropriate location to point to the extracted TSQLFlex.dll:
@@ -30,3 +30,8 @@ T-SQL Flex should be able to script out the returned schema and data of any T-SQ
   * Simply delete the registry key and the extracted files and restart SSMS.
 
 Please create issues on GitHub or reach out to Steve on Twitter at [@nycdotnet](https://twitter.com/nycdotnet).
+
+**Patch notes:**
+  * v0.0.3-alpha (2014-06-13): Fixed data script escaping bug for single quotes.
+  * v0.0.2-alpha (2014-06-11): Data scripting implemented.  Improved window.
+  * v0.0.1-alpha (2014-06-01): Initial release.  Schema scripting working.
