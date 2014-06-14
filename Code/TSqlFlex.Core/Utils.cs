@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace TSqlFlex.Core
@@ -19,4 +21,14 @@ namespace TSqlFlex.Core
             return false;
         }
     }
+
+    public class Info
+    {
+        public static string Version() {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+            return "v" + fvi.FileVersion + "-alpha";
+        }
+    }
+
 }

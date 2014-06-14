@@ -39,6 +39,7 @@
             this.btnCopyToClipboard = new System.Windows.Forms.Button();
             this.txtOutput = new System.Windows.Forms.TextBox();
             this.cmdRunNRollback = new System.Windows.Forms.Button();
+            this.lblVersion = new System.Windows.Forms.Label();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -80,6 +81,7 @@
             // 
             // panelTop
             // 
+            this.panelTop.Controls.Add(this.lblVersion);
             this.panelTop.Controls.Add(this.lblConnectionInfo);
             this.panelTop.Controls.Add(this.label2);
             this.panelTop.Controls.Add(this.label1);
@@ -105,10 +107,10 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(12, 25);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(468, 13);
+            this.label2.Size = new System.Drawing.Size(435, 13);
             this.label2.TabIndex = 3;
             this.label2.Text = "This is alpha software and will probably delete your database somehow.  For test " +
-    "use only!!! v0.0.1-alpha";
+    "use only!!!";
             // 
             // label1
             // 
@@ -183,6 +185,16 @@
             this.cmdRunNRollback.UseVisualStyleBackColor = true;
             this.cmdRunNRollback.Click += new System.EventHandler(this.cmdRunNRollback_Click);
             // 
+            // lblVersion
+            // 
+            this.lblVersion.AutoSize = true;
+            this.lblVersion.Location = new System.Drawing.Point(1071, 0);
+            this.lblVersion.Name = "lblVersion";
+            this.lblVersion.Size = new System.Drawing.Size(41, 13);
+            this.lblVersion.TabIndex = 5;
+            this.lblVersion.Text = "version";
+            this.lblVersion.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // FlexMainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -214,5 +226,6 @@
         private System.Windows.Forms.Button btnCopyToClipboard;
         private System.Windows.Forms.TextBox txtOutput;
         private System.Windows.Forms.Button cmdRunNRollback;
+        private System.Windows.Forms.Label lblVersion;
     }
 }
