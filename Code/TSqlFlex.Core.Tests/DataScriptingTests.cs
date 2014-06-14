@@ -37,6 +37,11 @@ namespace TSqlFlex.Core.Tests
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "numeric", false, 10, 4);
             Assert.AreEqual("-12345.6789", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "negative numeric");
+
+            baseData = 12345.0000M;
+            data = baseData;
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "numeric", false, 10, 4);
+            Assert.AreEqual("12345", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "insignificant digits are trimmed");
         }
 
         [Test()]
@@ -79,6 +84,11 @@ namespace TSqlFlex.Core.Tests
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "decimal", false, 10, 4);
             Assert.AreEqual("-12345.6789", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "negative decimal");
+
+            baseData = 12345.0000M;
+            data = baseData;
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "decimal", false, 10, 4);
+            Assert.AreEqual("12345", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "insignificant digits are trimmed");
         }
 
         [Test()]
@@ -93,6 +103,11 @@ namespace TSqlFlex.Core.Tests
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "smallmoney", false, 10, 4);
             Assert.AreEqual("-200000.1234", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "negative smallmoney");
+
+            baseData = 12345.0000M;
+            data = baseData;
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "smallmoney", false, 10, 4);
+            Assert.AreEqual("12345", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "insignificant digits are trimmed");
         }
 
         [Test()]
@@ -135,6 +150,11 @@ namespace TSqlFlex.Core.Tests
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "money", false, 10, 4);
             Assert.AreEqual("-200000000.1234", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "negative money");
+
+            baseData = 12345.0000M;
+            data = baseData;
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "money", false, 10, 4);
+            Assert.AreEqual("12345", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "insignificant digits are trimmed");
         }
 
         [Test()]
@@ -149,6 +169,11 @@ namespace TSqlFlex.Core.Tests
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "float", false, 0, 0);
             Assert.AreEqual("-200000000.1234", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "negative float");
+
+            baseData = 12345.0000;
+            data = baseData;
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "float", false, 10, 4);
+            Assert.AreEqual("12345", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "insignificant digits are trimmed");
         }
 
         [Test()]
@@ -163,6 +188,11 @@ namespace TSqlFlex.Core.Tests
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "real", false, 0, 0);
             Assert.AreEqual("-200.1234", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "negative real");
+
+            baseData = 12345.0000F;
+            data = baseData;
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "real", false, 10, 4);
+            Assert.AreEqual("12345", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "insignificant digits are trimmed");
         }
 
         [Test()]
@@ -198,6 +228,10 @@ namespace TSqlFlex.Core.Tests
             baseData = baseData.AddTicks(1234567);
             data = baseData;
             Assert.AreEqual("'2000-10-31T02:33:44.1234567'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "datetime2 fractional seconds");
+
+            baseData = new DateTime(2000, 10, 31, 0, 0, 0);
+            data = baseData;
+            Assert.AreEqual("'2000-10-31'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "midnight omits time altogether");
         }
 
         [Test()]
@@ -207,6 +241,10 @@ namespace TSqlFlex.Core.Tests
             object data = baseData;
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "smalldatetime", false, 0, 0);
             Assert.AreEqual("'2000-10-31T02:33:00'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "smalldatetime");
+
+            baseData = new DateTime(2000, 10, 31, 0, 0, 0);
+            data = baseData;
+            Assert.AreEqual("'2000-10-31'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "midnight omits time altogether");
         }
 
         [Test()]
@@ -220,6 +258,10 @@ namespace TSqlFlex.Core.Tests
             baseData = baseData.AddTicks(1230000);
             data = baseData;
             Assert.AreEqual("'2000-10-31T02:33:44.123'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "datetime fractional seconds");
+
+            baseData = new DateTime(2000, 10, 31, 0, 0, 0);
+            data = baseData;
+            Assert.AreEqual("'2000-10-31'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "midnight omits time altogether");
         }
 
         [Test()]
@@ -476,6 +518,26 @@ namespace TSqlFlex.Core.Tests
 
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "sql_variant", false, 0, 0);
             Assert.AreEqual("1234567.89", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "sql_variant");
+
+            baseData = 12345.0000M;
+            data = baseData;
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "sql_variant", false, 10, 4);
+            Assert.AreEqual("12345", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "insignificant digits are trimmed");
+        }
+
+        [Test()]
+        public void SQLVARIANT_Float_Data_ScriptsCorrectly()
+        {
+            Double baseData = 1234567.89;
+            object data = baseData;
+
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "sql_variant", false, 0, 0);
+            Assert.AreEqual("1234567.89", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "sql_variant");
+
+            baseData = 12345.0000;
+            data = baseData;
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "sql_variant", false, 10, 4);
+            Assert.AreEqual("12345", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "insignificant digits are trimmed");
         }
 
         [Test()]
@@ -505,7 +567,11 @@ namespace TSqlFlex.Core.Tests
             object data = baseData;
 
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "sql_variant", false, 0, 0);
-            Assert.AreEqual("'2014-05-30T00:00:00'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "sql_variant");
+            Assert.AreEqual("'2014-05-30'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "sql_variant");
+
+            baseData = new DateTime(2014, 5, 30, 1, 2, 3);
+            data = baseData;
+            Assert.AreEqual("'2014-05-30T01:02:03'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "sql_variant");
         }
 
         [Test()]

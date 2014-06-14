@@ -205,7 +205,7 @@ namespace TSqlFlex.Core
             else if (fieldTypeName == "bigint" || fieldTypeName == "numeric" || fieldTypeName == "smallint" || fieldTypeName == "decimal" || fieldTypeName == "smallmoney" ||
                 fieldTypeName == "int" || fieldTypeName == "tinyint" || fieldTypeName == "float" || fieldTypeName == "real" || fieldTypeName == "money")
             {
-                return data.ToString();
+                return getDataAsAppropriateNumericFormat(data);
             }
             else if (fieldTypeName == "binary" || fieldTypeName == "rowversion" || fieldTypeName == "timestamp")
             {
@@ -270,6 +270,54 @@ namespace TSqlFlex.Core
             return "N'" + data.ToString() + "'";
         }
 
+        private static string getDataAsAppropriateNumericFormat(object data)
+        {
+            if (data is decimal)
+            {
+                decimal theDec = (decimal)data;
+                if (partAfterDecimal(theDec) == 0)
+                {
+                    return theDec.ToString("F0");
+                }
+                return theDec.ToString("G");
+            }
+            else if (data is Double)
+            {
+                Double theDbl = (Double)data;
+                if (partAfterDecimal(theDbl) == 0)
+                {
+                    return theDbl.ToString("F0");
+                }
+                return theDbl.ToString("F7").TrimEnd('0');
+            }
+            else if (data is Single)
+            {
+                Single theSingle = (Single)data;
+                if (partAfterDecimal(theSingle) == 0)
+                {
+                    return theSingle.ToString("F0");
+                }
+                return theSingle.ToString("F7").TrimEnd('0');
+            }
+            
+            return data.ToString();
+        }
+
+        private static double partAfterDecimal(Single theSingle)
+        {
+            return theSingle - Math.Truncate(theSingle);
+        }
+
+        private static double partAfterDecimal(Double theDbl)
+        {
+            return theDbl - Math.Truncate(theDbl);
+        }
+
+        private static decimal partAfterDecimal(decimal theDec)
+        {
+            return theDec - Math.Truncate(theDec);
+        }
+
         private static string getDataAsSql_variantFormat(object data)
         {
             //SQL-CLR Type Mapping documentation: http://msdn.microsoft.com/en-us/library/bb386947(v=vs.110).aspx
@@ -309,6 +357,10 @@ namespace TSqlFlex.Core
             else if (data is bool)
             {
                 return getDataAsBitFormat(data);
+            }
+            else if (data is decimal || data is Double || data is Single)
+            {
+                return getDataAsAppropriateNumericFormat(data);
             }
             else if (data is string)
             {
@@ -370,6 +422,10 @@ namespace TSqlFlex.Core
         private static string getDataAsSmalldatetimeFormat(object data)
         {
             DateTime d = (DateTime)data;
+            if (d.Hour == 0 && d.Minute == 0) //smalldatetime doesn't support seconds.
+            {
+                return "'" + d.ToString("yyyy-MM-dd") + "'";
+            }
             return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss") + "'";
         }
 
@@ -378,6 +434,10 @@ namespace TSqlFlex.Core
             DateTime d = (DateTime)data;
             if (d.ToString("fff") == "000")
             {
+                if (d.Hour == 0 && d.Minute == 0 & d.Second == 0)
+                {
+                    return "'" + d.ToString("yyyy-MM-dd") + "'";
+                }
                 return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss") + "'";
             }
             return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss.fff") + "'";
@@ -419,8 +479,13 @@ namespace TSqlFlex.Core
         private static string getDataAsDatetime2Format(object data)
         {
             DateTime d = (DateTime)data;
+
             if (d.ToString("fffffff") == "0000000")
             {
+                if (d.Hour == 0 && d.Minute == 0 & d.Second == 0)
+                {
+                    return "'" + d.ToString("yyyy-MM-dd") + "'";
+                }
                 return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss") + "'";
             }
             return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss.fffffff") + "'";
