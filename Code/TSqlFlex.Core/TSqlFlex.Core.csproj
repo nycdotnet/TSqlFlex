@@ -46,6 +46,7 @@
     <Compile Include="FlexResult.cs" />
     <Compile Include="FlexResultSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="CustomExceptions.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -17,6 +17,8 @@ namespace TSqlFlex.Core
             DataType = 24
         }
 
+        public const int SQL2008MaxRowsInValuesClause = 100;
+
         public List<FlexResult> results = null;
         public List<Exception> exceptions = null;
         
@@ -29,77 +31,134 @@ namespace TSqlFlex.Core
 
             FlexResultSet resultSet = new FlexResultSet();
 
+            throwExceptionIfConnectionIsNotOpen(openConnection);
+            
+            SqlTransaction transaction = openConnection.BeginTransaction("Tran");
+            SqlDataReader reader = null;
+
+            try
+            {
+                SqlCommand cmd = new SqlCommand(sqlCommandText, openConnection, transaction);
+                
+                reader = executeSQL(resultSet, cmd, reader);
+                
+                do
+                {
+                    FlexResult result = new FlexResult();
+                    if (reader != null)
+                    {
+                        try
+                        {
+                            result.recordsAffected = reader.RecordsAffected;
+                            processSchemaInfo(reader, result);
+                            processData(reader, result);
+                        }
+                        catch (Exception ex)
+                        {
+                            resultSet.exceptions.Add(new SqlResultProcessingException(ex));
+                        }
+                    }
+                    resultSet.results.Add(result);
+
+                } while (reader != null && reader.NextResult());
+            }
+            catch (Exception ex)
+            {
+                resultSet.exceptions.Add(new SqlResultProcessingException(ex));
+            }
+            finally
+            {
+                cleanupReader(reader);
+                rollbackTransaction(transaction);
+            }
+            return resultSet;
+        }
+
+        private static void rollbackTransaction(SqlTransaction transaction)
+        {
+            if (transaction != null)
+            { 
+                transaction.Rollback();
+            }
+        }
+
+        private static void cleanupReader(SqlDataReader reader)
+        {
+            if (reader != null)
+            {
+                if (!reader.IsClosed)
+                {
+                    reader.Close();
+                }
+                reader.Dispose();
+            }
+        }
+
+        private static SqlDataReader executeSQL(FlexResultSet resultSet, SqlCommand cmd, SqlDataReader reader)
+        {
+            try
+            {
+                reader = cmd.ExecuteReader(CommandBehavior.KeyInfo);
+            }
+            catch (Exception ex)
+            {
+                resultSet.exceptions.Add(new SqlExecutionException(ex));
+            }
+            return reader;
+        }
+
+        private static void throwExceptionIfConnectionIsNotOpen(SqlConnection openConnection)
+        {
             if (openConnection.State != System.Data.ConnectionState.Open)
             {
                 var emptySqlConn = new ArgumentException("The SqlConnection must be open.");
                 throw emptySqlConn;
             }
-            
-            SqlTransaction transaction = openConnection.BeginTransaction("Tran");
-            
+        }
+
+        private static void processData(SqlDataReader reader, FlexResult result)
+        {
             try
             {
-                SqlCommand cmd = new SqlCommand(sqlCommandText, openConnection, transaction);
-
-                using (SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.KeyInfo))
+                int fieldCount = reader.FieldCount;
+                var data = new List<Object[]>();
+                while (reader.Read())
                 {
-                    do
-                    {
-                        FlexResult result = new FlexResult();
-
-                        try
-                        {
-                            var st = reader.GetSchemaTable();
-                            result.schema = st;
-                        }
-                        catch (Exception ex)
-                        {
-                            result.exceptions.Add(ex);
-                        }
-
-                        try
-                        {
-                            int fieldCount = reader.FieldCount;
-                            var data = new List<Object[]>();
-                            while (reader.Read())
-                            {
-                                Object[] values = new Object[fieldCount];
-                                reader.GetValues(values);
-                                data.Add(values);
-                            }
-                            result.data = data;
-                        }
-                        catch (Exception ex)
-                        {
-                            result.exceptions.Add(ex);
-                        }
-
-
-                        resultSet.results.Add(result);
-
-                    } while (reader.NextResult());
-                    reader.Close();
+                    Object[] values = new Object[fieldCount];
+                    reader.GetValues(values);
+                    data.Add(values);
                 }
+                result.data = data;
             }
             catch (Exception ex)
             {
-                //todo: needs better solution here.  For example what if I am querying from a table that doesn't exist?
-                resultSet.exceptions.Add(ex);
+                result.exceptions.Add(ex);
             }
-            finally
-            {
-                if (transaction != null)
-                    transaction.Rollback();
-            }
-            return resultSet;
         }
 
-        //todo: columnnames must be unique in a table.  It's possible to have a result set with duplicate column names, but not a table.
+        private static void processSchemaInfo(SqlDataReader reader, FlexResult result)
+        {
+            try
+            {
+                var st = reader.GetSchemaTable();
+                result.schema = st;
+            }
+            catch (Exception ex)
+            {
+                result.exceptions.Add(ex);
+            }
+        }
 
+        public Boolean ResultIsRenderableAsCreateTable(int resultIndex)
+        {
+            return (results[resultIndex].schema != null);
+        }
+        
         public string ScriptResultAsCreateTable(int resultIndex, string tableName)
         {
+            //todo: columnnames must be unique in a table.  It's possible to have a result set with duplicate column names, but not a table.
             //todo: bug with SELECT * FROM INFORMATION_SCHEMA.Tables - possibly hidden fields??
-            if (results[resultIndex].schema == null)
+            if (!ResultIsRenderableAsCreateTable(resultIndex))
             {
                 return "--No schema for result from query.";
             }
@@ -127,22 +186,31 @@ namespace TSqlFlex.Core
             return buffer.ToString();
         }
 
-        public string ScriptResultDataAsInsert100(int resultIndex, string tableName)
+        public Boolean ResultIsRenderableAsScriptedData(int resultIndex)
         {
-            var schema = results[resultIndex].schema;
+            var r = results[resultIndex];
+            return (r.schema != null && r.data != null && r.data.Count > 0);
+        }
 
-            if (schema == null)
+        public string ScriptResultDataAsInsert(int resultIndex, string tableName)
+        {
+            if (!ResultIsRenderableAsCreateTable(resultIndex))
             {
                 return "--No schema for result from query.";
             }
-
-            var data = results[resultIndex].data;
-
-            if (data == null || data.Count == 0)
+            
+            if (!ResultIsRenderableAsScriptedData(resultIndex))
             {
                 return "--No rows were returned from the query.";
             }
 
+            var schema = results[resultIndex].schema;
+            var data = results[resultIndex].data;
+            return scriptDataAsInsertForSQL2008Plus(tableName, schema, data);
+        }
+
+        private static string scriptDataAsInsertForSQL2008Plus(string tableName, DataTable schema, List<object[]> data)
+        {
             int columnCount = schema.Rows.Count;
             int rowCount = data.Count;
 
@@ -150,11 +218,11 @@ namespace TSqlFlex.Core
 
             for (int rowIndex = 0; rowIndex < rowCount; rowIndex++)
             {
-                if (rowIndex % 100 == 0)
+                if (rowIndex % SQL2008MaxRowsInValuesClause == 0)
                 {
                     buffer.Append("INSERT INTO " + tableName + " VALUES\r\n");
                 }
-                buffer.Append("  (");
+                buffer.Append(" (");
                 for (int columnIndex = 0; columnIndex < columnCount; columnIndex++)
                 {
                     buffer.Append(valueAsTSQLLiteral(data[rowIndex][columnIndex], schema.Rows[columnIndex].ItemArray));
@@ -163,7 +231,7 @@ namespace TSqlFlex.Core
                         buffer.Append(",");
                     }
                 }
-                if (rowIndex + 1 == rowCount || (rowIndex + 1) % 100 == 0)
+                if (rowIndex + 1 == rowCount || (rowIndex + 1) % SQL2008MaxRowsInValuesClause == 0)
                 {
                     buffer.Append(");\r\n\r\n");
                 }
