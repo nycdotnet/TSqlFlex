@@ -364,7 +364,7 @@ namespace TSqlFlex.Core
                 {
                     return theDec.ToString("F0");
                 }
-                return theDec.ToString("G");
+                return theDec.ToString("G").TrimEnd('0');
             }
             else if (data is Double)
             {

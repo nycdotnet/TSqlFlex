@@ -42,6 +42,11 @@ namespace TSqlFlex.Core.Tests
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "numeric", false, 10, 4);
             Assert.AreEqual("12345", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "insignificant digits are trimmed");
+
+            baseData = 12345.1000M;
+            data = baseData;
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "numeric", false, 10, 4);
+            Assert.AreEqual("12345.1", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "insignificant digits are trimmed (partially significant decimal)");
         }
 
         [Test()]
@@ -89,6 +94,11 @@ namespace TSqlFlex.Core.Tests
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "decimal", false, 10, 4);
             Assert.AreEqual("12345", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "insignificant digits are trimmed");
+
+            baseData = 12345.1000M;
+            data = baseData;
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "decimal", false, 10, 4);
+            Assert.AreEqual("12345.1", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "insignificant digits are trimmed (partially significant decimal)");
         }
 
         [Test()]
@@ -108,6 +118,11 @@ namespace TSqlFlex.Core.Tests
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "smallmoney", false, 10, 4);
             Assert.AreEqual("12345", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "insignificant digits are trimmed");
+
+            baseData = 12345.1000M;
+            data = baseData;
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "smallmoney", false, 10, 4);
+            Assert.AreEqual("12345.1", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "insignificant digits are trimmed (partially significant decimal)");
         }
 
         [Test()]
@@ -155,6 +170,11 @@ namespace TSqlFlex.Core.Tests
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "money", false, 10, 4);
             Assert.AreEqual("12345", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "insignificant digits are trimmed");
+
+            baseData = 12345.1000M;
+            data = baseData;
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "money", false, 10, 4);
+            Assert.AreEqual("12345.1", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "insignificant digits are trimmed (partially significant decimal)");
         }
 
         [Test()]
@@ -174,6 +194,11 @@ namespace TSqlFlex.Core.Tests
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "float", false, 10, 4);
             Assert.AreEqual("12345", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "insignificant digits are trimmed");
+
+            baseData = 12345.2000;
+            data = baseData;
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "float", false, 10, 4);
+            Assert.AreEqual("12345.2", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "insignificant digits are trimmed (partially significant decimal)");
         }
 
         [Test()]
@@ -193,6 +218,11 @@ namespace TSqlFlex.Core.Tests
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "real", false, 10, 4);
             Assert.AreEqual("12345", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "insignificant digits are trimmed");
+
+            baseData = 12345.2000F;
+            data = baseData;
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "float", false, 10, 4);
+            Assert.AreEqual("12345.2", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "insignificant digits are trimmed (partially significant decimal)");
         }
 
         [Test()]
@@ -538,6 +568,11 @@ namespace TSqlFlex.Core.Tests
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "sql_variant", false, 10, 4);
             Assert.AreEqual("12345", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "insignificant digits are trimmed");
+
+            baseData = 12345.1000M;
+            data = baseData;
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "sql_variant", false, 10, 4);
+            Assert.AreEqual("12345.1", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "insignificant digits are trimmed (partially significant decimal)");
         }
 
         [Test()]
@@ -553,6 +588,11 @@ namespace TSqlFlex.Core.Tests
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "sql_variant", false, 10, 4);
             Assert.AreEqual("12345", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "insignificant digits are trimmed");
+
+            baseData = 12345.2000;
+            data = baseData;
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "sql_variant", false, 10, 4);
+            Assert.AreEqual("12345.2", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "insignificant digits are trimmed (partially significant decimal)");
         }
 
         [Test()]
