@@ -4,10 +4,9 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 
-namespace TSqlFlex
+namespace TSqlFlex.Core
 {
-    //todo: this belongs in TSqlFlex.Core.
-    class SqlRunParameters
+    public class SqlRunParameters
     {
         public SqlConnectionStringBuilder connStringBuilder;
         public string sqlToRun;
