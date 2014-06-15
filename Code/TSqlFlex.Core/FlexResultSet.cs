@@ -623,12 +623,12 @@ namespace TSqlFlex.Core
 
         private string FieldNameOrDefault(DataRow fieldInfo, int fieldIndex)
         {
-            var r = fieldInfo[(int)FieldInfo.Name].ToString();
+            var r = fieldInfo[(int)FieldInfo.Name].ToString().Replace("[", "[[").Replace("]", "]]");
             if (r.Length == 0)
             {
                 return "anonymousColumn" + (fieldIndex + 1).ToString();
             }
-            return r; //bug: need to escape [ or ] in field names.
+            return r;  //todo: need to escape field names when they're a SQL reserved word.
         }
 
         private string DataType(DataRow fieldInfo)
