@@ -31,15 +31,18 @@
             this.btnCopyToNewWindow = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panelTop = new System.Windows.Forms.Panel();
+            this.lblVersion = new System.Windows.Forms.Label();
             this.lblConnectionInfo = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.txtSqlInput = new System.Windows.Forms.TextBox();
             this.panelBottom = new System.Windows.Forms.Panel();
+            this.cmdCancel = new System.Windows.Forms.Button();
+            this.queryProgress = new System.Windows.Forms.ProgressBar();
             this.btnCopyToClipboard = new System.Windows.Forms.Button();
             this.txtOutput = new System.Windows.Forms.TextBox();
             this.cmdRunNRollback = new System.Windows.Forms.Button();
-            this.lblVersion = new System.Windows.Forms.Label();
+            this.queryWorker = new System.ComponentModel.BackgroundWorker();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -92,6 +95,17 @@
             this.panelTop.Size = new System.Drawing.Size(1112, 272);
             this.panelTop.TabIndex = 0;
             // 
+            // lblVersion
+            // 
+            this.lblVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVersion.AutoSize = true;
+            this.lblVersion.Location = new System.Drawing.Point(1059, 0);
+            this.lblVersion.Name = "lblVersion";
+            this.lblVersion.Size = new System.Drawing.Size(41, 13);
+            this.lblVersion.TabIndex = 5;
+            this.lblVersion.Text = "version";
+            this.lblVersion.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // lblConnectionInfo
             // 
             this.lblConnectionInfo.AutoSize = true;
@@ -138,6 +152,8 @@
             // 
             // panelBottom
             // 
+            this.panelBottom.Controls.Add(this.cmdCancel);
+            this.panelBottom.Controls.Add(this.queryProgress);
             this.panelBottom.Controls.Add(this.btnCopyToNewWindow);
             this.panelBottom.Controls.Add(this.btnCopyToClipboard);
             this.panelBottom.Controls.Add(this.txtOutput);
@@ -147,6 +163,24 @@
             this.panelBottom.Name = "panelBottom";
             this.panelBottom.Size = new System.Drawing.Size(1112, 272);
             this.panelBottom.TabIndex = 1;
+            // 
+            // cmdCancel
+            // 
+            this.cmdCancel.Enabled = false;
+            this.cmdCancel.Location = new System.Drawing.Point(194, 3);
+            this.cmdCancel.Name = "cmdCancel";
+            this.cmdCancel.Size = new System.Drawing.Size(75, 23);
+            this.cmdCancel.TabIndex = 7;
+            this.cmdCancel.Text = "Cancel";
+            this.cmdCancel.UseVisualStyleBackColor = true;
+            this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
+            // 
+            // queryProgress
+            // 
+            this.queryProgress.Location = new System.Drawing.Point(110, 3);
+            this.queryProgress.Name = "queryProgress";
+            this.queryProgress.Size = new System.Drawing.Size(78, 23);
+            this.queryProgress.TabIndex = 6;
             // 
             // btnCopyToClipboard
             // 
@@ -185,15 +219,13 @@
             this.cmdRunNRollback.UseVisualStyleBackColor = true;
             this.cmdRunNRollback.Click += new System.EventHandler(this.cmdRunNRollback_Click);
             // 
-            // lblVersion
+            // queryWorker
             // 
-            this.lblVersion.AutoSize = true;
-            this.lblVersion.Location = new System.Drawing.Point(1071, 0);
-            this.lblVersion.Name = "lblVersion";
-            this.lblVersion.Size = new System.Drawing.Size(41, 13);
-            this.lblVersion.TabIndex = 5;
-            this.lblVersion.Text = "version";
-            this.lblVersion.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.queryWorker.WorkerReportsProgress = true;
+            this.queryWorker.WorkerSupportsCancellation = true;
+            this.queryWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.queryWorker_DoWork);
+            this.queryWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.queryWorker_ProgressChanged);
+            this.queryWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.queryWorker_RunWorkerCompleted);
             // 
             // FlexMainWindow
             // 
@@ -227,5 +259,8 @@
         private System.Windows.Forms.TextBox txtOutput;
         private System.Windows.Forms.Button cmdRunNRollback;
         private System.Windows.Forms.Label lblVersion;
+        private System.ComponentModel.BackgroundWorker queryWorker;
+        private System.Windows.Forms.Button cmdCancel;
+        private System.Windows.Forms.ProgressBar queryProgress;
     }
 }

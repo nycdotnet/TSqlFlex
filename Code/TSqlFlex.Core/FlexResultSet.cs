@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 using Microsoft.SqlServer.Types;
+using System.ComponentModel;
 
 namespace TSqlFlex.Core
 {
@@ -27,7 +28,8 @@ namespace TSqlFlex.Core
             exceptions = new List<Exception>();
         }
 
-        public static FlexResultSet AnalyzeResultWithRollback(SqlConnection openConnection, string sqlCommandText) {
+        public static FlexResultSet AnalyzeResultWithRollback(SqlConnection openConnection, string sqlCommandText, BackgroundWorker bw = null)
+        {
 
             FlexResultSet resultSet = new FlexResultSet();
 
@@ -40,8 +42,12 @@ namespace TSqlFlex.Core
             {
                 SqlCommand cmd = new SqlCommand(sqlCommandText, openConnection, transaction);
                 
+                //todo: this is a bad way of doing this.  Need to abstract further.
+                bw.ReportProgress(5, "Running query...");
+
                 reader = executeSQL(resultSet, cmd, reader);
-                
+                int progress = 50;
+                bw.ReportProgress(progress, "Processing results...");
                 do
                 {
                     FlexResult result = new FlexResult();
@@ -51,7 +57,18 @@ namespace TSqlFlex.Core
                         {
                             result.recordsAffected = reader.RecordsAffected;
                             processSchemaInfo(reader, result);
+                            if (progress < 90)
+                            {
+                                progress += 5;
+                            }
+                            bw.ReportProgress(progress, "Processing results...");
                             processData(reader, result);
+
+                            if (progress < 90)
+                            {
+                                progress += 5;
+                            }
+                            bw.ReportProgress(progress, "Processing results...");
                         }
                         catch (Exception ex)
                         {

@@ -53,6 +53,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RunCommand.cs" />
+    <Compile Include="SqlRunParameters.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
