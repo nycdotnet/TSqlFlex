@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.btnCopyToNewWindow = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panelTop = new System.Windows.Forms.Panel();
@@ -43,6 +44,8 @@
             this.txtOutput = new System.Windows.Forms.TextBox();
             this.cmdRunNRollback = new System.Windows.Forms.Button();
             this.queryWorker = new System.ComponentModel.BackgroundWorker();
+            this.lblStopwatch = new System.Windows.Forms.Label();
+            this.queryTimer = new System.Windows.Forms.Timer(this.components);
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -152,6 +155,7 @@
             // 
             // panelBottom
             // 
+            this.panelBottom.Controls.Add(this.lblStopwatch);
             this.panelBottom.Controls.Add(this.cmdCancel);
             this.panelBottom.Controls.Add(this.queryProgress);
             this.panelBottom.Controls.Add(this.btnCopyToNewWindow);
@@ -227,6 +231,19 @@
             this.queryWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.queryWorker_ProgressChanged);
             this.queryWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.queryWorker_RunWorkerCompleted);
             // 
+            // lblStopwatch
+            // 
+            this.lblStopwatch.AutoSize = true;
+            this.lblStopwatch.Location = new System.Drawing.Point(275, 8);
+            this.lblStopwatch.Name = "lblStopwatch";
+            this.lblStopwatch.Size = new System.Drawing.Size(35, 13);
+            this.lblStopwatch.TabIndex = 9;
+            this.lblStopwatch.Text = "label3";
+            // 
+            // queryTimer
+            // 
+            this.queryTimer.Tick += new System.EventHandler(this.queryTimer_Tick);
+            // 
             // FlexMainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -262,5 +279,7 @@
         private System.ComponentModel.BackgroundWorker queryWorker;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.ProgressBar queryProgress;
+        private System.Windows.Forms.Label lblStopwatch;
+        private System.Windows.Forms.Timer queryTimer;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
@@ -12,11 +13,13 @@ namespace TSqlFlex
     public partial class FlexMainWindow : UserControl
     {
         private SqlConnectionStringBuilder connStringBuilder = null;
+        private Stopwatch sqlStopwatch = null;
 
         public FlexMainWindow()
         {
             InitializeComponent();
             lblVersion.Text = TSqlFlex.Core.Info.Version();
+            lblStopwatch.Text = "";
         }
     
         public void SetConnection(SqlConnectionStringBuilder theConnectionStringBuilder)
@@ -38,9 +41,7 @@ namespace TSqlFlex
             }
             return "Not connected.";
         }
-
         
-
         private void cmdRunNRollback_Click(object sender, EventArgs e)
         {
             if (!Utils.IsValidConnectionStringBuilder(connStringBuilder))
@@ -50,6 +51,10 @@ namespace TSqlFlex
             }
 
             if (!queryWorker.IsBusy) {
+                sqlStopwatch = new Stopwatch();
+                sqlStopwatch.Start();
+                queryTimer.Enabled = true;
+
                 cmdRunNRollback.Enabled = false;
                 cmdCancel.Enabled = true;
                 Cursor.Current = Cursors.WaitCursor;
@@ -191,7 +196,17 @@ namespace TSqlFlex
 
         private void queryWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
+            queryTimer.Enabled = false;
             queryProgress.Value = 100;
+            sqlStopwatch.Stop();
+
+            TimeSpan t = sqlStopwatch.Elapsed;
+            lblStopwatch.Text = String.Format("{0}:{1}:{2}.{3}",
+                        t.Hours.ToString(),
+                        t.Minutes.ToString().PadLeft(2, '0'),
+                        t.Seconds.ToString().PadLeft(2, '0'),
+                        t.Milliseconds.ToString().PadLeft(3, '0').TrimEnd('0')); //bug: This includes the time it took to read all of the results, etc.  Should technically stop after data finishes coming in from SQL
+
             if (e.Cancelled)
             {
                 txtOutput.Text = "--Query cancelled.";
@@ -215,6 +230,17 @@ namespace TSqlFlex
         {
             queryWorker.CancelAsync();
             cmdCancel.Enabled = false;
+        }
+
+        private void queryTimer_Tick(object sender, EventArgs e)
+        {
+            if (sqlStopwatch != null) {
+                TimeSpan t = sqlStopwatch.Elapsed;
+                lblStopwatch.Text = String.Format("{0}:{1}:{2}",
+                        t.Hours.ToString(),
+                        t.Minutes.ToString().PadLeft(2, '0'),
+                        t.Seconds.ToString().PadLeft(2, '0'));
+            }
         }
 
     }
