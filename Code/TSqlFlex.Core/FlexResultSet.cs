@@ -525,7 +525,7 @@ namespace TSqlFlex.Core
                 }
                 return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss") + "'";
             }
-            return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss.fff") + "'";
+            return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss.fff").TrimEnd('0') + "'";
         }
 
 
@@ -573,7 +573,7 @@ namespace TSqlFlex.Core
                 }
                 return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss") + "'";
             }
-            return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss.fffffff") + "'";
+            return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss.fffffff").TrimEnd('0') + "'";
         }
 
         private static string getDataAsDatetimeoffsetFormat(object data)

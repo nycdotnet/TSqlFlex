@@ -229,6 +229,10 @@ namespace TSqlFlex.Core.Tests
             data = baseData;
             Assert.AreEqual("'2000-10-31T02:33:44.1234567'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "datetime2 fractional seconds");
 
+            baseData = baseData = new DateTime(2000, 10, 31, 2, 33, 44).AddMilliseconds(100);
+            data = baseData;
+            Assert.AreEqual("'2000-10-31T02:33:44.1'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "partial fractional seconds");
+
             baseData = new DateTime(2000, 10, 31, 0, 0, 0);
             data = baseData;
             Assert.AreEqual("'2000-10-31'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "midnight omits time altogether");
@@ -259,6 +263,10 @@ namespace TSqlFlex.Core.Tests
             data = baseData;
             Assert.AreEqual("'2000-10-31T02:33:44.123'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "datetime fractional seconds");
 
+            baseData = baseData = new DateTime(2000, 10, 31, 2, 33, 44).AddMilliseconds(100);
+            data = baseData;
+            Assert.AreEqual("'2000-10-31T02:33:44.1'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "partial fractional seconds");
+
             baseData = new DateTime(2000, 10, 31, 0, 0, 0);
             data = baseData;
             Assert.AreEqual("'2000-10-31'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "midnight omits time altogether");
@@ -272,6 +280,9 @@ namespace TSqlFlex.Core.Tests
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "time", false, 0, 0);
             Assert.AreEqual("'02:33:44'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "time no fractional seconds");
 
+            baseData = new TimeSpan(0, 2, 33, 44, 100);
+            data = baseData;
+            Assert.AreEqual("'02:33:44.1'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "time partial fractional seconds");
 
             baseData = new TimeSpan(0, 2, 33, 44, 123);
             data = baseData;
@@ -286,7 +297,11 @@ namespace TSqlFlex.Core.Tests
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "time", false, 0, 0);
             Assert.AreEqual("'02:33:44'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "time no fractional seconds");
 
-            baseData = baseData.AddTicks(1234567);
+            baseData = new DateTime(1900, 1, 1, 2, 33, 44).AddMilliseconds(100);
+            data = baseData;
+            Assert.AreEqual("'02:33:44.1'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "partial fractional seconds");
+
+            baseData = new DateTime(1900, 1, 1, 2, 33, 44).AddTicks(1234567);
             data = baseData;
             Assert.AreEqual("'02:33:44.1234567'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "time fractional seconds");
         }
@@ -572,6 +587,10 @@ namespace TSqlFlex.Core.Tests
             baseData = new DateTime(2014, 5, 30, 1, 2, 3);
             data = baseData;
             Assert.AreEqual("'2014-05-30T01:02:03'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "sql_variant");
+
+            baseData = baseData = new DateTime(2000, 10, 31, 2, 33, 44).AddMilliseconds(100);
+            data = baseData;
+            Assert.AreEqual("'2000-10-31T02:33:44.1'", FlexResultSet.valueAsTSQLLiteral(data, fieldInfo), "sql_variant partial fractional seconds");
         }
 
         [Test()]
