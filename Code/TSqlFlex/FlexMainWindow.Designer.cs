@@ -38,13 +38,13 @@
             this.label1 = new System.Windows.Forms.Label();
             this.txtSqlInput = new System.Windows.Forms.TextBox();
             this.panelBottom = new System.Windows.Forms.Panel();
+            this.lblProgress = new System.Windows.Forms.Label();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.queryProgress = new System.Windows.Forms.ProgressBar();
             this.btnCopyToClipboard = new System.Windows.Forms.Button();
             this.txtOutput = new System.Windows.Forms.TextBox();
             this.cmdRunNRollback = new System.Windows.Forms.Button();
             this.queryWorker = new System.ComponentModel.BackgroundWorker();
-            this.lblStopwatch = new System.Windows.Forms.Label();
             this.queryTimer = new System.Windows.Forms.Timer(this.components);
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -155,7 +155,7 @@
             // 
             // panelBottom
             // 
-            this.panelBottom.Controls.Add(this.lblStopwatch);
+            this.panelBottom.Controls.Add(this.lblProgress);
             this.panelBottom.Controls.Add(this.cmdCancel);
             this.panelBottom.Controls.Add(this.queryProgress);
             this.panelBottom.Controls.Add(this.btnCopyToNewWindow);
@@ -167,6 +167,15 @@
             this.panelBottom.Name = "panelBottom";
             this.panelBottom.Size = new System.Drawing.Size(1112, 272);
             this.panelBottom.TabIndex = 1;
+            // 
+            // lblProgress
+            // 
+            this.lblProgress.AutoSize = true;
+            this.lblProgress.Location = new System.Drawing.Point(275, 8);
+            this.lblProgress.Name = "lblProgress";
+            this.lblProgress.Size = new System.Drawing.Size(41, 13);
+            this.lblProgress.TabIndex = 9;
+            this.lblProgress.Text = "Ready.";
             // 
             // cmdCancel
             // 
@@ -181,9 +190,9 @@
             // 
             // queryProgress
             // 
-            this.queryProgress.Location = new System.Drawing.Point(110, 3);
+            this.queryProgress.Location = new System.Drawing.Point(110, 8);
             this.queryProgress.Name = "queryProgress";
-            this.queryProgress.Size = new System.Drawing.Size(78, 23);
+            this.queryProgress.Size = new System.Drawing.Size(78, 13);
             this.queryProgress.TabIndex = 6;
             // 
             // btnCopyToClipboard
@@ -231,15 +240,6 @@
             this.queryWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.queryWorker_ProgressChanged);
             this.queryWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.queryWorker_RunWorkerCompleted);
             // 
-            // lblStopwatch
-            // 
-            this.lblStopwatch.AutoSize = true;
-            this.lblStopwatch.Location = new System.Drawing.Point(275, 8);
-            this.lblStopwatch.Name = "lblStopwatch";
-            this.lblStopwatch.Size = new System.Drawing.Size(35, 13);
-            this.lblStopwatch.TabIndex = 9;
-            this.lblStopwatch.Text = "label3";
-            // 
             // queryTimer
             // 
             this.queryTimer.Tick += new System.EventHandler(this.queryTimer_Tick);
@@ -279,7 +279,7 @@
         private System.ComponentModel.BackgroundWorker queryWorker;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.ProgressBar queryProgress;
-        private System.Windows.Forms.Label lblStopwatch;
+        private System.Windows.Forms.Label lblProgress;
         private System.Windows.Forms.Timer queryTimer;
     }
 }

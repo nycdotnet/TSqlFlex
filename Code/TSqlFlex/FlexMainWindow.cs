@@ -14,12 +14,13 @@ namespace TSqlFlex
     {
         private SqlConnectionStringBuilder connStringBuilder = null;
         private Stopwatch sqlStopwatch = null;
+        private string progressText = "";
 
         public FlexMainWindow()
         {
             InitializeComponent();
             lblVersion.Text = TSqlFlex.Core.Info.Version();
-            lblStopwatch.Text = "";
+            lblProgress.Text = "";
         }
     
         public void SetConnection(SqlConnectionStringBuilder theConnectionStringBuilder)
@@ -163,7 +164,7 @@ namespace TSqlFlex
                     return;
                 }
 
-                bw.ReportProgress(90, "Rendering results...");
+                bw.ReportProgress(90, "Scripting results...");
                 var sb = new StringBuilder();
                 renderExceptions(resultSet, sb);
 
@@ -173,7 +174,7 @@ namespace TSqlFlex
                     return;
                 }
 
-                bw.ReportProgress(95, "Rendering results...");
+                bw.ReportProgress(92, "Scripting results...");
                 renderSchemaAndData(resultSet, sb);
 
                 e.Result = sb.ToString();
@@ -187,25 +188,50 @@ namespace TSqlFlex
             {
                 if (e.UserState is string && e.UserState != null)
                 {
-                    lblConnectionInfo.Text = currentConnectionText() + " " + (string)e.UserState;
+                    progressText = (string)e.UserState;
+                    setProgressText( (e.ProgressPercentage == 100) );
                 }
 
                 queryProgress.Value = e.ProgressPercentage;
             }
         }
 
+        private void setProgressText(bool isComplete)
+        {
+            lblProgress.Text = getFormattedElapsedSqlStopwatchTime(isComplete) + " " + progressText;
+            lblProgress.Refresh();
+        }
+
+        private string getFormattedElapsedSqlStopwatchTime(bool includeMilliseconds)
+        {
+            if (sqlStopwatch == null)
+            {
+                return "";
+            }
+            TimeSpan t = sqlStopwatch.Elapsed;
+
+            if (includeMilliseconds)
+            {
+                return String.Format("{0}:{1}:{2}.{3}",
+                        t.Hours.ToString(),
+                        t.Minutes.ToString().PadLeft(2, '0'),
+                        t.Seconds.ToString().PadLeft(2, '0'),
+                        t.Milliseconds.ToString().PadLeft(3, '0').TrimEnd('0'));
+            }
+
+            return String.Format("{0}:{1}:{2}",
+                        t.Hours.ToString(),
+                        t.Minutes.ToString().PadLeft(2, '0'),
+                        t.Seconds.ToString().PadLeft(2, '0'));
+        }
+
         private void queryWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
             queryTimer.Enabled = false;
             queryProgress.Value = 100;
+            progressText = "Drawing results...";  //if there is a large amount of data, drawing it in the textbox can take a long time.
             sqlStopwatch.Stop();
-
-            TimeSpan t = sqlStopwatch.Elapsed;
-            lblStopwatch.Text = String.Format("{0}:{1}:{2}.{3}",
-                        t.Hours.ToString(),
-                        t.Minutes.ToString().PadLeft(2, '0'),
-                        t.Seconds.ToString().PadLeft(2, '0'),
-                        t.Milliseconds.ToString().PadLeft(3, '0').TrimEnd('0')); //bug: This includes the time it took to read all of the results, etc.  Should technically stop after data finishes coming in from SQL
+            setProgressText(true); //bug: This includes the time it took to read all of the results, etc.  Should technically stop after data finishes coming in from SQL
 
             if (e.Cancelled)
             {
@@ -219,6 +245,9 @@ namespace TSqlFlex
             {
                 txtOutput.Text = (string)e.Result;
             }
+
+            progressText = "Complete";
+            setProgressText(true);
 
             lblConnectionInfo.Text = currentConnectionText();
             Cursor.Current = Cursors.Default;
@@ -234,13 +263,7 @@ namespace TSqlFlex
 
         private void queryTimer_Tick(object sender, EventArgs e)
         {
-            if (sqlStopwatch != null) {
-                TimeSpan t = sqlStopwatch.Elapsed;
-                lblStopwatch.Text = String.Format("{0}:{1}:{2}",
-                        t.Hours.ToString(),
-                        t.Minutes.ToString().PadLeft(2, '0'),
-                        t.Seconds.ToString().PadLeft(2, '0'));
-            }
+            setProgressText(false);
         }
 
     }
