@@ -235,18 +235,20 @@ namespace TSqlFlex
 
             if (e.Cancelled)
             {
+                progressText = "Cancelled.";
                 txtOutput.Text = "--Query cancelled.";
             }
             else if (e.Error != null)
             {
+                progressText = "Finished with error.";
                 txtOutput.Text = "--Error occurred while processing query.\r\n\r\n/* " + e.Error.Message + "\r\n*/";
             }
             else
             {
+                progressText = "Complete.";
                 txtOutput.Text = (string)e.Result;
             }
-
-            progressText = "Complete";
+            
             setProgressText(true);
 
             lblConnectionInfo.Text = currentConnectionText();
