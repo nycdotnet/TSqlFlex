@@ -687,6 +687,42 @@ namespace TSqlFlex.Core.Tests
             Assert.AreEqual("NULL", FlexResultSet.valueAsTSQLLiteral((object)System.DBNull.Value, fieldInfo), "int");
         }
 
+        [Test()]
+        public void ReservedWord_IsScriptedWithBrackets()
+        {
+
+            string fieldName = "Drop";
+            var fieldInfo = SchemaScriptingTests.FakeColumn(fieldName, "test", 32, "int", false, 0, 0);
+
+            Assert.AreEqual(true, TSqlRules.IsReservedWord(fieldName));
+            Assert.AreEqual("[Drop]", FlexResultSet.FieldNameOrDefault(fieldInfo,0));
+
+        }
+
+        [Test()]
+        public void NonReservedWord_IsScriptedWithoutBrackets()
+        {
+
+            string fieldName = "TestColumnName";
+            var fieldInfo = SchemaScriptingTests.FakeColumn(fieldName, "test", 32, "int", false, 0, 0);
+
+            Assert.AreEqual(false, TSqlRules.IsReservedWord(fieldName));
+            Assert.AreEqual("TestColumnName", FlexResultSet.FieldNameOrDefault(fieldInfo, 0));
+
+        }
+
+        [Test()]
+        public void EmptyColumnName_IsScriptedAnonymously()
+        {
+
+            string fieldName = "";
+            var fieldInfo = SchemaScriptingTests.FakeColumn(fieldName, "test", 32, "int", false, 0, 0);
+
+            Assert.AreEqual(false, TSqlRules.IsReservedWord(fieldName));
+            Assert.AreEqual("anonymousColumn1", FlexResultSet.FieldNameOrDefault(fieldInfo, 0));
+
+        }
+
         private static void EnsureByteArrayIsBigEndianLikeSQLServer(byte[] data)
         {
             //SQL Server represents binary as Big Endian

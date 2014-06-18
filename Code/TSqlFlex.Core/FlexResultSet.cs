@@ -185,7 +185,7 @@ namespace TSqlFlex.Core
             {
                 var fieldInfo = rows[fieldIndex];
                 buffer.Append("    " +
-                        FieldNameOrDefault(fieldInfo, fieldIndex) +
+                        FieldNameOrDefault(fieldInfo.ItemArray, fieldIndex) +
                         " " +
                         DataType(fieldInfo) +
                         DataTypeParameterIfAny(fieldInfo) + 
@@ -621,14 +621,18 @@ namespace TSqlFlex.Core
             return "'" + data.ToString().Replace("'", "''").TrimEnd() + "'";
         }
 
-        private string FieldNameOrDefault(DataRow fieldInfo, int fieldIndex)
+        public static string FieldNameOrDefault(object[] fieldInfo, int fieldIndex)
         {
             var r = fieldInfo[(int)FieldInfo.Name].ToString();
             if (r.Length == 0)
             {
                 return "anonymousColumn" + (fieldIndex + 1).ToString();
             }
-            return r; //bug: need to escape [ or ] in field names.
+            if (TSqlRules.IsReservedWord(r))
+            {
+                return "[" + r + "]";
+            }
+            return r; //bug: possibly need to escape [ or ] in field names?
         }
 
         private string DataType(DataRow fieldInfo)
