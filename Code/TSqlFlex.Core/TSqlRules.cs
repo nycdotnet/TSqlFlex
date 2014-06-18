@@ -14,26 +14,41 @@ namespace TSqlFlex.Core
             {
                 case "action":
                 case "alter":
+                case "as":
                 case "asc":
                 case "by":
+                case "clustered":
+                case "column":
+                case "constraint":
                 case "create":
+                case "default":
                 case "delete":
                 case "desc":
                 case "drop":
+                case "exec":
+                case "execute":
                 case "from":
                 case "function":
                 case "group":
                 case "insert":
+                case "index":
+                case "key":
                 case "level":
+                case "nonclustered":
                 case "oct":
                 case "order":
+                case "primary":
                 case "proc":
                 case "procedure":
+                case "rule":
                 case "schema":
                 case "select":
+                case "statistics":
                 case "status":
                 case "table":
+                case "trigger":
                 case "update":
+                case "user":
                 case "view":
                 case "where":
                     return true;
