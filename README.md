@@ -32,6 +32,10 @@ T-SQL Flex should be able to script out the returned schema and data of any T-SQ
 Please create issues on GitHub or reach out to Steve on Twitter at [@nycdotnet](https://twitter.com/nycdotnet).
 
 **Patch notes:**
+  * v0.0.4-alpha (2014-06-18):
+      * Converted to background worker.  Added cancel button, timer, and progress bar.
+	  * Additional scripted output "minification" improvements (dropping insignificant decimals for example).
+	  * Other improvements to quality of scripted output such as bracketing of keywords.
   * v0.0.3-alpha (2014-06-13): Fixed data script escaping bug for single quotes.
   * v0.0.2-alpha (2014-06-11): Data scripting implemented.  Improved window.
   * v0.0.1-alpha (2014-06-01): Initial release.  Schema scripting working.
