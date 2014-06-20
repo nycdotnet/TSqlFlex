@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="51F3287D-5F5D-4164-A33D-054A3D885F78" Name="T-SQL Flex" Language="1033" Version="0.0.4.0" Manufacturer="Steve Ognibene" UpgradeCode="6CC0E283-6BE5-4810-ADC3-2C327177EBAF">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" Description="T-SQL Flex Installer" Comments="For more information, please visit https://github.com/nycdotnet/tsqlflex" />
+    <Media Id='1' Cabinet='TSqlFlex.cab' EmbedCab='yes' DiskPrompt='CD-ROM #1' />
+    <Property Id='DiskPrompt' Value="T-SQL Flex Installation [1]" />
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate />
+
+		<Feature Id="Complete" Title="TSqlFlex Complete Setup" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+		</Feature>
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLFOLDER" Name="TSqlFlex.Setup" />
+			</Directory>
+		</Directory>
+	</Fragment>
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+			<Component Id="ProductComponent" Guid="B291BF5F-2B2A-4D14-A094-262027EE9AB6">
+        <File Id='TSqlFlex.dll' Name='TSqlFlex.dll' DiskId='1' Source='TSqlFlex.dll' KeyPath='yes' />
+        <File Id='TSqlFlex.Core.dll' Name='TSqlFlex.Core.dll' DiskId='1' Source='TSqlFlex.Core.dll' KeyPath='yes' />
+        <File Id='RedGate.SIPFrameworkShared.dll' Name='RedGate.SIPFrameworkShared.dll' DiskId='1' Source='RedGate.SIPFrameworkShared.dll' KeyPath='yes' />
+        <RegistryValue Root='HKCU' Key='Software\Wow6432Node\Red Gate\SIPFramework\Plugins' Type='string' Name='TSQLFlex' Value='[INSTALLFOLDER]\TSqlFlex.dll' KeyPath='yes' />
+      </Component>
+		</ComponentGroup>
+	</Fragment>
+</Wix>
