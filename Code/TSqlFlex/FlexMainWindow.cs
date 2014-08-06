@@ -16,11 +16,16 @@ namespace TSqlFlex
         private Stopwatch sqlStopwatch = null;
         private string progressText = "";
 
+        
+
         public FlexMainWindow()
         {
             InitializeComponent();
             lblVersion.Text = TSqlFlex.Core.Info.Version();
             lblProgress.Text = "";
+            cmbResultsType.Items.Add(SqlRunParameters.TO_INSERT_STATEMENTS);
+            cmbResultsType.Items.Add(SqlRunParameters.TO_XML_SPREADSHEET);
+            cmbResultsType.SelectedItem = SqlRunParameters.TO_INSERT_STATEMENTS;
         }
     
         public void SetConnection(SqlConnectionStringBuilder theConnectionStringBuilder)
@@ -59,7 +64,7 @@ namespace TSqlFlex
                 cmdRunNRollback.Enabled = false;
                 cmdCancel.Enabled = true;
                 Cursor.Current = Cursors.WaitCursor;
-                queryWorker.RunWorkerAsync(new SqlRunParameters(connStringBuilder, getSqlToRun()));
+                queryWorker.RunWorkerAsync(new SqlRunParameters(connStringBuilder, getSqlToRun(), cmbResultsType.SelectedItem.ToString()));
             }
         }
 
@@ -72,11 +77,23 @@ namespace TSqlFlex
             return txtSqlInput.Text;
         }
 
+        private static void renderAsXMLSpreadsheet(FlexResultSet resultSet, StringBuilder sb)
+        {
+            sb.Append(Utils.GetResourceByName("TSqlFlex.Core.Resources.XMLSpreadsheetTemplateHeader.txt"));
+            for (int i = 0; i < resultSet.results.Count; i++)
+            {
+                sb.Append(String.Format("<Worksheet ss:Name=\"Sheet{0}\">", i + 1));
+                sb.Append("</Worksheet>");
+            }
+            sb.Append("</Workbook>\r\n");
+            Debug.Print(sb.ToString());
+        }
+
+
         private static void renderSchemaAndData(FlexResultSet resultSet, StringBuilder sb)
         {
             for (int i = 0; i < resultSet.results.Count; i++)
             {
-
                 if (resultSet.results[i].recordsAffected > 0)
                 {
                     sb.AppendLine(String.Format("--Records affected: {0:G}\r\n\r\n", resultSet.results[i].recordsAffected));
@@ -87,7 +104,7 @@ namespace TSqlFlex
 
                 if (resultSet.ResultIsRenderableAsScriptedData(i))
                 {
-                    sb.AppendLine(resultSet.ScriptResultDataAsInsert(i, "#Result" + (i + 1).ToString()));
+                    sb.AppendLine(resultSet.ScriptResultDataAsInsert(i, "#Result" + (i + 1).ToString()).ToString());
                 }
                 
                 sb.Append("\r\n");
@@ -138,6 +155,7 @@ namespace TSqlFlex
 
         private static void DoSqlQueryWork(System.ComponentModel.DoWorkEventArgs e, BackgroundWorker bw)
         {
+            FlexResultSet resultSet;
             var srp = (SqlRunParameters)e.Argument;
             bw.ReportProgress(1,"Opening connection...");
             using (SqlConnection conn = new SqlConnection(srp.connStringBuilder.ConnectionString))
@@ -156,29 +174,36 @@ namespace TSqlFlex
                     return;
                 }
 
-                FlexResultSet resultSet = FlexResultSet.AnalyzeResultWithRollback(conn, srp.sqlToRun, bw);
-
-                if (bw.CancellationPending)
-                {
-                    e.Cancel = true;
-                    return;
-                }
-
-                bw.ReportProgress(90, "Scripting results...");
-                var sb = new StringBuilder();
-                renderExceptions(resultSet, sb);
-
-                if (bw.CancellationPending)
-                {
-                    e.Cancel = true;
-                    return;
-                }
-
-                bw.ReportProgress(92, "Scripting results...");
-                renderSchemaAndData(resultSet, sb);
-
-                e.Result = sb.ToString();
+                resultSet = FlexResultSet.AnalyzeResultWithRollback(conn, srp.sqlToRun, bw);
+                conn.Close();
             }
+            if (bw.CancellationPending)
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            bw.ReportProgress(90, "Scripting results...");
+            var sb = new StringBuilder();
+            renderExceptions(resultSet, sb);
+
+            if (bw.CancellationPending)
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            bw.ReportProgress(92, "Scripting results...");
+            if (srp.outputType == SqlRunParameters.TO_INSERT_STATEMENTS)
+            {
+                renderSchemaAndData(resultSet, sb);
+            }
+            else if (srp.outputType == SqlRunParameters.TO_XML_SPREADSHEET)
+            {
+                renderAsXMLSpreadsheet(resultSet, sb);
+            }
+
+            e.Result = sb.ToString();
         }
 
         private void queryWorker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
@@ -246,7 +271,15 @@ namespace TSqlFlex
             else
             {
                 progressText = "Complete.";
-                txtOutput.Text = (string)e.Result;
+                if (cmbResultsType.SelectedItem.ToString() == SqlRunParameters.TO_INSERT_STATEMENTS)
+                {
+                    txtOutput.Text = (string)e.Result;
+                }
+                else if (cmbResultsType.SelectedItem.ToString() == SqlRunParameters.TO_XML_SPREADSHEET)
+                {
+                    MessageBox.Show("To be implemented.");
+                }
+                
             }
             
             setProgressText(true);

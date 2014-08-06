@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Text;
 using Microsoft.SqlServer.Types;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace TSqlFlex.Core
 {
@@ -209,16 +210,16 @@ namespace TSqlFlex.Core
             return (r.schema != null && r.data != null && r.data.Count > 0);
         }
 
-        public string ScriptResultDataAsInsert(int resultIndex, string tableName)
+        public StringBuilder ScriptResultDataAsInsert(int resultIndex, string tableName)
         {
             if (!ResultIsRenderableAsCreateTable(resultIndex))
             {
-                return "--No schema for result from query.";
+                return new StringBuilder("--No schema for result from query.");
             }
             
             if (!ResultIsRenderableAsScriptedData(resultIndex))
             {
-                return "--No rows were returned from the query.";
+                return new StringBuilder("--No rows were returned from the query.");
             }
 
             var schema = results[resultIndex].schema;
@@ -226,12 +227,17 @@ namespace TSqlFlex.Core
             return scriptDataAsInsertForSQL2008Plus(tableName, schema, data);
         }
 
-        private static string scriptDataAsInsertForSQL2008Plus(string tableName, DataTable schema, List<object[]> data)
+        private static StringBuilder scriptDataAsInsertForSQL2008Plus(string tableName, DataTable schema, List<object[]> data)
         {
+            const int INITIAL_CAPACITY = 50000; //This is small enough that it won't matter, but big enough to ensure minimal initial resizes.
+            int calibrateBufferCapacityAfterRow = 0;
+
             int columnCount = schema.Rows.Count;
             int rowCount = data.Count;
+            
 
-            StringBuilder buffer = new StringBuilder();
+            StringBuilder buffer = new StringBuilder(INITIAL_CAPACITY);
+            
 
             for (int rowIndex = 0; rowIndex < rowCount; rowIndex++)
             {
@@ -256,9 +262,51 @@ namespace TSqlFlex.Core
                 {
                     buffer.Append("),\r\n");
                 }
+                
+                if (rowIndex == calibrateBufferCapacityAfterRow && rowIndex + 1 < rowCount)
+                {
+                    //We are going to attempt to ensure there is an appropriate capacity to
+                    // minimize the number of capacity adjustments required.
+
+                    const int CHARACTERS_IN_INSERT_BLOCK = 27;
+                    const double TEN_PERCENT_SLACK = 1.1;
+
+                    int singleInsertLineLength = CHARACTERS_IN_INSERT_BLOCK + tableName.Length;
+                    int averageDataRowLength = (buffer.Length - singleInsertLineLength) / (rowIndex + 1);
+
+                    int totalInsertLineLengths = singleInsertLineLength * rowCount / 100;
+                    int totalDataRowLengths = (Int32)(averageDataRowLength * rowCount * TEN_PERCENT_SLACK);
+
+                    int newCapacity = totalInsertLineLengths + totalDataRowLengths;
+
+                    if (newCapacity > buffer.Capacity)
+                    {
+                        buffer.EnsureCapacity(newCapacity);
+                    }
+
+
+                    //re-evaluate after the first "calibrateBufferCapacityAfterRow" rows to hopefully get a better average.
+                    if (calibrateBufferCapacityAfterRow == 0)
+                    {
+                        calibrateBufferCapacityAfterRow = 99; 
+                    }
+                    else if (calibrateBufferCapacityAfterRow == 99)
+                    {
+                        calibrateBufferCapacityAfterRow = 999; 
+                    }
+                    else if (calibrateBufferCapacityAfterRow == 999)
+                    {
+                        calibrateBufferCapacityAfterRow = 9999;
+                    }
+                    else
+                    {
+                        calibrateBufferCapacityAfterRow = -1; //no more re-evaluations.
+                    }
+                }
             }
 
-            return buffer.ToString();
+
+            return buffer;
         }
 
         //todo: may need some refactoring :-)

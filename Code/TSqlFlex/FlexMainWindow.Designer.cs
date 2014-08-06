@@ -38,6 +38,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.txtSqlInput = new System.Windows.Forms.TextBox();
             this.panelBottom = new System.Windows.Forms.Panel();
+            this.cmbResultsType = new System.Windows.Forms.ComboBox();
             this.lblProgress = new System.Windows.Forms.Label();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.queryProgress = new System.Windows.Forms.ProgressBar();
@@ -155,6 +156,7 @@
             // 
             // panelBottom
             // 
+            this.panelBottom.Controls.Add(this.cmbResultsType);
             this.panelBottom.Controls.Add(this.lblProgress);
             this.panelBottom.Controls.Add(this.cmdCancel);
             this.panelBottom.Controls.Add(this.queryProgress);
@@ -168,10 +170,18 @@
             this.panelBottom.Size = new System.Drawing.Size(1112, 272);
             this.panelBottom.TabIndex = 1;
             // 
+            // cmbResultsType
+            // 
+            this.cmbResultsType.FormattingEnabled = true;
+            this.cmbResultsType.Location = new System.Drawing.Point(3, 5);
+            this.cmbResultsType.Name = "cmbResultsType";
+            this.cmbResultsType.Size = new System.Drawing.Size(155, 21);
+            this.cmbResultsType.TabIndex = 11;
+            // 
             // lblProgress
             // 
             this.lblProgress.AutoSize = true;
-            this.lblProgress.Location = new System.Drawing.Point(275, 8);
+            this.lblProgress.Location = new System.Drawing.Point(423, 10);
             this.lblProgress.Name = "lblProgress";
             this.lblProgress.Size = new System.Drawing.Size(41, 13);
             this.lblProgress.TabIndex = 9;
@@ -180,7 +190,7 @@
             // cmdCancel
             // 
             this.cmdCancel.Enabled = false;
-            this.cmdCancel.Location = new System.Drawing.Point(194, 3);
+            this.cmdCancel.Location = new System.Drawing.Point(342, 5);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 7;
@@ -190,9 +200,9 @@
             // 
             // queryProgress
             // 
-            this.queryProgress.Location = new System.Drawing.Point(110, 8);
+            this.queryProgress.Location = new System.Drawing.Point(271, 10);
             this.queryProgress.Name = "queryProgress";
-            this.queryProgress.Size = new System.Drawing.Size(78, 13);
+            this.queryProgress.Size = new System.Drawing.Size(65, 13);
             this.queryProgress.TabIndex = 6;
             // 
             // btnCopyToClipboard
@@ -224,7 +234,7 @@
             // 
             // cmdRunNRollback
             // 
-            this.cmdRunNRollback.Location = new System.Drawing.Point(3, 3);
+            this.cmdRunNRollback.Location = new System.Drawing.Point(164, 5);
             this.cmdRunNRollback.Name = "cmdRunNRollback";
             this.cmdRunNRollback.Size = new System.Drawing.Size(101, 23);
             this.cmdRunNRollback.TabIndex = 1;
@@ -281,5 +291,6 @@
         private System.Windows.Forms.ProgressBar queryProgress;
         private System.Windows.Forms.Label lblProgress;
         private System.Windows.Forms.Timer queryTimer;
+        private System.Windows.Forms.ComboBox cmbResultsType;
     }
 }
