@@ -26,9 +26,7 @@
   </Style>
  </Styles>
  <Worksheet ss:Name="Sheet1">
-  <Table ss:ExpandedColumnCount="4" ss:ExpandedRowCount="4" x:FullColumns="1"
-   x:FullRows="1" ss:DefaultRowHeight="15">
-   <Column ss:Index="3" ss:Width="72.75"/>
+  <Table ss:ExpandedColumnCount="4" ss:ExpandedRowCount="4" x:FullColumns="1" x:FullRows="1" ss:DefaultRowHeight="15">
    <Row>
     <Cell ss:StyleID="s62"><Data ss:Type="String">Column1</Data></Cell>
     <Cell ss:StyleID="s62"><Data ss:Type="String">Column2</Data></Cell>
@@ -53,6 +51,7 @@
     <Cell ss:StyleID="s63"><Data ss:Type="DateTime">2004-03-03T16:30:00.000</Data></Cell>
     <Cell ss:StyleID="s64"><Data ss:Type="String">000345</Data></Cell>
    </Row>
+  
   </Table>
  </Worksheet>
 </Workbook>
