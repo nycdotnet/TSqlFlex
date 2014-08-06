@@ -11,7 +11,7 @@ namespace TSqlFlex.Core
 {
     public class FlexResultSet
     {
-        enum FieldInfo : int
+        public enum FieldInfo : int
         {
             Name = 0,
             FieldLength = 2,

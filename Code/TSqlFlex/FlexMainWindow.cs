@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
@@ -82,11 +83,57 @@ namespace TSqlFlex
             sb.Append(Utils.GetResourceByName("TSqlFlex.Core.Resources.XMLSpreadsheetTemplateHeader.txt"));
             for (int i = 0; i < resultSet.results.Count; i++)
             {
+                var result = resultSet.results[i];
+                int columnCount = result.schema.Rows.Count; //you find the column count by counting the rows in the schema.
+
                 sb.Append(String.Format("<Worksheet ss:Name=\"Sheet{0}\">", i + 1));
-                sb.Append("</Worksheet>");
+                sb.Append(String.Format("<Table ss:ExpandedColumnCount=\"{0}\" ss:ExpandedRowCount=\"{1}\" x:FullColumns=\"1\" x:FullRows=\"1\" ss:DefaultRowHeight=\"15\">",
+                    columnCount,
+                    result.data.Count + 1 /* include header row */)
+                    );
+
+                //do header
+                sb.Append("<Row>");
+                for (int colIndex = 0; colIndex < columnCount; colIndex += 1)
+                {
+                    sb.Append(String.Format("<Cell ss:StyleID=\"s62\"><Data ss:Type=\"String\">{0}</Data></Cell>", escapeForXML((string)result.schema.Rows[colIndex].ItemArray[(int)TSqlFlex.Core.FlexResultSet.FieldInfo.Name])));
+                }
+                sb.Append("</Row>");
+
+                //do data rows
+                for (int rowIndex = 0; rowIndex < result.data.Count; rowIndex += 1)
+                {
+                    sb.Append("<Row>");
+                    for (int colIndex = 0; colIndex < columnCount; colIndex += 1) {
+                        string fieldTypeName = result.schema.Rows[colIndex].ItemArray[(int)TSqlFlex.Core.FlexResultSet.FieldInfo.DataType].ToString();
+                        if (fieldTypeName == "bigint" || fieldTypeName == "numeric" || fieldTypeName == "smallint" || fieldTypeName == "decimal" || fieldTypeName == "smallmoney" ||
+                            fieldTypeName == "int" || fieldTypeName == "tinyint" || fieldTypeName == "float" || fieldTypeName == "real" || fieldTypeName == "money")
+                        {
+                            sb.Append(String.Format("<Cell><Data ss:Type=\"Number\">{0}</Data></Cell>\r\n", escapeForXML(result.data[rowIndex][colIndex].ToString())));
+                        }
+                        else if (fieldTypeName == "date" || fieldTypeName == "datetime2" || fieldTypeName == "time" || fieldTypeName == "datetime" ||
+                            fieldTypeName == "smalldatetime")
+                        {
+                            DateTime d = (DateTime)result.data[rowIndex][colIndex];
+                            sb.Append(String.Format("<Cell ss:StyleID=\"s63\"><Data ss:Type=\"DateTime\">{0}</Data></Cell>\r\n", escapeForXML(d.ToString("yyyy-MM-ddTHH:mm:ss.fff"))));
+                        }
+                        else
+                        {
+                            sb.Append(String.Format("<Cell ss:StyleID=\"s64\"><Data ss:Type=\"String\">{0}</Data></Cell>\r\n", escapeForXML(result.data[rowIndex][colIndex].ToString())));
+                        }
+                        
+                    }
+                    sb.Append("</Row>");
+                }
+
+                sb.Append("</Table></Worksheet>");
             }
             sb.Append("</Workbook>\r\n");
-            Debug.Print(sb.ToString());
+        }
+
+        private static string escapeForXML(string input)
+        {
+            return input.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\"","&quot;").Replace("'","&apos;");
         }
 
 
@@ -277,7 +324,14 @@ namespace TSqlFlex
                 }
                 else if (cmbResultsType.SelectedItem.ToString() == SqlRunParameters.TO_XML_SPREADSHEET)
                 {
-                    MessageBox.Show("To be implemented.");
+                    string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "TSqlFlex" + DateTime.Now.ToString("_yyyyMMddTHHmmss") + ".xml");
+                    using (StreamWriter sw = new StreamWriter(File.Open(fileName, FileMode.Create), Encoding.UTF8))
+                    {
+                        sw.WriteLine((string)e.Result);
+                        sw.Flush();
+                        sw.Close();
+                    }
+                    txtOutput.Text = "--Results written to \"" + fileName + "\".\n\n--You can open this file in Excel.";
                 }
                 
             }

@@ -103,7 +103,7 @@
             // 
             this.lblVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVersion.AutoSize = true;
-            this.lblVersion.Location = new System.Drawing.Point(996, 12);
+            this.lblVersion.Location = new System.Drawing.Point(1008, 12);
             this.lblVersion.Name = "lblVersion";
             this.lblVersion.Size = new System.Drawing.Size(41, 13);
             this.lblVersion.TabIndex = 5;
@@ -175,13 +175,13 @@
             this.cmbResultsType.FormattingEnabled = true;
             this.cmbResultsType.Location = new System.Drawing.Point(3, 5);
             this.cmbResultsType.Name = "cmbResultsType";
-            this.cmbResultsType.Size = new System.Drawing.Size(155, 21);
+            this.cmbResultsType.Size = new System.Drawing.Size(192, 21);
             this.cmbResultsType.TabIndex = 11;
             // 
             // lblProgress
             // 
             this.lblProgress.AutoSize = true;
-            this.lblProgress.Location = new System.Drawing.Point(423, 10);
+            this.lblProgress.Location = new System.Drawing.Point(460, 10);
             this.lblProgress.Name = "lblProgress";
             this.lblProgress.Size = new System.Drawing.Size(41, 13);
             this.lblProgress.TabIndex = 9;
@@ -190,7 +190,7 @@
             // cmdCancel
             // 
             this.cmdCancel.Enabled = false;
-            this.cmdCancel.Location = new System.Drawing.Point(342, 5);
+            this.cmdCancel.Location = new System.Drawing.Point(379, 5);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 7;
@@ -200,7 +200,7 @@
             // 
             // queryProgress
             // 
-            this.queryProgress.Location = new System.Drawing.Point(271, 10);
+            this.queryProgress.Location = new System.Drawing.Point(308, 10);
             this.queryProgress.Name = "queryProgress";
             this.queryProgress.Size = new System.Drawing.Size(65, 13);
             this.queryProgress.TabIndex = 6;
@@ -234,7 +234,7 @@
             // 
             // cmdRunNRollback
             // 
-            this.cmdRunNRollback.Location = new System.Drawing.Point(164, 5);
+            this.cmdRunNRollback.Location = new System.Drawing.Point(201, 5);
             this.cmdRunNRollback.Name = "cmdRunNRollback";
             this.cmdRunNRollback.Size = new System.Drawing.Size(101, 23);
             this.cmdRunNRollback.TabIndex = 1;
