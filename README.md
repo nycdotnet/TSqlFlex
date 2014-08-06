@@ -39,3 +39,6 @@ Please create issues on GitHub or reach out to Steve on Twitter at [@nycdotnet](
   * v0.0.3-alpha (2014-06-13): Fixed data script escaping bug for single quotes.
   * v0.0.2-alpha (2014-06-11): Data scripting implemented.  Improved window.
   * v0.0.1-alpha (2014-06-01): Initial release.  Schema scripting working.
+
+**Debugging an add-in:**
+  * See the Red Gate document on this issue: http://documentation.red-gate.com/display/MA/Debugging+an+SSMS+addin
