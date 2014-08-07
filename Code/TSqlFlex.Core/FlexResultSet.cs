@@ -11,13 +11,6 @@ namespace TSqlFlex.Core
 {
     public class FlexResultSet
     {
-        public enum FieldInfo : int
-        {
-            Name = 0,
-            FieldLength = 2,
-            AllowsNulls = 13,
-            DataType = 24
-        }
 
         public const int SQL2008MaxRowsInValuesClause = 100;
 
@@ -186,12 +179,12 @@ namespace TSqlFlex.Core
             {
                 var fieldInfo = rows[fieldIndex];
                 buffer.Append("    " +
-                        FieldNameOrDefault(fieldInfo.ItemArray, fieldIndex) +
+                        FieldScripting.FieldNameOrDefault(fieldInfo.ItemArray, fieldIndex) +
                         " " +
-                        DataType(fieldInfo) +
-                        DataTypeParameterIfAny(fieldInfo) + 
+                        FieldScripting.DataTypeName(fieldInfo) +
+                        FieldScripting.DataTypeParameterIfAny(fieldInfo) + 
                         " " +
-                        NullOrNotNull(fieldInfo.ItemArray[(int)FieldInfo.AllowsNulls])
+                        FieldScripting.NullOrNotNull(fieldInfo.ItemArray[(int)FieldScripting.FieldInfo.AllowsNulls])
                         );
                 if (fieldIndex + 1 < rows.Count)
                 {
@@ -317,7 +310,7 @@ namespace TSqlFlex.Core
                 return "NULL";
             }
 
-            var fieldTypeName = fieldInfo[(int)FieldInfo.DataType].ToString();
+            var fieldTypeName = fieldInfo[(int)FieldScripting.FieldInfo.DataType].ToString();
 
             if (fieldTypeName == "char")
             {
@@ -644,7 +637,7 @@ namespace TSqlFlex.Core
         {
             byte[] ba = (byte[])data;
             string bitsAsHexString = BitConverter.ToString(ba).Replace("-", "");
-            int charCountToShowAsHex = (int)fieldInfo[(int)FieldInfo.FieldLength] * 2;
+            int charCountToShowAsHex = (int)fieldInfo[(int)FieldScripting.FieldInfo.FieldLength] * 2;
             bitsAsHexString = bitsAsHexString.PadLeft(charCountToShowAsHex, '0');
             return "0x" + bitsAsHexString;
         }
@@ -669,99 +662,7 @@ namespace TSqlFlex.Core
             return "'" + data.ToString().Replace("'", "''").TrimEnd() + "'";
         }
 
-        public static string FieldNameOrDefault(object[] fieldInfo, int fieldIndex)
-        {
-            var r = fieldInfo[(int)FieldInfo.Name].ToString();
-            if (r.Length == 0)
-            {
-                return "anonymousColumn" + (fieldIndex + 1).ToString();
-            }
-            if (TSqlRules.IsReservedWord(r))
-            {
-                return "[" + r + "]";
-            }
-            return r; //bug: possibly need to escape [ or ] in field names?
-        }
+        
 
-        private string DataType(DataRow fieldInfo)
-        {
-            var fieldTypeName = fieldInfo[(int)FieldInfo.DataType].ToString();
-            if (fieldTypeName == "real")
-            {
-                return "float";  //this could be a float or a real.  There is no simple way to tell via ado.net.  Will try to keep it consistent with float.
-            }
-            else if (fieldTypeName.EndsWith(".sys.hierarchyid"))
-            {
-                return "hierarchyid";
-            }
-            else if (fieldTypeName.EndsWith(".sys.geography"))
-            {
-                return "geography";
-            }
-            else if (fieldTypeName.EndsWith(".sys.geometry"))
-            {
-                return "geometry"; 
-            }
-            return fieldTypeName;
-        }
-
-        private string DataTypeParameterIfAny(DataRow fieldInfo)
-        {
-            var dataTypeName = fieldInfo[(int)FieldInfo.DataType].ToString();
-            if (dataTypeName == "nvarchar" || dataTypeName == "varchar" || dataTypeName == "nchar" || dataTypeName == "char" || dataTypeName == "binary" || dataTypeName == "varbinary")
-            {
-                int columnSize = (int)fieldInfo[2];
-                if (columnSize == Int32.MaxValue)
-                {
-                    return "(MAX)";
-                }
-                return "(" + columnSize.ToString() + ")";
-            }
-            else if (dataTypeName == "numeric" || dataTypeName == "decimal")
-            {
-                int numericPrecision = (short)fieldInfo[3];
-                int numericScale = (short)fieldInfo[4];
-                return "(" + numericPrecision.ToString() + "," + numericScale.ToString() + ")";
-            }
-            else if (dataTypeName == "real")
-            {
-                return "(24)";
-            }
-            else if (dataTypeName == "float")
-            {
-                //from MSDN: SQL Server treats n as one of two possible values. If 1<=n<=24, n is treated as 24. If 25<=n<=53, n is treated as 53.
-                return "(53)";
-            }
-            else if (dataTypeName == "datetimeoffset" || dataTypeName == "time")
-            {
-                int numericPrecision = (short)fieldInfo[4];
-                //see: http://msdn.microsoft.com/en-us/library/bb630289.aspx
-                
-                if (numericPrecision <= 2 )
-                {
-                    return "(2)";
-                }
-                if (numericPrecision <=4)
-                {
-                    return "(4)";
-                }
-                return "";
-            }
-            return "";
-        }
-
-        public string NullOrNotNull(Object allowDbNull)
-        {
-            bool allowDBNullFlag;
-            if (bool.TryParse(allowDbNull.ToString(), out allowDBNullFlag))
-            {
-                if (allowDBNullFlag)
-                {
-                    return "NULL";
-                }
-                return "NOT NULL";
-            }
-            return "NULL"; //safer default for our purposes.  This is unlikely to be hit anyway.
-        }
     }
 }

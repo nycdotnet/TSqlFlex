@@ -95,7 +95,7 @@ namespace TSqlFlex
                 sb.Append("<Row>");
                 for (int colIndex = 0; colIndex < columnCount; colIndex += 1)
                 {
-                    sb.Append(String.Format("<Cell ss:StyleID=\"s62\"><Data ss:Type=\"String\">{0}</Data></Cell>", escapeForXML((string)result.schema.Rows[colIndex].ItemArray[(int)TSqlFlex.Core.FlexResultSet.FieldInfo.Name])));
+                    sb.Append(String.Format("<Cell ss:StyleID=\"s62\"><Data ss:Type=\"String\">{0}</Data></Cell>", escapeForXML((string)result.schema.Rows[colIndex].ItemArray[(int)FieldScripting.FieldInfo.Name])));
                 }
                 sb.Append("</Row>");
 
@@ -105,7 +105,7 @@ namespace TSqlFlex
                     sb.Append("<Row>");
                     for (int colIndex = 0; colIndex < columnCount; colIndex += 1) {
                         object fieldData = result.data[rowIndex][colIndex];
-                        string fieldTypeName = result.schema.Rows[colIndex].ItemArray[(int)TSqlFlex.Core.FlexResultSet.FieldInfo.DataType].ToString();
+                        string fieldTypeName = result.schema.Rows[colIndex].ItemArray[(int)FieldScripting.FieldInfo.DataType].ToString();
                         if (fieldData == null || fieldData is DBNull)
                         {
                             sb.Append("<Cell/>");

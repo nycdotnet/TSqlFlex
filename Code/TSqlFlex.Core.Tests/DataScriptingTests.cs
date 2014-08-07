@@ -695,7 +695,7 @@ namespace TSqlFlex.Core.Tests
             var fieldInfo = SchemaScriptingTests.FakeColumn(fieldName, "test", 32, "int", false, 0, 0);
 
             Assert.AreEqual(true, TSqlRules.IsReservedWord(fieldName));
-            Assert.AreEqual("[Drop]", FlexResultSet.FieldNameOrDefault(fieldInfo,0));
+            Assert.AreEqual("[Drop]", FieldScripting.FieldNameOrDefault(fieldInfo,0));
 
         }
 
@@ -707,7 +707,7 @@ namespace TSqlFlex.Core.Tests
             var fieldInfo = SchemaScriptingTests.FakeColumn(fieldName, "test", 32, "int", false, 0, 0);
 
             Assert.AreEqual(false, TSqlRules.IsReservedWord(fieldName));
-            Assert.AreEqual("TestColumnName", FlexResultSet.FieldNameOrDefault(fieldInfo, 0));
+            Assert.AreEqual("TestColumnName", FieldScripting.FieldNameOrDefault(fieldInfo, 0));
 
         }
 
@@ -719,7 +719,7 @@ namespace TSqlFlex.Core.Tests
             var fieldInfo = SchemaScriptingTests.FakeColumn(fieldName, "test", 32, "int", false, 0, 0);
 
             Assert.AreEqual(false, TSqlRules.IsReservedWord(fieldName));
-            Assert.AreEqual("anonymousColumn1", FlexResultSet.FieldNameOrDefault(fieldInfo, 0));
+            Assert.AreEqual("anonymousColumn1", FieldScripting.FieldNameOrDefault(fieldInfo, 0));
 
         }
 

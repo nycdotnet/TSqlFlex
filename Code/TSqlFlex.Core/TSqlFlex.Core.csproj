@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FieldScripting.cs" />
     <Compile Include="FlexResult.cs" />
     <Compile Include="FlexResultSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
