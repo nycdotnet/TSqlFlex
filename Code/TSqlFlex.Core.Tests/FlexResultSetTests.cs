@@ -25,7 +25,7 @@ namespace TSqlFlex.Core.Tests
 
             fsr.results.Add(new FlexResult());
 
-            Assert.AreEqual("--No schema for result from query.", fsr.ScriptResultDataAsInsert(0, "#result0"));
+            Assert.AreEqual("--No schema for result from query.", fsr.ScriptResultDataAsInsert(0, "#result0").ToString());
         }
 
         [Test()]
@@ -42,7 +42,7 @@ namespace TSqlFlex.Core.Tests
             fsr.results[0].schema = dt;
             fsr.results[0].data = new List<object[]>();
 
-            Assert.AreEqual("--No rows were returned from the query.", fsr.ScriptResultDataAsInsert(0, "#result0"));
+            Assert.AreEqual("--No rows were returned from the query.", fsr.ScriptResultDataAsInsert(0, "#result0").ToString());
         }
     }
 }
