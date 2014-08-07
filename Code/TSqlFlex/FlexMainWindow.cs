@@ -17,8 +17,6 @@ namespace TSqlFlex
         private Stopwatch sqlStopwatch = null;
         private string progressText = "";
 
-        
-
         public FlexMainWindow()
         {
             InitializeComponent();
@@ -80,6 +78,7 @@ namespace TSqlFlex
 
         private static void renderAsXMLSpreadsheet(FlexResultSet resultSet, StringBuilder sb)
         {
+            //todo: refactor this and FlexResultSet to to share code and have test coverage.
             sb.Append(Utils.GetResourceByName("TSqlFlex.Core.Resources.XMLSpreadsheetTemplateHeader.txt"));
             for (int i = 0; i < resultSet.results.Count; i++)
             {
@@ -105,17 +104,23 @@ namespace TSqlFlex
                 {
                     sb.Append("<Row>");
                     for (int colIndex = 0; colIndex < columnCount; colIndex += 1) {
+                        object fieldData = result.data[rowIndex][colIndex];
                         string fieldTypeName = result.schema.Rows[colIndex].ItemArray[(int)TSqlFlex.Core.FlexResultSet.FieldInfo.DataType].ToString();
-                        if (fieldTypeName == "bigint" || fieldTypeName == "numeric" || fieldTypeName == "smallint" || fieldTypeName == "decimal" || fieldTypeName == "smallmoney" ||
+                        if (fieldData == null || fieldData is DBNull)
+                        {
+                            sb.Append("<Cell/>");
+                        }
+                        else if (fieldTypeName == "bigint" || fieldTypeName == "numeric" || fieldTypeName == "smallint" || fieldTypeName == "decimal" || fieldTypeName == "smallmoney" ||
                             fieldTypeName == "int" || fieldTypeName == "tinyint" || fieldTypeName == "float" || fieldTypeName == "real" || fieldTypeName == "money")
                         {
-                            sb.Append(String.Format("<Cell><Data ss:Type=\"Number\">{0}</Data></Cell>\r\n", escapeForXML(result.data[rowIndex][colIndex].ToString())));
+                            sb.Append(String.Format("<Cell><Data ss:Type=\"Number\">{0}</Data></Cell>\r\n", escapeForXML(fieldData.ToString())));
                         }
                         else if (fieldTypeName == "date" || fieldTypeName == "datetime2" || fieldTypeName == "time" || fieldTypeName == "datetime" ||
                             fieldTypeName == "smalldatetime")
                         {
-                            DateTime d = (DateTime)result.data[rowIndex][colIndex];
-                            sb.Append(String.Format("<Cell ss:StyleID=\"s63\"><Data ss:Type=\"DateTime\">{0}</Data></Cell>\r\n", escapeForXML(d.ToString("yyyy-MM-ddTHH:mm:ss.fff"))));
+                            sb.Append(String.Format("<Cell ss:StyleID=\"s63\"><Data ss:Type=\"DateTime\">{0}</Data></Cell>\r\n", escapeForXML(
+                                ((DateTime)fieldData).ToString("yyyy-MM-ddTHH:mm:ss.fff")
+                                )));
                         }
                         else
                         {
@@ -135,7 +140,6 @@ namespace TSqlFlex
         {
             return input.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\"","&quot;").Replace("'","&apos;");
         }
-
 
         private static void renderSchemaAndData(FlexResultSet resultSet, StringBuilder sb)
         {
@@ -331,7 +335,7 @@ namespace TSqlFlex
                         sw.Flush();
                         sw.Close();
                     }
-                    txtOutput.Text = "--Results written to \"" + fileName + "\".\n\n--You can open this file in Excel.";
+                    txtOutput.Text = "--Results written to \"" + fileName + "\".\r\n\r\n--You can open this file in Excel.";
                 }
                 
             }

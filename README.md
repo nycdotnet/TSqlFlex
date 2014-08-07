@@ -32,6 +32,8 @@ T-SQL Flex should be able to script out the returned schema and data of any T-SQ
 Please create issues on GitHub or reach out to Steve on Twitter at [@nycdotnet](https://twitter.com/nycdotnet).
 
 **Patch notes:**
+  * v0.0.5-alpha (2014-08-07):
+      * Export to "XML Spreadsheet 2003" functionality added - this is very early alpha for this feature.
   * v0.0.4-alpha (2014-06-18):
       * Converted to background worker.  Added cancel button, timer, and progress bar.
 	  * Additional scripted output "minification" improvements (dropping insignificant decimals for example).
