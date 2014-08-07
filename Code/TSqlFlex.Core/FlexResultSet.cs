@@ -160,16 +160,11 @@ namespace TSqlFlex.Core
             }
         }
 
-        public Boolean ResultIsRenderableAsCreateTable(int resultIndex)
-        {
-            return (results[resultIndex].schema != null);
-        }
-        
         public string ScriptResultAsCreateTable(int resultIndex, string tableName)
         {
             //todo: columnnames must be unique in a table.  It's possible to have a result set with duplicate column names, but not a table.
             //todo: bug with SELECT * FROM INFORMATION_SCHEMA.Tables - possibly hidden fields??
-            if (!ResultIsRenderableAsCreateTable(resultIndex))
+            if (!FieldScripting.ResultIsRenderableAsCreateTable(results[resultIndex]))
             {
                 return "--No schema for result from query.";
             }
@@ -195,29 +190,6 @@ namespace TSqlFlex.Core
             }
             buffer.Append(");\r\n");
             return buffer.ToString();
-        }
-
-        public Boolean ResultIsRenderableAsScriptedData(int resultIndex)
-        {
-            var r = results[resultIndex];
-            return (r.schema != null && r.data != null && r.data.Count > 0);
-        }
-
-        public StringBuilder ScriptResultDataAsInsert(int resultIndex, string tableName)
-        {
-            if (!ResultIsRenderableAsCreateTable(resultIndex))
-            {
-                return new StringBuilder("--No schema for result from query.");
-            }
-            
-            if (!ResultIsRenderableAsScriptedData(resultIndex))
-            {
-                return new StringBuilder("--No rows were returned from the query.");
-            }
-
-            var schema = results[resultIndex].schema;
-            var data = results[resultIndex].data;
-            return FieldScripting.scriptDataAsInsertForSQL2008Plus(tableName, schema, data, SQL2008MaxRowsInValuesClause);
         }
 
     }

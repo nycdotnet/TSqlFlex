@@ -275,10 +275,12 @@ namespace TSqlFlex.Core.Tests
             object data = baseData;
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "smalldatetime", false, 0, 0);
             Assert.AreEqual("'2000-10-31T02:33:00'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "smalldatetime");
+            Assert.AreEqual("2000-10-31T02:33:00", FieldScripting.formatSmallDateTime(data, false), "smalldatetime");
 
             baseData = new DateTime(2000, 10, 31, 0, 0, 0);
             data = baseData;
             Assert.AreEqual("'2000-10-31'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "midnight omits time altogether");
+            Assert.AreEqual("2000-10-31", FieldScripting.formatSmallDateTime(data, false), "midnight omits time altogether");
         }
 
         [Test()]
@@ -288,18 +290,22 @@ namespace TSqlFlex.Core.Tests
             object data = baseData;
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "datetime", false, 0, 0);
             Assert.AreEqual("'2000-10-31T02:33:44'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "datetime no fractional seconds");
+            Assert.AreEqual("2000-10-31T02:33:44", FieldScripting.formatDateTime(data, false), "datetime no fractional seconds");
 
             baseData = baseData.AddTicks(1230000);
             data = baseData;
             Assert.AreEqual("'2000-10-31T02:33:44.123'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "datetime fractional seconds");
+            Assert.AreEqual("2000-10-31T02:33:44.123", FieldScripting.formatDateTime(data, false), "datetime fractional seconds");
 
             baseData = baseData = new DateTime(2000, 10, 31, 2, 33, 44).AddMilliseconds(100);
             data = baseData;
             Assert.AreEqual("'2000-10-31T02:33:44.1'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "partial fractional seconds");
+            Assert.AreEqual("2000-10-31T02:33:44.1", FieldScripting.formatDateTime(data, false), "partial fractional seconds");
 
             baseData = new DateTime(2000, 10, 31, 0, 0, 0);
             data = baseData;
             Assert.AreEqual("'2000-10-31'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "midnight omits time altogether");
+            Assert.AreEqual("2000-10-31", FieldScripting.formatDateTime(data, false), "midnight omits time altogether");
         }
 
         [Test()]

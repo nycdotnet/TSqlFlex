@@ -254,19 +254,19 @@ namespace TSqlFlex.Core
             }
             else if (fieldTypeName == "datetime")
             {
-                return getDataAsDatetimeFormat(data);
+                return formatDateTime(data);
             }
             else if (fieldTypeName == "smalldatetime")
             {
-                return getDataAsSmalldatetimeFormat(data);
+                return formatSmallDateTime(data);
             }
             else if (fieldTypeName == "bit")
             {
-                return getDataAsBitFormat(data);
+                return formatBit(data);
             }
             else if (fieldTypeName == "varbinary" || fieldTypeName == "image")
             {
-                return getDataAsVarbinaryFormat(data);
+                return formatVarbinary(data);
             }
             else if (fieldTypeName == "uniqueidentifier")
             {
@@ -278,7 +278,7 @@ namespace TSqlFlex.Core
             }
             else if (fieldTypeName.EndsWith("hierarchyid"))
             {
-                return getDataAsHierarchyIdFormat(data);
+                return formatHierarchyId(data);
             }
             else if (fieldTypeName.EndsWith("geography"))
             {
@@ -358,7 +358,7 @@ namespace TSqlFlex.Core
             }
             else if (data is SqlHierarchyId)
             {
-                return getDataAsHierarchyIdFormat(data);
+                return formatHierarchyId(data);
             }
             else if (data is Guid)
             {
@@ -366,7 +366,7 @@ namespace TSqlFlex.Core
             }
             else if (data is byte[])
             {
-                return getDataAsVarbinaryFormat(data);
+                return formatVarbinary(data);
             }
             else if (data is DateTimeOffset)
             {
@@ -374,7 +374,7 @@ namespace TSqlFlex.Core
             }
             else if (data is DateTime)
             {
-                return getDataAsDatetimeFormat(data);
+                return formatDateTime(data);
             }
             else if (data is TimeSpan)
             {
@@ -382,7 +382,7 @@ namespace TSqlFlex.Core
             }
             else if (data is bool)
             {
-                return getDataAsBitFormat(data);
+                return formatBit(data);
             }
             else if (data is decimal || data is Double || data is Single)
             {
@@ -396,6 +396,15 @@ namespace TSqlFlex.Core
             //All numeric types
             return data.ToString();
 
+        }
+
+        public static string possiblyEncloseInQuotes(string theThing, bool useQuotes)
+        {
+            if (useQuotes)
+            {
+                return "'" + theThing + "'";
+            }
+            return theThing;
         }
 
         public static string formatGeometry(object data, bool forTSQLScript = true)
@@ -418,7 +427,7 @@ namespace TSqlFlex.Core
                 + (forTSQLScript ? ")" : "");
         }
 
-        public static string getDataAsHierarchyIdFormat(object data)
+        public static string formatHierarchyId(object data)
         {
             SqlHierarchyId hier = (SqlHierarchyId)data;
             byte[] ba;
@@ -435,20 +444,16 @@ namespace TSqlFlex.Core
         public static string formatGuid(object data, bool forTSQLScript = true)
         {
             Guid g = (Guid)data;
-            if (forTSQLScript)
-            {
-                return "'" + g.ToString("D").ToUpper() + "'";
-            }
-            return g.ToString("D").ToUpper();
+            return possiblyEncloseInQuotes(g.ToString("D").ToUpper(), forTSQLScript);
         }
 
-        public static string getDataAsVarbinaryFormat(object data)
+        public static string formatVarbinary(object data)
         {
             byte[] ba = (byte[])data;
             return "0x" + BitConverter.ToString(ba).Replace("-", "");
         }
 
-        public static string getDataAsBitFormat(object data)
+        public static string formatBit(object data)
         {
             if ((bool)data == true)
             {
@@ -457,28 +462,29 @@ namespace TSqlFlex.Core
             return "0";
         }
 
-        public static string getDataAsSmalldatetimeFormat(object data)
+        public static string formatSmallDateTime(object data, bool forTSQLScript = true)
         {
             DateTime d = (DateTime)data;
-            if (d.Hour == 0 && d.Minute == 0) //smalldatetime doesn't support seconds.
+            if (d.Hour == 0 && d.Minute == 0) //smalldatetime doesn't support seconds
             {
-                return "'" + d.ToString("yyyy-MM-dd") + "'";
+                return possiblyEncloseInQuotes(d.ToString("yyyy-MM-dd"), forTSQLScript);
             }
-            return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss") + "'";
+            //but the seconds are required if the time is in ISO string format...
+            return possiblyEncloseInQuotes(d.ToString("yyyy-MM-ddTHH:mm:ss"), forTSQLScript);
         }
 
-        public static string getDataAsDatetimeFormat(object data)
+        public static string formatDateTime(object data, bool forTSQLScript = true)
         {
             DateTime d = (DateTime)data;
             if (d.ToString("fff") == "000")
             {
                 if (d.Hour == 0 && d.Minute == 0 & d.Second == 0)
                 {
-                    return "'" + d.ToString("yyyy-MM-dd") + "'";
+                    return possiblyEncloseInQuotes(d.ToString("yyyy-MM-dd"), forTSQLScript);
                 }
-                return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss") + "'";
+                return possiblyEncloseInQuotes(d.ToString("yyyy-MM-ddTHH:mm:ss"), forTSQLScript);
             }
-            return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss.fff").TrimEnd('0') + "'";
+            return possiblyEncloseInQuotes(d.ToString("yyyy-MM-ddTHH:mm:ss.fff").TrimEnd('0'), forTSQLScript);
         }
 
 
@@ -572,6 +578,31 @@ namespace TSqlFlex.Core
         public static string getDataAsCharFormat(object data)
         {
             return "'" + data.ToString().Replace("'", "''").TrimEnd() + "'";
+        }
+
+        public static Boolean ResultIsRenderableAsCreateTable(FlexResult result)
+        {
+            return (result.schema != null);
+        }
+
+        public static Boolean ResultIsRenderableAsScriptedData(FlexResult result)
+        {
+            return (result.schema != null && result.data != null && result.data.Count > 0);
+        }
+
+        public static StringBuilder ScriptResultDataAsInsert(FlexResult result, string tableName, int maxRowsInValuesClause)
+        {
+            if (!ResultIsRenderableAsCreateTable(result))
+            {
+                return new StringBuilder("--No schema for result from query.");
+            }
+
+            if (!ResultIsRenderableAsScriptedData(result))
+            {
+                return new StringBuilder("--No rows were returned from the query.");
+            }
+
+            return scriptDataAsInsertForSQL2008Plus(tableName, result.schema, result.data, maxRowsInValuesClause);
         }
 
     }

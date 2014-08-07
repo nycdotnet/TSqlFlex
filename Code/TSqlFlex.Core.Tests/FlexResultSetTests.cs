@@ -23,9 +23,11 @@ namespace TSqlFlex.Core.Tests
 
             var dt = SchemaScriptingTests.FakeSchemaDataTable();
 
-            fsr.results.Add(new FlexResult());
+            var result = new FlexResult();
 
-            Assert.AreEqual("--No schema for result from query.", fsr.ScriptResultDataAsInsert(0, "#result0").ToString());
+            fsr.results.Add(result);
+
+            Assert.AreEqual("--No schema for result from query.", FieldScripting.ScriptResultDataAsInsert(result, "#result0", FlexResultSet.SQL2008MaxRowsInValuesClause).ToString());
         }
 
         [Test()]
@@ -38,11 +40,13 @@ namespace TSqlFlex.Core.Tests
             dt.LoadDataRow(SchemaScriptingTests.FakeColumn("IntNotNull", "MyStuff", 32, "int", false, 255, 255), false);
             dt.LoadDataRow(SchemaScriptingTests.FakeColumn("IntNull", "MyStuff", 32, "int", true, 255, 255), false);
 
-            fsr.results.Add(new FlexResult());
+            FlexResult result = new FlexResult();
+
+            fsr.results.Add(result);
             fsr.results[0].schema = dt;
             fsr.results[0].data = new List<object[]>();
 
-            Assert.AreEqual("--No rows were returned from the query.", fsr.ScriptResultDataAsInsert(0, "#result0").ToString());
+            Assert.AreEqual("--No rows were returned from the query.", FieldScripting.ScriptResultDataAsInsert(result, "#result0", FlexResultSet.SQL2008MaxRowsInValuesClause).ToString());
         }
     }
 }

@@ -153,9 +153,9 @@ namespace TSqlFlex
                 sb.AppendLine(resultSet.ScriptResultAsCreateTable(i, "#Result" + (i + 1).ToString()));
                 sb.Append("\r\n");
 
-                if (resultSet.ResultIsRenderableAsScriptedData(i))
+                if (FieldScripting.ResultIsRenderableAsScriptedData(resultSet.results[i]))
                 {
-                    sb.AppendLine(resultSet.ScriptResultDataAsInsert(i, "#Result" + (i + 1).ToString()).ToString());
+                    sb.AppendLine(FieldScripting.ScriptResultDataAsInsert(resultSet.results[i], "#Result" + (i + 1).ToString(), FlexResultSet.SQL2008MaxRowsInValuesClause).ToString());
                 }
                 
                 sb.Append("\r\n");
