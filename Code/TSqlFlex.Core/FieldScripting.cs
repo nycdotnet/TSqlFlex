@@ -213,19 +213,19 @@ namespace TSqlFlex.Core
 
             if (fieldTypeName == "char")
             {
-                return getDataAsCharFormat(data);
+                return formatChar(data);
             }
             else if (fieldTypeName == "varchar" || fieldTypeName == "text")
             {
-                return getDataAsVarcharFormat(data);
+                return formatVarchar(data);
             }
             else if (fieldTypeName == "nchar")
             {
-                return getDataAsNcharFormat(data);
+                return formatNchar(data);
             }
             else if (fieldTypeName == "nvarchar" || fieldTypeName == "ntext" || fieldTypeName == "xml")
             {
-                return getDataAsNvarcharFormat(data);
+                return formatNvarchar(data);
             }
             else if (fieldTypeName == "bigint" || fieldTypeName == "numeric" || fieldTypeName == "smallint" || fieldTypeName == "decimal" || fieldTypeName == "smallmoney" ||
                 fieldTypeName == "int" || fieldTypeName == "tinyint" || fieldTypeName == "float" || fieldTypeName == "real" || fieldTypeName == "money")
@@ -250,7 +250,7 @@ namespace TSqlFlex.Core
             }
             else if (fieldTypeName == "time")
             {
-                return getDataAsTimeFormat(data);
+                return formatTime(data);
             }
             else if (fieldTypeName == "datetime")
             {
@@ -378,7 +378,7 @@ namespace TSqlFlex.Core
             }
             else if (data is TimeSpan)
             {
-                return getDataAsTimeFormat(data);
+                return formatTime(data);
             }
             else if (data is bool)
             {
@@ -488,23 +488,26 @@ namespace TSqlFlex.Core
         }
 
 
-        public static string getDataAsTimeFormat(object data)
+        public static string formatTime(object data, bool forTSQLScript = true)
         {
+            string quoting = forTSQLScript ? "'" : "";
             if (data is TimeSpan)
             {
                 TimeSpan t = (TimeSpan)data;
                 if (t.Milliseconds == 0)
                 {
-                    return String.Format("'{0}:{1}:{2}'",
-                        t.Hours.ToString().PadLeft(2, '0'),
-                        t.Minutes.ToString().PadLeft(2, '0'),
-                        t.Seconds.ToString().PadLeft(2, '0'));
-                }
-                return String.Format("'{0}:{1}:{2}.{3}'",
+                    return String.Format("{3}{0}:{1}:{2}{3}",
                         t.Hours.ToString().PadLeft(2, '0'),
                         t.Minutes.ToString().PadLeft(2, '0'),
                         t.Seconds.ToString().PadLeft(2, '0'),
-                        t.Milliseconds.ToString().PadLeft(3, '0').TrimEnd('0'));
+                        quoting);
+                }
+                return String.Format("{4}{0}:{1}:{2}.{3}{4}",
+                        t.Hours.ToString().PadLeft(2, '0'),
+                        t.Minutes.ToString().PadLeft(2, '0'),
+                        t.Seconds.ToString().PadLeft(2, '0'),
+                        t.Milliseconds.ToString().PadLeft(3, '0').TrimEnd('0'),
+                        quoting);
             }
             else if (data is DateTime)
             {
@@ -512,12 +515,12 @@ namespace TSqlFlex.Core
 
                 if (d.ToString("fffffff") == "0000000")
                 {
-                    return "'" + d.ToString("HH:mm:ss") + "'";
+                    return String.Format("{1}{0}{1}", d.ToString("HH:mm:ss"),quoting);
                 }
-                return "'" + d.ToString("HH:mm:ss.fffffff").TrimEnd('0') + "'";
+                return String.Format("{1}{0}{1}", d.ToString("HH:mm:ss.fffffff").TrimEnd('0'), quoting);
             }
 
-            return "'" + data.ToString() + "'"; //should not get hit.
+            return String.Format("{1}{0}{1}", data.ToString(), quoting); //todo: this should not get hit, but should have a consistent strategy for dealing with this.
         }
 
         public static string getDataAsDatetime2Format(object data)
@@ -560,24 +563,49 @@ namespace TSqlFlex.Core
             return "0x" + bitsAsHexString;
         }
 
-        public static string getDataAsNvarcharFormat(object data)
+        public static string formatNvarchar(object data, bool forTSQLScript = true)
         {
-            return "N'" + data.ToString().Replace("'", "''") + "'";
+            return String.Format("{1}{0}{2}",
+                forTSQLScript ? data.ToString().Replace("'", "''") : data.ToString(),
+                singleQuoteIfTrue(forTSQLScript,"N"),
+                singleQuoteIfTrue(forTSQLScript));
         }
 
-        public static string getDataAsNcharFormat(object data)
+        public static string formatNchar(object data, bool forTSQLScript = true)
         {
-            return "N'" + data.ToString().Replace("'", "''").TrimEnd() + "'";
+            return String.Format("{1}{0}{2}",
+                forTSQLScript ? data.ToString().Replace("'", "''").TrimEnd() : data.ToString().TrimEnd(),
+                singleQuoteIfTrue(forTSQLScript, "N"),
+                singleQuoteIfTrue(forTSQLScript));
         }
 
-        public static string getDataAsVarcharFormat(object data)
+        public static string formatVarchar(object data, bool forTSQLScript = true)
         {
-            return "'" + data.ToString().Replace("'", "''") + "'";
+            return String.Format("{1}{0}{1}",
+                forTSQLScript ? data.ToString().Replace("'", "''") : data.ToString(),
+                singleQuoteIfTrue(forTSQLScript));
         }
 
-        public static string getDataAsCharFormat(object data)
+        public static string formatText(object data, bool forTSQLScript = true)
         {
-            return "'" + data.ToString().Replace("'", "''").TrimEnd() + "'";
+            return formatVarchar(data, forTSQLScript);
+        }
+
+        public static string formatNtext(object data, bool forTSQLScript = true)
+        {
+            return formatNvarchar(data, forTSQLScript);
+        }
+
+        public static string formatChar(object data, bool forTSQLScript = true)
+        {
+            return String.Format("{1}{0}{1}",
+                forTSQLScript ? data.ToString().Replace("'", "''").TrimEnd() : data.ToString().TrimEnd(),
+                singleQuoteIfTrue(forTSQLScript));
+        }
+
+        private static string singleQuoteIfTrue(bool singleQuote, string prependThisString = "")
+        {
+            return singleQuote ? prependThisString + "'" : "";
         }
 
         public static Boolean ResultIsRenderableAsCreateTable(FlexResult result)

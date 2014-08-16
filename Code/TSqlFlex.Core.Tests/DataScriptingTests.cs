@@ -315,14 +315,17 @@ namespace TSqlFlex.Core.Tests
             object data = baseData;
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "time", false, 0, 0);
             Assert.AreEqual("'02:33:44'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "time no fractional seconds");
+            Assert.AreEqual("02:33:44", FieldScripting.formatTime(data, false), "time no fractional seconds");
 
             baseData = new TimeSpan(0, 2, 33, 44, 100);
             data = baseData;
             Assert.AreEqual("'02:33:44.1'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "time partial fractional seconds");
+            Assert.AreEqual("02:33:44.1", FieldScripting.formatTime(data, false), "time partial fractional seconds");
 
             baseData = new TimeSpan(0, 2, 33, 44, 123);
             data = baseData;
             Assert.AreEqual("'02:33:44.123'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "time fractional seconds");
+            Assert.AreEqual("02:33:44.123", FieldScripting.formatTime(data, false), "time fractional seconds");
         }
 
         [Test()]
@@ -332,14 +335,17 @@ namespace TSqlFlex.Core.Tests
             object data = baseData;
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "time", false, 0, 0);
             Assert.AreEqual("'02:33:44'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "time no fractional seconds");
+            Assert.AreEqual("02:33:44", FieldScripting.formatTime(data, false), "time no fractional seconds");
 
             baseData = new DateTime(1900, 1, 1, 2, 33, 44).AddMilliseconds(100);
             data = baseData;
             Assert.AreEqual("'02:33:44.1'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "partial fractional seconds");
+            Assert.AreEqual("02:33:44.1", FieldScripting.formatTime(data, false), "partial fractional seconds");
 
             baseData = new DateTime(1900, 1, 1, 2, 33, 44).AddTicks(1234567);
             data = baseData;
             Assert.AreEqual("'02:33:44.1234567'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "time fractional seconds");
+            Assert.AreEqual("02:33:44.1234567", FieldScripting.formatTime(data, false), "time fractional seconds");
         }
 
         [Test()]
@@ -349,16 +355,19 @@ namespace TSqlFlex.Core.Tests
             object data = baseData;
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "char", false, 0, 0);
             Assert.AreEqual("'hello world!'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "char");
+            Assert.AreEqual("hello world!", FieldScripting.formatChar(data, false), "char");
             
             baseData = "trailing space ";
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "char", false, 0, 0);
             Assert.AreEqual("'trailing space'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "char trims trailing space when scripted.");
+            Assert.AreEqual("trailing space", FieldScripting.formatChar(data, false), "char trims trailing space when scripted.");
 
             baseData = "That's fun!    ";
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "char", false, 0, 0);
-            Assert.AreEqual("'That''s fun!'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "char escapes quotes in strings.");
+            Assert.AreEqual("'That''s fun!'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "char escapes quotes in strings when scripted for SQL.");
+            Assert.AreEqual("That's fun!", FieldScripting.formatChar(data, false), "char does not escape quotes in strings when not scripted for SQL.");
         }
 
         [Test()]
@@ -368,16 +377,19 @@ namespace TSqlFlex.Core.Tests
             object data = baseData;
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "varchar", false, 0, 0);
             Assert.AreEqual("'hello world!'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "varchar");
+            Assert.AreEqual("hello world!", FieldScripting.formatVarchar(data, false), "varchar");
 
             baseData = "trailing space ";
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "varchar", false, 0, 0);
             Assert.AreEqual("'trailing space '", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "varchar does not trim trailing space when scripted.");
+            Assert.AreEqual("trailing space ", FieldScripting.formatVarchar(data, false), "varchar does not trim trailing space when scripted.");
 
             baseData = "That's fun!";
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "varchar", false, 0, 0);
-            Assert.AreEqual("'That''s fun!'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "varchar escapes quotes in strings.");
+            Assert.AreEqual("'That''s fun!'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "varchar escapes quotes in strings when scripted for SQL.");
+            Assert.AreEqual("That's fun!", FieldScripting.formatVarchar(data, false), "varchar does not escape quotes in strings when not scripted for SQL.");
         }
 
         [Test()]
@@ -387,16 +399,19 @@ namespace TSqlFlex.Core.Tests
             object data = baseData;
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "text", false, 0, 0);
             Assert.AreEqual("'hello world!'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "text");
+            Assert.AreEqual("hello world!", FieldScripting.formatText(data, false), "text");
 
             baseData = "trailing space ";
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "text", false, 0, 0);
             Assert.AreEqual("'trailing space '", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "text does not trim trailing space when scripted.");
+            Assert.AreEqual("trailing space ", FieldScripting.formatText(data, false), "text does not trim trailing space when scripted.");
 
             baseData = "That's fun!";
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "text", false, 0, 0);
             Assert.AreEqual("'That''s fun!'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "text escapes quotes in strings.");
+            Assert.AreEqual("That's fun!", FieldScripting.formatText(data, false), "text does not escape quotes in strings when not scripted for SQL.");
         }
 
         [Test()]
@@ -406,16 +421,19 @@ namespace TSqlFlex.Core.Tests
             object data = baseData;
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "nchar", false, 0, 0);
             Assert.AreEqual("N'hello world!'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "nchar");
+            Assert.AreEqual("hello world!", FieldScripting.formatNchar(data, false), "nchar");
 
             baseData = "trailing space ";
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "nchar", false, 0, 0);
             Assert.AreEqual("N'trailing space'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "nchar trims trailing space when scripted.");
+            Assert.AreEqual("trailing space", FieldScripting.formatNchar(data, false), "nchar trims trailing space when scripted.");
 
             baseData = "That's fun!    ";
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "nchar", false, 0, 0);
             Assert.AreEqual("N'That''s fun!'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "nchar escapes quotes in strings.");
+            Assert.AreEqual("That's fun!", FieldScripting.formatNchar(data, false), "nchar does not escape quotes in strings when not scripted for SQL.");
         }
 
         [Test()]
@@ -425,16 +443,19 @@ namespace TSqlFlex.Core.Tests
             object data = baseData;
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "nvarchar", false, 0, 0);
             Assert.AreEqual("N'hello world!'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "nvarchar");
+            Assert.AreEqual("hello world!", FieldScripting.formatNvarchar(data, false), "nvarchar");
 
             baseData = "trailing space ";
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "nvarchar", false, 0, 0);
             Assert.AreEqual("N'trailing space '", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "nvarchar does not trim trailing space when scripted.");
+            Assert.AreEqual("trailing space ", FieldScripting.formatNvarchar(data, false), "nvarchar does not trim trailing space when scripted.");
 
             baseData = "That's fun!";
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "nvarchar", false, 0, 0);
             Assert.AreEqual("N'That''s fun!'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "nvarchar escapes quotes in strings.");
+            Assert.AreEqual("That's fun!", FieldScripting.formatNvarchar(data, false), "nvarchar does not escape quotes in strings when not scripted for SQL.");
         }
 
         [Test()]
@@ -444,16 +465,19 @@ namespace TSqlFlex.Core.Tests
             object data = baseData;
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "ntext", false, 0, 0);
             Assert.AreEqual("N'hello world!'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "ntext");
+            Assert.AreEqual("hello world!", FieldScripting.formatNtext(data, false), "ntext");
 
             baseData = "trailing space ";
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "ntext", false, 0, 0);
             Assert.AreEqual("N'trailing space '", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "ntext does not trim trailing space when scripted.");
+            Assert.AreEqual("trailing space ", FieldScripting.formatNtext(data, false), "ntext does not trim trailing space when scripted.");
 
             baseData = "That's fun!";
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "ntext", false, 0, 0);
             Assert.AreEqual("N'That''s fun!'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "nvarchar escapes quotes in strings.");
+            Assert.AreEqual("That's fun!", FieldScripting.formatNtext(data, false), "nvarchar does not escape quotes in strings when not scripted for SQL.");
         }
 
         [Test()]
