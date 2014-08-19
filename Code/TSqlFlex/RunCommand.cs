@@ -15,11 +15,18 @@ namespace TSqlFlex
 
         private FlexMainWindow TheWindow()
         {
-            if (formWindow == null)
+            try //This can be a race condition so just give up if there's an exception.
+            {
+                if (formWindow == null)
+                {
+                    return null;
+                }
+                return (FlexMainWindow)formWindow.GetUserControl();
+            }
+            catch (Exception)
             {
                 return null;
             }
-            return (FlexMainWindow)formWindow.GetUserControl();
         }
 
         public void SetSelectedDBNode(ObjectExplorerNodeDescriptorBase theSelectedNode)

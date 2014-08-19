@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
+using System.IO;
 using System.Text;
 
 namespace TSqlFlex.Core
@@ -14,11 +13,18 @@ namespace TSqlFlex.Core
         public SqlConnectionStringBuilder connStringBuilder;
         public string sqlToRun;
         public string outputType;
-        public SqlRunParameters(SqlConnectionStringBuilder csb, string sqlToRun, string outputType)
+        public string tempOutputFileName;
+        public StreamWriter tempOutputStream; //todo: need to handle disposal of this better in the sad case.
+        public StringBuilder scriptedResult = null;
+
+        public SqlRunParameters(SqlConnectionStringBuilder csb, string sqlToRun, string outputType, string outputFileName = "")
         {
             this.connStringBuilder = csb;
             this.sqlToRun = sqlToRun;
             this.outputType = outputType;
+            this.tempOutputFileName = Path.Combine(Environment.GetEnvironmentVariable("TEMP"), "TSqlFlex" + DateTime.Now.ToString("_yyyyMMddTHHmmss.fffffff") + ".xml");
+            this.tempOutputStream = new StreamWriter(File.Open(tempOutputFileName, FileMode.Create), Encoding.UTF8);
         }
+        
     }
 }

@@ -170,7 +170,7 @@ namespace TSqlFlex.Core
             }
             var rows = results[resultIndex].schema.Rows;
             StringBuilder buffer = new StringBuilder("CREATE TABLE " + tableName + "(\r\n");
-            for (int fieldIndex = 0; fieldIndex < rows.Count; fieldIndex++)
+            for (int fieldIndex = 0; fieldIndex < results[resultIndex].visibleColumnCount; fieldIndex++)
             {
                 var fieldInfo = rows[fieldIndex];
                 buffer.Append("    " +
