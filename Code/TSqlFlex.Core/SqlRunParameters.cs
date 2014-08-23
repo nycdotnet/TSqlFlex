@@ -25,6 +25,15 @@ namespace TSqlFlex.Core
             this.tempOutputFileName = Path.Combine(Environment.GetEnvironmentVariable("TEMP"), "TSqlFlex" + DateTime.Now.ToString("_yyyyMMddTHHmmss.fffffff") + ".xml");
             this.tempOutputStream = new StreamWriter(File.Open(tempOutputFileName, FileMode.Create), Encoding.UTF8);
         }
+
+        public void flushAndCloseOutputStreamIfNeeded()
+        {
+            if (tempOutputStream.BaseStream != null)
+            {
+                tempOutputStream.Flush();
+                tempOutputStream.Close();
+            }
+        }
         
     }
 }

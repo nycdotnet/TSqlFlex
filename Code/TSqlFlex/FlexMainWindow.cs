@@ -77,71 +77,6 @@ namespace TSqlFlex
             return txtSqlInput.Text;
         }
 
-        private static void renderAsXMLSpreadsheet(FlexResultSet resultSet, StreamWriter sw)
-        {
-            //todo: refactor this and FlexResultSet to to share code and have test coverage.
-            sw.Write(Utils.GetResourceByName("TSqlFlex.Core.Resources.XMLSpreadsheetTemplateHeader.txt"));
-            for (int i = 0; i < resultSet.results.Count; i++)
-            {
-                FlexResult result = resultSet.results[i];
-                int columnCount = result.visibleColumnCount;
-
-                sw.Write(String.Format("<Worksheet ss:Name=\"Sheet{0}\">", i + 1));
-                sw.Write(String.Format("<Table ss:ExpandedColumnCount=\"{0}\" ss:ExpandedRowCount=\"{1}\" x:FullColumns=\"1\" x:FullRows=\"1\" ss:DefaultRowHeight=\"15\">",
-                    columnCount,
-                    result.data.Count + 1 /* include header row */)
-                    );
-
-                //do header
-                sw.Write("<Row>");
-                for (int colIndex = 0; colIndex < columnCount; colIndex += 1)
-                {
-                    sw.Write(String.Format("<Cell ss:StyleID=\"s62\"><Data ss:Type=\"String\">{0}</Data></Cell>", escapeForXML((string)result.schema.Rows[colIndex].ItemArray[(int)FieldScripting.FieldInfo.Name])));
-                }
-                sw.Write("</Row>");
-
-                //do data rows
-                for (int rowIndex = 0; rowIndex < result.data.Count; rowIndex += 1)
-                {
-                    sw.Write("<Row>");
-                    for (int colIndex = 0; colIndex < columnCount; colIndex += 1) {
-                        object fieldData = result.data[rowIndex][colIndex];
-                        string fieldTypeName = result.schema.Rows[colIndex].ItemArray[(int)FieldScripting.FieldInfo.DataType].ToString();
-                        if (fieldData == null || fieldData is DBNull)
-                        {
-                            sw.Write("<Cell/>");
-                        }
-                        else if (fieldTypeName == "bigint" || fieldTypeName == "numeric" || fieldTypeName == "smallint" || fieldTypeName == "decimal" || fieldTypeName == "smallmoney" ||
-                            fieldTypeName == "int" || fieldTypeName == "tinyint" || fieldTypeName == "float" || fieldTypeName == "real" || fieldTypeName == "money")
-                        {
-                            sw.Write(String.Format("<Cell><Data ss:Type=\"Number\">{0}</Data></Cell>\r\n", escapeForXML(fieldData.ToString())));
-                        }
-                        else if (fieldTypeName == "date" || fieldTypeName == "datetime2" || fieldTypeName == "time" || fieldTypeName == "datetime" ||
-                            fieldTypeName == "smalldatetime")
-                        {
-                            sw.Write(String.Format("<Cell ss:StyleID=\"s63\"><Data ss:Type=\"DateTime\">{0}</Data></Cell>\r\n", escapeForXML(
-                                ((DateTime)fieldData).ToString("yyyy-MM-ddTHH:mm:ss.fff")
-                                )));
-                        }
-                        else
-                        {
-                            sw.Write(String.Format("<Cell ss:StyleID=\"s64\"><Data ss:Type=\"String\">{0}</Data></Cell>\r\n", escapeForXML(result.data[rowIndex][colIndex].ToString())));
-                        }
-                        
-                    }
-                    sw.Write("</Row>");
-                }
-
-                sw.Write("</Table></Worksheet>");
-            }
-            sw.Write("</Workbook>\r\n");
-        }
-
-        private static string escapeForXML(string input)
-        {
-            return input.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\"","&quot;").Replace("'","&apos;");
-        }
-
         private static void renderSchemaAndData(FlexResultSet resultSet, StringBuilder sb)
         {
             for (int i = 0; i < resultSet.results.Count; i++)
@@ -260,7 +195,7 @@ namespace TSqlFlex
             }
             else if (srp.outputType == SqlRunParameters.TO_XML_SPREADSHEET)
             {
-                renderAsXMLSpreadsheet(resultSet, srp.tempOutputStream);
+                XmlSpreadsheetRenderer.renderAsXMLSpreadsheet(resultSet, srp.tempOutputStream);
             }
 
             e.Result = srp;
@@ -319,11 +254,8 @@ namespace TSqlFlex
             setProgressText(true); //bug: This includes the time it took to read all of the results, etc.  Should technically stop after data finishes coming in from SQL
 
             var srp = (SqlRunParameters)e.Result;
-            if (srp.tempOutputStream.BaseStream != null)
-            {
-                srp.tempOutputStream.Flush();
-                srp.tempOutputStream.Close();
-            }
+
+            srp.flushAndCloseOutputStreamIfNeeded();
             
             if (e.Cancelled)
             {
@@ -344,6 +276,7 @@ namespace TSqlFlex
                 }
                 else if (cmbResultsType.SelectedItem.ToString() == SqlRunParameters.TO_XML_SPREADSHEET)
                 {
+                    //todo: move this writing functionality to the core and out of the UI.
                     string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "TSqlFlex" + DateTime.Now.ToString("_yyyyMMddTHHmmss") + ".xml");
                     File.Move(srp.tempOutputFileName, fileName);
                     txtOutput.Text = "--Results written to \"" + fileName + "\".\r\n\r\n--You can open this file in Excel.";
@@ -358,6 +291,8 @@ namespace TSqlFlex
             cmdCancel.Enabled = false;
             cmdRunNRollback.Enabled = true;
         }
+
+        
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {

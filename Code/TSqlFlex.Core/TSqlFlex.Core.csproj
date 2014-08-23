@@ -51,6 +51,7 @@
     <Compile Include="SqlRunParameters.cs" />
     <Compile Include="TSqlRules.cs" />
     <Compile Include="Utils.cs" />
+    <Compile Include="XmlSpreadsheetRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\XMLSpreadsheetTemplateHeader.txt" />
