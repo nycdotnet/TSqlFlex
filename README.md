@@ -7,9 +7,7 @@ T-SQL Flex is a scripting productivity tool for SQL Server Management Studio tha
 
 T-SQL Flex can script out the returned schema and data of any T-SQL query simply and with high accuracy.  It can also export the data to the XML spreadsheet format which can be opened in Excel without having messed-up date formatting or losing leading zeros; multiple result sets are automatically placed on multiple worksheets.  Much more is planned.
 
-
-
-
+![t-sql_flex_v0 0 5-alpha](https://cloud.githubusercontent.com/assets/3755379/4019547/009c5f90-2a77-11e4-80de-200656264af7.png)
 
 
 **To install T-SQL Flex:**
