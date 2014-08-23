@@ -47,6 +47,7 @@ Please create issues on GitHub or reach out to Steve on Twitter at [@nycdotnet](
 **Debugging an add-in:**
   * See the Red Gate document on this issue: http://documentation.red-gate.com/display/MA/Debugging+an+SSMS+addin
 
+
 **Build checklist**
   * Compiles and all tests pass.
   * Checked-in to master branch on GitHub.
