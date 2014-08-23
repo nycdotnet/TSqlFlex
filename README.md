@@ -5,11 +5,11 @@ T-SQL Flex is a scripting productivity tool for SQL Server Management Studio tha
 
 *This is alpha-quality software - DO NOT RUN IN PRODUCTION!!!*
 
-T-SQL Flex should be able to script out the returned schema and data of any T-SQL query simply and with high accuracy.  Much more is planned.
+T-SQL Flex can script out the returned schema and data of any T-SQL query simply and with high accuracy.  It can also export the data to the XML spreadsheet format which can be opened in Excel without having messed-up date formatting or losing leading zeros.  Much more is planned.
 
 
 
-![tsqlflex-0 0 4-alpha](https://cloud.githubusercontent.com/assets/3755379/3309662/46c2a2e4-f6a2-11e3-90ba-3026e9560181.png)
+
 
 
 **To install T-SQL Flex:**
@@ -32,8 +32,10 @@ T-SQL Flex should be able to script out the returned schema and data of any T-SQ
 Please create issues on GitHub or reach out to Steve on Twitter at [@nycdotnet](https://twitter.com/nycdotnet).
 
 **Patch notes:**
-  * v0.0.5-alpha (2014-08-07):
+  * v0.0.5-alpha (2014-08-22):
       * Export to "XML Spreadsheet 2003" functionality added - this is very early alpha for this feature.
+      * Started significant refactoring effort for data scripting in T-SQL field vs general presentation.
+      * Started work to use a file stream rather than a string builder for scripting the data.  Currently only used with the Excel XML export.
   * v0.0.4-alpha (2014-06-18):
       * Converted to background worker.  Added cancel button, timer, and progress bar.
 	  * Additional scripted output "minification" improvements (dropping insignificant decimals for example).
@@ -44,3 +46,11 @@ Please create issues on GitHub or reach out to Steve on Twitter at [@nycdotnet](
 
 **Debugging an add-in:**
   * See the Red Gate document on this issue: http://documentation.red-gate.com/display/MA/Debugging+an+SSMS+addin
+
+**Build checklist**
+  * Compiles and all tests pass.
+  * Checked-in to master branch on GitHub.
+  * Updated assembly revisions.
+  * Build in release mode and test it out.
+  * Zip up the three DLLs and post to GitHub.
+  * Add a screenshot via GitHub and edit the README and release FAQ.
