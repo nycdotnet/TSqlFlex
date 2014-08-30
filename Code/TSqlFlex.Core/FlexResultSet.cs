@@ -22,7 +22,7 @@ namespace TSqlFlex.Core
             exceptions = new List<Exception>();
         }
 
-        public static FlexResultSet AnalyzeResultWithRollback(SqlConnection openConnection, string sqlCommandText, BackgroundWorker bw = null)
+        public static FlexResultSet AnalyzeResultWithRollback(SqlConnection openConnection, SqlRunParameters srp, BackgroundWorker bw = null)
         {
 
             FlexResultSet resultSet = new FlexResultSet();
@@ -34,7 +34,7 @@ namespace TSqlFlex.Core
 
             try
             {
-                SqlCommand cmd = new SqlCommand(sqlCommandText, openConnection, transaction);
+                SqlCommand cmd = new SqlCommand(srp.sqlToRun, openConnection, transaction);
                 
                 //todo: this is a bad way of doing this.  Need to abstract further.
                 bw.ReportProgress(5, "Running query...");

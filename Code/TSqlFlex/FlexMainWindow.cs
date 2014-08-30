@@ -66,7 +66,7 @@ namespace TSqlFlex
                 try
                 {
                     var srp = new SqlRunParameters(connStringBuilder, getSqlToRun(), cmbResultsType.SelectedItem.ToString());
-                    queryWorker.RunWorkerAsync();
+                    queryWorker.RunWorkerAsync(srp);
                 }
                 catch (Exception ex)
                 {
@@ -87,8 +87,9 @@ namespace TSqlFlex
             return txtSqlInput.Text;
         }
 
-        private static void renderSchemaAndData(FlexResultSet resultSet, StringBuilder sb)
+        private static void renderSchemaAndData(FlexResultSet resultSet, SqlRunParameters srp)
         {
+            var sb = srp.resultsText;
             for (int i = 0; i < resultSet.results.Count; i++)
             {
                 if (resultSet.results[i].recordsAffected > 0)
@@ -108,8 +109,9 @@ namespace TSqlFlex
             }
         }
 
-        private static void renderExceptions(FlexResultSet resultSet, StringBuilder sb)
+        private static void renderExceptions(FlexResultSet resultSet, SqlRunParameters srp)
         {
+            var sb = srp.exceptionsText;
             if (resultSet.exceptions.Count > 0)
             {
                 sb.Append(String.Format("--There were {0} exception(s) encountered while running the query.\r\n", resultSet.exceptions.Count));
@@ -178,7 +180,7 @@ namespace TSqlFlex
                     return;
                 }
 
-                resultSet = FlexResultSet.AnalyzeResultWithRollback(conn, srp.sqlToRun, bw);
+                resultSet = FlexResultSet.AnalyzeResultWithRollback(conn, srp, bw);
                 conn.Close();
             }
             if (bw.CancellationPending)
@@ -188,9 +190,8 @@ namespace TSqlFlex
             }
 
             bw.ReportProgress(90, "Scripting results...");
-            var sb = new StringBuilder();
-            srp.scriptedResult = sb;
-            renderExceptions(resultSet, sb);
+            
+            renderExceptions(resultSet, srp);
 
             if (bw.CancellationPending)
             {
@@ -201,11 +202,11 @@ namespace TSqlFlex
             bw.ReportProgress(92, "Scripting results...");
             if (srp.outputType == SqlRunParameters.TO_INSERT_STATEMENTS)
             {
-                renderSchemaAndData(resultSet, sb);
+                renderSchemaAndData(resultSet, srp);
             }
             else if (srp.outputType == SqlRunParameters.TO_XML_SPREADSHEET)
             {
-                XmlSpreadsheetRenderer.renderAsXMLSpreadsheet(resultSet, srp.tempOutputStream);
+                XmlSpreadsheetRenderer.renderAsXMLSpreadsheet(resultSet, srp);
             }
 
             e.Result = srp;
@@ -282,16 +283,15 @@ namespace TSqlFlex
                 progressText = "Complete.";
                 if (cmbResultsType.SelectedItem.ToString() == SqlRunParameters.TO_INSERT_STATEMENTS)
                 {
-                    txtOutput.Text = srp.scriptedResult.ToString();
+                    txtOutput.Text = srp.resultsText.ToString();
                 }
                 else if (cmbResultsType.SelectedItem.ToString() == SqlRunParameters.TO_XML_SPREADSHEET)
                 {
                     //todo: move this writing functionality to the core and out of the UI.
                     string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "TSqlFlex" + DateTime.Now.ToString("_yyyyMMddTHHmmss") + ".xml");
-                    File.Move(srp.tempOutputFileName, fileName);
+                    srp.saveOutputStreamTo(fileName);
                     txtOutput.Text = "--Results written to \"" + fileName + "\".\r\n\r\n--You can open this file in Excel.";
                 }
-                
             }
             
             setProgressText(true);
