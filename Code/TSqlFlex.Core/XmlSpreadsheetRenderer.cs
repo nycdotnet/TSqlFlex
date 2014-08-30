@@ -15,7 +15,7 @@ namespace TSqlFlex.Core
             for (int i = 0; i < resultSet.results.Count; i++)
             {
                 FlexResult result = resultSet.results[i];
-                if (result.schema != null)
+                if (result.schema != null && result.data != null)
                 {
                     int columnCount = result.visibleColumnCount;
 
@@ -67,6 +67,7 @@ namespace TSqlFlex.Core
                     }
 
                     srp.WriteToStream("</Table></Worksheet>");
+                    srp.worksheetIsValid = true;
                 }
             }
             srp.WriteToStream("</Workbook>\r\n");

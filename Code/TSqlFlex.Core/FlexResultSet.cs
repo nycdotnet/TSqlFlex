@@ -40,6 +40,7 @@ namespace TSqlFlex.Core
                 bw.ReportProgress(5, "Running query...");
 
                 reader = executeSQL(resultSet, cmd, reader);
+                
                 int progress = 50;
                 bw.ReportProgress(progress, "Processing results...");
                 do
@@ -68,6 +69,10 @@ namespace TSqlFlex.Core
                         {
                             resultSet.exceptions.Add(new SqlResultProcessingException(ex));
                         }
+                    }
+                    foreach (Exception ex in result.exceptions)
+                    {
+                        resultSet.exceptions.Add(ex);
                     }
                     resultSet.results.Add(result);
 

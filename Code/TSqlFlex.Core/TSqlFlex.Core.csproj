@@ -48,6 +48,7 @@
     <Compile Include="FlexResultSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CustomExceptions.cs" />
+    <Compile Include="QueryWorker.cs" />
     <Compile Include="SqlRunParameters.cs" />
     <Compile Include="TSqlRules.cs" />
     <Compile Include="Utils.cs" />

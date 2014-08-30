@@ -18,6 +18,8 @@ namespace TSqlFlex.Core
         public StringBuilder resultsText = new StringBuilder();
         private string fileName;
         private StreamWriter outputStream;
+        public int exceptionCount = 0;
+        public bool worksheetIsValid = false;
 
         public string outputFilename()
         {

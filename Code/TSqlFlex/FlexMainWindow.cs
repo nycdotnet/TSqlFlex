@@ -87,53 +87,6 @@ namespace TSqlFlex
             return txtSqlInput.Text;
         }
 
-        private static void renderSchemaAndData(FlexResultSet resultSet, SqlRunParameters srp)
-        {
-            var sb = srp.resultsText;
-            for (int i = 0; i < resultSet.results.Count; i++)
-            {
-                if (resultSet.results[i].recordsAffected > 0)
-                {
-                    sb.AppendLine(String.Format("--Records affected: {0:G}\r\n\r\n", resultSet.results[i].recordsAffected));
-                }
-                
-                sb.AppendLine(resultSet.ScriptResultAsCreateTable(i, "#Result" + (i + 1).ToString()));
-                sb.Append("\r\n");
-
-                if (FieldScripting.ResultIsRenderableAsScriptedData(resultSet.results[i]))
-                {
-                    sb.AppendLine(FieldScripting.ScriptResultDataAsInsert(resultSet.results[i], "#Result" + (i + 1).ToString(), FlexResultSet.SQL2008MaxRowsInValuesClause).ToString());
-                }
-                
-                sb.Append("\r\n");
-            }
-        }
-
-        private static void renderExceptions(FlexResultSet resultSet, SqlRunParameters srp)
-        {
-            var sb = srp.exceptionsText;
-            if (resultSet.exceptions.Count > 0)
-            {
-                sb.Append(String.Format("--There were {0} exception(s) encountered while running the query.\r\n", resultSet.exceptions.Count));
-            }
-            for (int i = 0; i < resultSet.exceptions.Count; i++)
-            {
-                var ex = resultSet.exceptions[i];
-                if (ex is SqlResultProcessingException)
-                {
-                    sb.Append(String.Format("--Error processing result: \"{0}\".\r\n", ex.Message));
-                }
-                else if (ex is SqlExecutionException)
-                {
-                    sb.Append(String.Format("--Error executing query: \"{0}\".\r\n", ex.Message));
-                }
-                else
-                {
-                    sb.Append(String.Format("--Error: \"{0}\".\r\n", ex.Message));
-                }
-            }
-        }
-
         private void btnCopyToClipboard_Click(object sender, EventArgs e)
         {
             try
@@ -156,60 +109,7 @@ namespace TSqlFlex
 
         private void queryWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            DoSqlQueryWork(e,queryWorker);
-        }
-
-        private static void DoSqlQueryWork(System.ComponentModel.DoWorkEventArgs e, BackgroundWorker bw)
-        {
-            FlexResultSet resultSet;
-            var srp = (SqlRunParameters)e.Argument;
-            bw.ReportProgress(1,"Opening connection...");
-            using (SqlConnection conn = new SqlConnection(srp.connStringBuilder.ConnectionString))
-            {
-                if (bw.CancellationPending)
-                {
-                    e.Cancel = true;
-                    return;
-                }
-                conn.Open();
-                bw.ReportProgress(2, "Running query...");
-
-                if (bw.CancellationPending)
-                {
-                    e.Cancel = true;
-                    return;
-                }
-
-                resultSet = FlexResultSet.AnalyzeResultWithRollback(conn, srp, bw);
-                conn.Close();
-            }
-            if (bw.CancellationPending)
-            {
-                e.Cancel = true;
-                return;
-            }
-
-            bw.ReportProgress(90, "Scripting results...");
-            
-            renderExceptions(resultSet, srp);
-
-            if (bw.CancellationPending)
-            {
-                e.Cancel = true;
-                return;
-            }
-
-            bw.ReportProgress(92, "Scripting results...");
-            if (srp.outputType == SqlRunParameters.TO_INSERT_STATEMENTS)
-            {
-                renderSchemaAndData(resultSet, srp);
-            }
-            else if (srp.outputType == SqlRunParameters.TO_XML_SPREADSHEET)
-            {
-                XmlSpreadsheetRenderer.renderAsXMLSpreadsheet(resultSet, srp);
-            }
-
-            e.Result = srp;
+            QueryWorker.DoSqlQueryWork(e,queryWorker);
         }
 
         private void queryWorker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
@@ -276,6 +176,7 @@ namespace TSqlFlex
             else if (e.Error != null)
             {
                 progressText = "Finished with error.";
+                //todo: make this more consistent with what happens from SQL syntax errors, etc.
                 txtOutput.Text = "--Error occurred while processing query.\r\n\r\n/* " + e.Error.Message + "\r\n*/";
             }
             else
@@ -283,14 +184,34 @@ namespace TSqlFlex
                 progressText = "Complete.";
                 if (cmbResultsType.SelectedItem.ToString() == SqlRunParameters.TO_INSERT_STATEMENTS)
                 {
-                    txtOutput.Text = srp.resultsText.ToString();
+                    if (srp.exceptionsText.Length > 0)
+                    {
+                        if (srp.resultsText.Length > 0)
+                        {
+                            txtOutput.Text = srp.exceptionsText.ToString() + "\r\n\r\n" + srp.resultsText.ToString();
+                        }
+                        else
+                        {
+                            drawExceptions(srp);
+                        }
+                    }
+                    else
+                    {
+                        txtOutput.Text = srp.resultsText.ToString();
+                    }
+                    
                 }
                 else if (cmbResultsType.SelectedItem.ToString() == SqlRunParameters.TO_XML_SPREADSHEET)
                 {
-                    //todo: move this writing functionality to the core and out of the UI.
-                    string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "TSqlFlex" + DateTime.Now.ToString("_yyyyMMddTHHmmss") + ".xml");
-                    srp.saveOutputStreamTo(fileName);
-                    txtOutput.Text = "--Results written to \"" + fileName + "\".\r\n\r\n--You can open this file in Excel.";
+                    if (srp.worksheetIsValid)
+                    {
+                        TryToSaveSpreadsheet(srp);
+                    }
+                    else
+                    {
+                        drawExceptions(srp);
+                    }
+                    
                 }
             }
             
@@ -299,6 +220,38 @@ namespace TSqlFlex
             lblConnectionInfo.Text = currentConnectionText();
             
             setUIState(false);
+        }
+
+        private void drawExceptions(SqlRunParameters srp, string header = "")
+        {
+            if (header == "")
+            {
+                txtOutput.Text = srp.exceptionsText.ToString();
+            }
+            else
+            {
+                txtOutput.Text = header + "\r\n\r\n" + srp.exceptionsText.ToString();
+            }
+        }
+
+        private void TryToSaveSpreadsheet(SqlRunParameters srp)
+        {
+            string fileName = "";
+            try
+            {
+                fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "TSqlFlex" + DateTime.Now.ToString("_yyyyMMddTHHmmss") + ".xml");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Exception when attempting to find personal documents folder for current user.  Will not save file.  " + ex.Message);
+                fileName = "";
+            }
+
+            if (fileName != "")
+            {
+                srp.saveOutputStreamTo(fileName);
+                txtOutput.Text = "--Results written to \"" + fileName + "\".\r\n\r\n--You can open this file in Excel.";
+            }
         }
 
         private void setUIState(bool queryIsRunning) {
@@ -314,8 +267,6 @@ namespace TSqlFlex
             }
 
         }
-
-        
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
