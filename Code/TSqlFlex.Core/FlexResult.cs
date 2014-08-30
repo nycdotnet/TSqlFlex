@@ -14,13 +14,23 @@ namespace TSqlFlex.Core
         public int visibleColumnCount { get {
                 int count = 0;
                 foreach (DataRow c in schema.Rows) {
-                    if ((bool)c.ItemArray[20] == false) {
+                    if (ColumnIsVisible(c))
+                    {
                         count += 1;
                     }
                 }
                 return count;
             }
         }
-        
+
+        private bool ColumnIsVisible(DataRow schemaRow)
+        {
+            const int IsHiddenField = 20;
+            if (!(schemaRow.ItemArray[IsHiddenField] is bool))
+            {
+                return true;
+            }
+            return !((bool)schemaRow.ItemArray[IsHiddenField]);
+        }
     }
 }
