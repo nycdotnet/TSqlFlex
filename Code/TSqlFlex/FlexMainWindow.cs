@@ -25,6 +25,7 @@ namespace TSqlFlex
             cmbResultsType.Items.Add(SqlRunParameters.TO_INSERT_STATEMENTS);
             cmbResultsType.Items.Add(SqlRunParameters.TO_XML_SPREADSHEET);
             cmbResultsType.SelectedItem = SqlRunParameters.TO_INSERT_STATEMENTS;
+            setUIState(false);
         }
     
         public void SetConnection(SqlConnectionStringBuilder theConnectionStringBuilder)
@@ -60,11 +61,20 @@ namespace TSqlFlex
                 sqlStopwatch = new Stopwatch();
                 sqlStopwatch.Start();
                 queryTimer.Enabled = true;
+                setUIState(true);
 
-                cmdRunNRollback.Enabled = false;
-                cmdCancel.Enabled = true;
-                Cursor.Current = Cursors.WaitCursor;
-                queryWorker.RunWorkerAsync(new SqlRunParameters(connStringBuilder, getSqlToRun(), cmbResultsType.SelectedItem.ToString()));
+                try
+                {
+                    var srp = new SqlRunParameters(connStringBuilder, getSqlToRun(), cmbResultsType.SelectedItem.ToString());
+                    queryWorker.RunWorkerAsync();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("There was an exception when setting up the query run parameters.  "  + ex.Message + "\n\n" + ex.StackTrace);
+                    sqlStopwatch.Stop();
+                    queryTimer.Enabled = false;
+                    setUIState(false);
+                }
             }
         }
 
@@ -287,9 +297,22 @@ namespace TSqlFlex
             setProgressText(true);
 
             lblConnectionInfo.Text = currentConnectionText();
-            Cursor.Current = Cursors.Default;
-            cmdCancel.Enabled = false;
-            cmdRunNRollback.Enabled = true;
+            
+            setUIState(false);
+        }
+
+        private void setUIState(bool queryIsRunning) {
+            cmdCancel.Enabled = queryIsRunning;
+            cmdRunNRollback.Enabled = !queryIsRunning;
+            if (queryIsRunning)
+            {
+                Cursor.Current = Cursors.WaitCursor;
+            }
+            else
+            {
+                Cursor.Current = Cursors.Default;
+            }
+
         }
 
         
