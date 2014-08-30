@@ -11,31 +11,63 @@ namespace TSqlFlex.Core
     {
         public static void DoSqlQueryWork(System.ComponentModel.DoWorkEventArgs e, BackgroundWorker bw)
         {
-            FlexResultSet resultSet;
+            FlexResultSet resultSet = null;
             var srp = (SqlRunParameters)e.Argument;
+
             bw.ReportProgress(1, "Opening connection...");
-            using (SqlConnection conn = new SqlConnection(srp.connStringBuilder.ConnectionString))
+            SqlConnection conn = null;
+            string currentTask = "";
+
+            try
             {
-                if (bw.CancellationPending)
+                using (conn = new SqlConnection(srp.connStringBuilder.ConnectionString))
                 {
-                    e.Cancel = true;
-                    return;
-                }
-                conn.Open();
-                bw.ReportProgress(2, "Running query...");
+                    if (bw.CancellationPending)
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
 
-                if (bw.CancellationPending)
-                {
-                    e.Cancel = true;
-                    return;
-                }
+                    currentTask = "while opening SQL connection";
+                    conn.Open();
+                    
+                    bw.ReportProgress(2, "Running query...");
 
-                resultSet = FlexResultSet.AnalyzeResultWithRollback(conn, srp, bw);
-                conn.Close();
+                    if (bw.CancellationPending)
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
+
+                    currentTask = "while running the query or analyzing the data";
+                    resultSet = FlexResultSet.AnalyzeResultWithRollback(conn, srp, bw);
+                    
+                    currentTask = "while closing the database connection";
+                    conn.Close();
+
+                }
             }
+            catch (Exception ex)
+            {
+                renderExceptionToSqlRunParameters(currentTask, srp, ex);
+            }
+            finally
+            {
+                if (conn != null && conn.State != System.Data.ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
+            }
+            
             if (bw.CancellationPending)
             {
                 e.Cancel = true;
+                return;
+            }
+
+            if (resultSet == null)
+            {
+                e.Result = srp;
                 return;
             }
 
@@ -60,27 +92,45 @@ namespace TSqlFlex.Core
                 {
                     XmlSpreadsheetRenderer.renderAsXMLSpreadsheet(resultSet, srp);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     srp.worksheetIsValid = false;
                     srp.flushAndCloseOutputStreamIfNeeded();
+                    renderExceptionToSqlRunParameters("while rendering spreadsheet", srp, ex);
                 }
-                
             }
-
             e.Result = srp;
+        }
+
+        private static void renderExceptionToSqlRunParameters(string generalDescriptionOfWhenTheErrorOccurred, SqlRunParameters srp, Exception ex)
+        {
+            srp.exceptionsText.Append("--Exception encountered ");
+            srp.exceptionsText.Append(generalDescriptionOfWhenTheErrorOccurred);
+            srp.exceptionsText.Append(".\r\n\r\n/* ");
+            srp.exceptionsText.Append(ex.Message);
+            srp.exceptionsText.Append("\r\n\r\n");
+            srp.exceptionsText.Append(ex.StackTrace);
+            srp.exceptionsText.Append("\r\n*/");
         }
 
         private static void renderAndCountExceptions(FlexResultSet resultSet, SqlRunParameters srp)
         {
             var sb = srp.exceptionsText;
-            srp.exceptionCount = resultSet.exceptions.Count;
 
-            if (resultSet.exceptions.Count > 0)
+            if (resultSet == null)
+            {
+                srp.exceptionCount = 0;
+            }
+            else
+            {
+                srp.exceptionCount = resultSet.exceptions.Count;
+            }
+
+            if (srp.exceptionCount > 0)
             {
                 sb.Append(String.Format("--There were {0} exception(s) encountered while running the query.\r\n", resultSet.exceptions.Count));
             }
-            for (int i = 0; i < resultSet.exceptions.Count; i++)
+            for (int i = 0; i < srp.exceptionCount; i++)
             {
                 var ex = resultSet.exceptions[i];
                 if (ex is SqlResultProcessingException)
