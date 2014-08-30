@@ -45,10 +45,17 @@ namespace TSqlFlex.Core
 
         public void flushAndCloseOutputStreamIfNeeded()
         {
-            if (outputStream != null && outputStream.BaseStream != null)
+            try
             {
-                outputStream.Flush();
-                outputStream.Close();
+                if (outputStream != null && outputStream.BaseStream != null)
+                {
+                    outputStream.Flush();
+                    outputStream.Close();
+                }
+            }
+            catch (Exception)
+            {
+                //silently continue.
             }
         }
 
