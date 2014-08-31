@@ -71,9 +71,18 @@ namespace TSqlFlex.Core
                 return;
             }
 
-            bw.ReportProgress(90, "Scripting results...");
+            try
+            {
+                bw.ReportProgress(90, "Scripting results...");
+                renderAndCountExceptions(resultSet, srp);
+            }
+            catch (Exception ex)
+            {
+                renderExceptionToSqlRunParameters("scripting results", srp, ex);
+                e.Result = srp;
+                return;
+            }
 
-            renderAndCountExceptions(resultSet, srp);
 
             if (bw.CancellationPending)
             {
@@ -84,7 +93,15 @@ namespace TSqlFlex.Core
             bw.ReportProgress(92, "Scripting results...");
             if (srp.outputType == SqlRunParameters.TO_INSERT_STATEMENTS)
             {
-                renderSchemaAndData(resultSet, srp);
+                try
+                {
+                    renderSchemaAndData(resultSet, srp);
+                }
+                catch (Exception ex)
+                {
+                    renderExceptionToSqlRunParameters("while rendering schema and dataset", srp, ex);
+                }
+                
             }
             else if (srp.outputType == SqlRunParameters.TO_XML_SPREADSHEET)
             {
