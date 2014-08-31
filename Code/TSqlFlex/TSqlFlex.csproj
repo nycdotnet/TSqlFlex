@@ -31,8 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="RedGate.SIPFrameworkShared">
-      <HintPath>..\packages\RedGate.SIPFrameworkShared.1.0.1.241\lib\RedGate.SIPFrameworkShared.dll</HintPath>
+    <Reference Include="RedGate.SIPFrameworkShared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7f465a1c156d4d57, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\RedGate.SIPFrameworkShared.1.0.1.243\lib\RedGate.SIPFrameworkShared.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -55,9 +56,6 @@
     <Compile Include="RunCommand.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="FlexMainWindow.resx">
       <DependentUpon>FlexMainWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -67,6 +65,9 @@
       <Project>{6c3e3ef0-d9a2-4db8-94df-1d71bf3a7cdf}</Project>
       <Name>TSqlFlex.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
