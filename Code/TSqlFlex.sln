@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.30626.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSqlFlex", "TSqlFlex\TSqlFlex.csproj", "{5D764D2E-1BB8-41C7-8F82-428C687A2C6A}"
 EndProject
@@ -11,6 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSqlFlex.Core.Tests", "TSql
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{731915D2-50C6-45D7-AF99-EE5D85083991}"
 	ProjectSection(SolutionItems) = preProject
+		..\InstallationInstructions.md = ..\InstallationInstructions.md
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
