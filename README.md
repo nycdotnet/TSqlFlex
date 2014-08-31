@@ -51,5 +51,5 @@ Please create issues on GitHub or reach out to Steve on Twitter at [@nycdotnet](
   * Checked-in to master branch on GitHub.
   * Updated assembly revisions.
   * Build in release mode and test it out.
-  * Zip up the three DLLs and post to GitHub.
+  * Zip up the three DLLs with the license and README and post to GitHub.
   * Add a screenshot via GitHub and edit the README and release FAQ.
