@@ -10,9 +10,11 @@ T-SQL Flex can script out the returned schema and data of any T-SQL query simply
 ![t-sql_flex_v0 0 5-alpha](https://cloud.githubusercontent.com/assets/3755379/4019547/009c5f90-2a77-11e4-80de-200656264af7.png)
 
 **To install T-SQL Flex:**
-Follow the instructions here: 
+
+Follow the instructions [here](https://github.com/nycdotnet/TSqlFlex/blob/master/InstallationInstructions.md).
 
 **For Support**
+
 Please either create issues on GitHub, or reach out to Steve on Twitter at [@nycdotnet](https://twitter.com/nycdotnet).
 
 **Patch notes:**
