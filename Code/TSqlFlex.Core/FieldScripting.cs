@@ -556,9 +556,15 @@ namespace TSqlFlex.Core
 
         public static string getDataAsBinaryFormat(object data, object[] fieldInfo)
         {
+            int fieldLength = (int)fieldInfo[(int)FieldScripting.FieldInfo.FieldLength];
+            return getDataAsBinaryFormat(data, fieldLength);
+        }
+
+        public static string getDataAsBinaryFormat(object data, int fieldLength)
+        {
             byte[] ba = (byte[])data;
             string bitsAsHexString = BitConverter.ToString(ba).Replace("-", "");
-            int charCountToShowAsHex = (int)fieldInfo[(int)FieldScripting.FieldInfo.FieldLength] * 2;
+            int charCountToShowAsHex = fieldLength * 2;
             bitsAsHexString = bitsAsHexString.PadLeft(charCountToShowAsHex, '0');
             return "0x" + bitsAsHexString;
         }

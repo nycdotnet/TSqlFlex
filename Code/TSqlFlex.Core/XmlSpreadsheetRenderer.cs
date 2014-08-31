@@ -39,6 +39,7 @@ namespace TSqlFlex.Core
                         srp.WriteToStream("<Row>");
                         for (int colIndex = 0; colIndex < columnCount; colIndex += 1)
                         {
+                            //todo: fix each of these items to work with the actual scripting stuff (requires finishing major refactoring work).
                             object fieldData = result.data[rowIndex][colIndex];
                             string fieldTypeName = result.schema.Rows[colIndex].ItemArray[(int)FieldScripting.FieldInfo.DataType].ToString();
                             if (fieldData == null || fieldData is DBNull)
@@ -56,6 +57,11 @@ namespace TSqlFlex.Core
                                 srp.WriteToStream(String.Format("<Cell ss:StyleID=\"s63\"><Data ss:Type=\"DateTime\">{0}</Data></Cell>\r\n", escapeForXML(
                                     ((DateTime)fieldData).ToString("yyyy-MM-ddTHH:mm:ss.fff")
                                     )));
+                            }
+                            else if (fieldTypeName == "binary" || fieldTypeName == "rowversion" || fieldTypeName == "timestamp")
+                            {
+                                byte[] d = (byte[])result.data[rowIndex][colIndex];
+                                srp.WriteToStream(String.Format("<Cell ss:StyleID=\"s64\"><Data ss:Type=\"String\">{0}</Data></Cell>\r\n", escapeForXML(FieldScripting.getDataAsBinaryFormat(d,d.Length))));
                             }
                             else
                             {
