@@ -30,6 +30,13 @@ T-SQL Flex can script out the returned schema and data of any T-SQL query simply
 Please create issues on GitHub or reach out to Steve on Twitter at [@nycdotnet](https://twitter.com/nycdotnet).
 
 **Patch notes:**
+  * v0.0.6-alpha (2014-08-30):
+      * Significant improvements to exception handling during all phases of querying and scripting
+	  * Significant changes to disk-based buffering.  Now uses .NET IsolatedStorage.
+	  * Significant refactoring - moved query processing logic from UI to Core DLL.
+	  * Fixed bug where synthetic columns (select 'a' as [z]) were incorrectly hidden.
+	  * Fixed bug with scripting binary and other byte[] data fields to Excel.
+	  * Updated SIP Framework to 1.0.1.243 (from July 2014).
   * v0.0.5-alpha (2014-08-22):
       * Export to "XML Spreadsheet 2003" functionality added - this is very early alpha for this feature.
       * Started significant refactoring effort for data scripting in T-SQL field vs general presentation.
