@@ -27,24 +27,18 @@ namespace TSqlFlex.Core.Tests
         }
 
         [Test()]
-        public void DATETIME2_Data_ScriptsCorrectlyIfTimeSeparatorIsDot()
+        public void AllTimeTypes_ScriptCorrectlyIfTimeSeparatorIsDot()
         {
 
-            var usePeriodsForTime = new DateTimeFormatInfo();
-            usePeriodsForTime.TimeSeparator = ".";
-
-            var italyWithPeriods = new CultureInfo("it-IT");
-            italyWithPeriods.DateTimeFormat = usePeriodsForTime;
-
-            Thread.CurrentThread.CurrentCulture = italyWithPeriods;
-            Thread.CurrentThread.CurrentUICulture = italyWithPeriods;
+            setToItalianUsingDotTimeSeparator();
 
             DateTime baseData = new DateTime(2000, 10, 31, 2, 33, 44);
             object data = baseData;
+            
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "datetime2", false, 0, 0);
             Assert.AreEqual("'2000-10-31T02:33:44'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "datetime2 no fractional seconds");
 
-            baseData = baseData.AddTicks(1234567);
+            
             data = baseData;
             Assert.AreEqual("'2000-10-31T02:33:44.1234567'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "datetime2 fractional seconds");
 
@@ -55,6 +49,18 @@ namespace TSqlFlex.Core.Tests
             baseData = new DateTime(2000, 10, 31, 0, 0, 0);
             data = baseData;
             Assert.AreEqual("'2000-10-31'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "midnight omits time altogether");
+        }
+
+        private static void setToItalianUsingDotTimeSeparator()
+        {
+            var usePeriodsForTime = new DateTimeFormatInfo();
+            usePeriodsForTime.TimeSeparator = ".";
+
+            var italyWithPeriods = new CultureInfo("it-IT");
+            italyWithPeriods.DateTimeFormat = usePeriodsForTime;
+
+            Thread.CurrentThread.CurrentCulture = italyWithPeriods;
+            Thread.CurrentThread.CurrentUICulture = italyWithPeriods;
         }
     }
 }
