@@ -234,7 +234,7 @@ namespace TSqlFlex.Core
             }
             else if (fieldTypeName == "binary" || fieldTypeName == "rowversion" || fieldTypeName == "timestamp")
             {
-                return getDataAsBinaryFormat(data, fieldInfo);
+                return formatBinary(data, fieldInfo);
             }
             else if (fieldTypeName == "date")
             {
@@ -447,6 +447,11 @@ namespace TSqlFlex.Core
             return possiblyEncloseInQuotes(g.ToString("D").ToUpper(), forTSQLScript);
         }
 
+        public static string formatImage(object data)
+        {
+            return formatVarbinary(data);
+        }
+
         public static string formatVarbinary(object data)
         {
             byte[] ba = (byte[])data;
@@ -559,13 +564,19 @@ namespace TSqlFlex.Core
             return "'" + d.ToString("yyyy-MM-dd") + "'";
         }
 
-        public static string getDataAsBinaryFormat(object data, object[] fieldInfo)
+        public static string formatTimestamp(object data)
         {
-            int fieldLength = (int)fieldInfo[(int)FieldScripting.FieldInfo.FieldLength];
-            return getDataAsBinaryFormat(data, fieldLength);
+            const int SIZE_OF_TIMESTAMP_IN_BYTES = 8;
+            return formatBinary(data, SIZE_OF_TIMESTAMP_IN_BYTES);
         }
 
-        public static string getDataAsBinaryFormat(object data, int fieldLength)
+        public static string formatBinary(object data, object[] fieldInfo)
+        {
+            int fieldLength = (int)fieldInfo[(int)FieldScripting.FieldInfo.FieldLength];
+            return formatBinary(data, fieldLength);
+        }
+
+        public static string formatBinary(object data, int fieldLength)
         {
             byte[] ba = (byte[])data;
             string bitsAsHexString = BitConverter.ToString(ba).Replace("-", "");
@@ -580,6 +591,11 @@ namespace TSqlFlex.Core
                 forTSQLScript ? data.ToString().Replace("'", "''") : data.ToString(),
                 singleQuoteIfTrue(forTSQLScript,"N"),
                 singleQuoteIfTrue(forTSQLScript));
+        }
+
+        public static string formatXml(object data, bool forTSQLScript = true)
+        {
+            return formatNvarchar(data, forTSQLScript);
         }
 
         public static string formatNchar(object data, bool forTSQLScript = true)

@@ -484,22 +484,29 @@ namespace TSqlFlex.Core.Tests
         public void BINARY_Data_ScriptsCorrectly()
         {
             Int32 baseData = 123456;
+            const int columnSize = 20;
             byte[] data = BitConverter.GetBytes(baseData);
             EnsureByteArrayIsBigEndianLikeSQLServer(data);
 
-            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 20, "binary", false, 0, 0);
+
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", columnSize, "binary", false, 0, 0);
             Assert.AreEqual("0x000000000000000000000000000000000001E240", FieldScripting.valueAsTSQLLiteral((object)data, fieldInfo), "binary");
+
+            Assert.AreEqual("0x000000000000000000000000000000000001E240", FieldScripting.formatBinary((object)data, columnSize), "binary");
         }
 
         [Test()]
         public void VARBINARY_Data_ScriptsCorrectly()
         {
             Int32 baseData = 123456;
+            const int columnSize = 20;
             byte[] data = BitConverter.GetBytes(baseData);
             EnsureByteArrayIsBigEndianLikeSQLServer(data);
 
-            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 20, "varbinary", false, 0, 0);
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", columnSize, "varbinary", false, 0, 0);
             Assert.AreEqual("0x0001E240", FieldScripting.valueAsTSQLLiteral((object)data, fieldInfo), "varbinary");
+            
+            Assert.AreEqual("0x0001E240", FieldScripting.formatVarbinary((object)data), "varbinary");
         }
 
         [Test()]
@@ -511,6 +518,8 @@ namespace TSqlFlex.Core.Tests
 
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 20, "image", false, 0, 0);
             Assert.AreEqual("0x0001E240", FieldScripting.valueAsTSQLLiteral((object)data, fieldInfo), "image");
+
+            Assert.AreEqual("0x0001E240", FieldScripting.formatImage((object)data), "image");
         }
 
 
@@ -523,6 +532,7 @@ namespace TSqlFlex.Core.Tests
 
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 8, "timestamp", false, 0, 0);
             Assert.AreEqual("0x000000000001E240", FieldScripting.valueAsTSQLLiteral((object)data, fieldInfo), "timestamp");
+            Assert.AreEqual("0x000000000001E240", FieldScripting.formatTimestamp((object)data), "timestamp");
         }
 
         [Test()]
@@ -533,11 +543,13 @@ namespace TSqlFlex.Core.Tests
 
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 20, "sys.junk.hierarchyid", false, 0, 0);
             Assert.AreEqual("0x", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "hierarchyid");
+            Assert.AreEqual("0x", FieldScripting.formatHierarchyId(data), "hierarchyid");
 
             baseData = SqlHierarchyId.Parse("/1/");
             data = baseData;
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 20, "sys.junk.hierarchyid", false, 0, 0);
             Assert.AreEqual("0x58", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "hierarchyid");
+            Assert.AreEqual("0x58", FieldScripting.formatHierarchyId(data), "hierarchyid");
         }
 
         [Test()]
@@ -683,12 +695,14 @@ namespace TSqlFlex.Core.Tests
 
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "xml", false, 0, 0);
             Assert.AreEqual("N'<r><n1 myattrib=\"testattrib\">Some Data</n1></r>'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "xml");
+            Assert.AreEqual("<r><n1 myattrib=\"testattrib\">Some Data</n1></r>", FieldScripting.formatXml(data,false), "xml");
 
             baseData = "<r><n1 myattrib=\"testattrib\">Some Data</n1><n2>Property escaping... that's important.</n2></r>";
             data = baseData;
 
             fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "xml", false, 0, 0);
             Assert.AreEqual("N'<r><n1 myattrib=\"testattrib\">Some Data</n1><n2>Property escaping... that''s important.</n2></r>'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "xml escapes quotes in strings");
+            Assert.AreEqual("<r><n1 myattrib=\"testattrib\">Some Data</n1><n2>Property escaping... that's important.</n2></r>", FieldScripting.formatXml(data, false), "xml");
         }
 
         [Test()]
