@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="DataScriptingTests.cs" />
     <Compile Include="FlexResultSetTests.cs" />
+    <Compile Include="InternationalTests.cs" />
     <Compile Include="SchemaScriptingTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TSqlRulesTests.cs" />

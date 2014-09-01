@@ -54,9 +54,10 @@ namespace TSqlFlex.Core
                             else if (fieldTypeName == "date" || fieldTypeName == "datetime2" || fieldTypeName == "time" || fieldTypeName == "datetime" ||
                                 fieldTypeName == "smalldatetime")
                             {
-                                srp.WriteToStream(String.Format("<Cell ss:StyleID=\"s63\"><Data ss:Type=\"DateTime\">{0}</Data></Cell>\r\n", escapeForXML(
-                                    ((DateTime)fieldData).ToString("yyyy-MM-ddTHH:mm:ss.fff")
-                                    )));
+                                srp.WriteToStream(String.Format("<Cell ss:StyleID=\"s63\"><Data ss:Type=\"DateTime\">{0}.{1}</Data></Cell>\r\n",
+                                    escapeForXML(((DateTime)fieldData).ToString("s")),
+                                    escapeForXML(((DateTime)fieldData).ToString("fff"))
+                                    ));
                             }
                             else if (fieldTypeName == "binary" || fieldTypeName == "rowversion" || fieldTypeName == "timestamp")
                             {

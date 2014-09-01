@@ -533,9 +533,14 @@ namespace TSqlFlex.Core
                 {
                     return "'" + d.ToString("yyyy-MM-dd") + "'";
                 }
-                return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss") + "'";
+                return "'" + d.ToString("s") + "'";
             }
-            return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss.fffffff").TrimEnd('0') + "'";
+            return string.Format("{1}{0}.{2}{1}",
+                d.ToString("s"),
+                "'",
+                d.ToString("fffffff").TrimEnd('0')
+                );
+            //todo: this still needs refactoring to not put ' conditionally, etc.
         }
 
         public static string getDataAsDatetimeoffsetFormat(object data)
