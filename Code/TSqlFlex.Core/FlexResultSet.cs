@@ -173,6 +173,8 @@ namespace TSqlFlex.Core
             {
                 return "--No schema for result from query.";
             }
+
+            int visibleColumnCount = results[resultIndex].visibleColumnCount;
             var rows = results[resultIndex].schema.Rows;
             StringBuilder buffer = new StringBuilder("CREATE TABLE " + tableName + "(\r\n");
             for (int fieldIndex = 0; fieldIndex < results[resultIndex].visibleColumnCount; fieldIndex++)
@@ -186,7 +188,8 @@ namespace TSqlFlex.Core
                         " " +
                         FieldScripting.NullOrNotNull(fieldInfo.ItemArray[(int)FieldScripting.FieldInfo.AllowsNulls])
                         );
-                if (fieldIndex + 1 < rows.Count)
+
+                if (fieldIndex + 1 < visibleColumnCount)
                 {
                     buffer.Append(",\r\n");
                 } else {

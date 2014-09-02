@@ -124,17 +124,18 @@ namespace TSqlFlex.Core
             return r; //bug: possibly need to escape [ or ] in field names?
         }
 
-        public static StringBuilder scriptDataAsInsertForSQL2008Plus(string tableName, DataTable schema, List<object[]> data, int MaxRowsInValuesClause)
+        public static StringBuilder scriptDataAsInsertForSQL2008Plus(string tableName, FlexResult result, int MaxRowsInValuesClause)
         {
             const int INITIAL_CAPACITY = 50000; //This is small enough that it won't matter, but big enough to ensure minimal initial resizes.
             int calibrateBufferCapacityAfterRow = 0;
 
-            int columnCount = schema.Rows.Count;
+            DataTable schema = result.schema;
+            List<object[]> data = result.data;
+
+            int columnCount = result.visibleColumnCount;
             int rowCount = data.Count;
 
-
             StringBuilder buffer = new StringBuilder(INITIAL_CAPACITY);
-
 
             for (int rowIndex = 0; rowIndex < rowCount; rowIndex++)
             {
@@ -697,7 +698,7 @@ namespace TSqlFlex.Core
                 return new StringBuilder("--No rows were returned from the query.");
             }
 
-            return scriptDataAsInsertForSQL2008Plus(tableName, result.schema, result.data, maxRowsInValuesClause);
+            return scriptDataAsInsertForSQL2008Plus(tableName, result, maxRowsInValuesClause);
         }
 
     }
