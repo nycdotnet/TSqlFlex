@@ -31,7 +31,7 @@ namespace TSqlFlex.Core
                     {
                         srp.WriteToStream(String.Format("<Cell ss:StyleID=\"s62\"><Data ss:Type=\"String\">{0}</Data></Cell>", escapeForXML((string)result.schema.Rows[colIndex].ItemArray[(int)FieldScripting.FieldInfo.Name])));
                     }
-                    srp.WriteToStream("</Row>");
+                    srp.WriteToStream("</Row>\r\n");
 
                     //do data rows
                     for (int rowIndex = 0; rowIndex < result.data.Count; rowIndex += 1)
@@ -41,15 +41,16 @@ namespace TSqlFlex.Core
                         {
                             //todo: fix each of these items to work with the actual scripting stuff (requires finishing major refactoring work).
                             object fieldData = result.data[rowIndex][colIndex];
-                            string fieldTypeName = result.schema.Rows[colIndex].ItemArray[(int)FieldScripting.FieldInfo.DataType].ToString();
+                            object[] fieldInfo = result.schema.Rows[colIndex].ItemArray;
+                            string fieldTypeName = fieldInfo[(int)FieldScripting.FieldInfo.DataType].ToString();
                             if (fieldData == null || fieldData is DBNull)
                             {
                                 srp.WriteToStream("<Cell/>");
                             }
                             else if (fieldTypeName == "bigint" || fieldTypeName == "numeric" || fieldTypeName == "smallint" || fieldTypeName == "decimal" || fieldTypeName == "smallmoney" ||
-                                fieldTypeName == "int" || fieldTypeName == "tinyint" || fieldTypeName == "float" || fieldTypeName == "real" || fieldTypeName == "money")
+                                fieldTypeName == "int" || fieldTypeName == "tinyint" || fieldTypeName == "float" || fieldTypeName == "real" || fieldTypeName == "money" || fieldTypeName == "bit")
                             {
-                                srp.WriteToStream(String.Format("<Cell><Data ss:Type=\"Number\">{0}</Data></Cell>\r\n", escapeForXML(fieldData.ToString())));
+                                srp.WriteToStream(String.Format("<Cell><Data ss:Type=\"Number\">{0}</Data></Cell>\r\n", escapeForXML(FieldScripting.valueAsTSQLLiteral(fieldData, fieldInfo, false))));
                             }
                             else if (fieldTypeName == "date" || fieldTypeName == "datetime2" || fieldTypeName == "time" || fieldTypeName == "datetime" ||
                                 fieldTypeName == "smalldatetime")
@@ -64,16 +65,20 @@ namespace TSqlFlex.Core
                                 byte[] d = (byte[])result.data[rowIndex][colIndex];
                                 srp.WriteToStream(String.Format("<Cell ss:StyleID=\"s64\"><Data ss:Type=\"String\">{0}</Data></Cell>\r\n", escapeForXML(FieldScripting.formatBinary(d,d.Length))));
                             }
+                            else if (fieldTypeName == "varbinary" || fieldTypeName == "image")
+                            {
+                                srp.WriteToStream(String.Format("<Cell ss:StyleID=\"s64\"><Data ss:Type=\"String\">{0}</Data></Cell>\r\n", escapeForXML(FieldScripting.formatVarbinary(fieldData))));
+                            }
                             else
                             {
-                                srp.WriteToStream(String.Format("<Cell ss:StyleID=\"s64\"><Data ss:Type=\"String\">{0}</Data></Cell>\r\n", escapeForXML(result.data[rowIndex][colIndex].ToString())));
+                                srp.WriteToStream(String.Format("<Cell ss:StyleID=\"s64\"><Data ss:Type=\"String\">{0}</Data></Cell>\r\n", escapeForXML(FieldScripting.valueAsTSQLLiteral(fieldData, fieldInfo, false))));
                             }
 
                         }
-                        srp.WriteToStream("</Row>");
+                        srp.WriteToStream("</Row>\r\n");
                     }
 
-                    srp.WriteToStream("</Table></Worksheet>");
+                    srp.WriteToStream("</Table></Worksheet>\r\n");
                     srp.worksheetIsValid = true;
                 }
             }

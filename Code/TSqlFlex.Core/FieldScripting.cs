@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using Microsoft.SqlServer.Types;
@@ -16,6 +17,8 @@ namespace TSqlFlex.Core
             AllowsNulls = 13,
             DataType = 24
         }
+
+        private static CultureInfo englishUSCulture = new CultureInfo("en-US");  //default culture for formatting.
 
         public static string DataTypeName(DataRow fieldInfo)
         {
@@ -202,7 +205,7 @@ namespace TSqlFlex.Core
         }
 
         //todo: may need some refactoring :-)
-        public static string valueAsTSQLLiteral(object data, object[] fieldInfo)
+        public static string valueAsTSQLLiteral(object data, object[] fieldInfo, bool forTSQLScript = true)
         {
             if (data == null || data is DBNull)
             {
@@ -213,19 +216,19 @@ namespace TSqlFlex.Core
 
             if (fieldTypeName == "char")
             {
-                return formatChar(data);
+                return formatChar(data, forTSQLScript);
             }
             else if (fieldTypeName == "varchar" || fieldTypeName == "text")
             {
-                return formatVarchar(data);
+                return formatVarchar(data, forTSQLScript);
             }
             else if (fieldTypeName == "nchar")
             {
-                return formatNchar(data);
+                return formatNchar(data, forTSQLScript);
             }
             else if (fieldTypeName == "nvarchar" || fieldTypeName == "ntext" || fieldTypeName == "xml")
             {
-                return formatNvarchar(data);
+                return formatNvarchar(data, forTSQLScript);
             }
             else if (fieldTypeName == "bigint" || fieldTypeName == "numeric" || fieldTypeName == "smallint" || fieldTypeName == "decimal" || fieldTypeName == "smallmoney" ||
                 fieldTypeName == "int" || fieldTypeName == "tinyint" || fieldTypeName == "float" || fieldTypeName == "real" || fieldTypeName == "money")
@@ -238,27 +241,27 @@ namespace TSqlFlex.Core
             }
             else if (fieldTypeName == "date")
             {
-                return formatDate(data);
+                return formatDate(data, forTSQLScript);
             }
             else if (fieldTypeName == "datetimeoffset")
             {
-                return formatDatetimeoffset(data);
+                return formatDatetimeoffset(data, forTSQLScript);
             }
             else if (fieldTypeName == "datetime2")
             {
-                return formatDatetime2(data);
+                return formatDatetime2(data, forTSQLScript);
             }
             else if (fieldTypeName == "time")
             {
-                return formatTime(data);
+                return formatTime(data, forTSQLScript);
             }
             else if (fieldTypeName == "datetime")
             {
-                return formatDateTime(data);
+                return formatDateTime(data, forTSQLScript);
             }
             else if (fieldTypeName == "smalldatetime")
             {
-                return formatSmallDateTime(data);
+                return formatSmallDateTime(data, forTSQLScript);
             }
             else if (fieldTypeName == "bit")
             {
@@ -270,11 +273,11 @@ namespace TSqlFlex.Core
             }
             else if (fieldTypeName == "uniqueidentifier")
             {
-                return formatGuid(data);
+                return formatGuid(data, forTSQLScript);
             }
             else if (fieldTypeName == "sql_variant")
             {
-                return getDataAsSql_variantFormat(data);
+                return getDataAsSql_variantFormat(data, forTSQLScript);
             }
             else if (fieldTypeName.EndsWith("hierarchyid"))
             {
@@ -282,51 +285,72 @@ namespace TSqlFlex.Core
             }
             else if (fieldTypeName.EndsWith("geography"))
             {
-                return formatGeography(data);
+                return formatGeography(data, forTSQLScript);
             }
             else if (fieldTypeName.EndsWith("geometry"))
             {
-                return formatGeometry(data);
+                return formatGeometry(data, forTSQLScript);
             }
             //shouldn't get here.  In-place for future data type compatibility.
             if (data is string)
             {
-                return "N'" + ((string)data).Replace("'", "''") + "'";
+                return String.Format("{0}{1}{2}",
+                    (forTSQLScript ? "N'" : ""),
+                        ((string)data).Replace("'", "''"),
+                        (forTSQLScript ? "'" : ""));
             }
-            return "N'" + data.ToString() + "'";
+            return String.Format("{0}{1}{2}",
+                    (forTSQLScript ? "N'" : ""),
+                        data.ToString(),
+                        (forTSQLScript ? "'" : ""));
+        }
+
+        public static string formatDecimal(object data)
+        {
+            decimal theDec = (decimal)data;
+            if (partAfterDecimal(theDec) == 0)
+            {
+                return theDec.ToString("F0");
+            }
+            return theDec.ToString("G", englishUSCulture).TrimEnd('0');
         }
 
         public static string getDataAsAppropriateNumericFormat(object data)
         {
             if (data is decimal)
             {
-                decimal theDec = (decimal)data;
-                if (partAfterDecimal(theDec) == 0)
-                {
-                    return theDec.ToString("F0");
-                }
-                return theDec.ToString("G").TrimEnd('0');
+                return formatDecimal(data);
             }
             else if (data is Double)
             {
-                Double theDbl = (Double)data;
-                if (partAfterDecimal(theDbl) == 0)
-                {
-                    return theDbl.ToString("F0");
-                }
-                return theDbl.ToString("F7").TrimEnd('0');
+                return formatDouble(data);
             }
             else if (data is Single)
             {
-                Single theSingle = (Single)data;
-                if (partAfterDecimal(theSingle) == 0)
-                {
-                    return theSingle.ToString("F0");
-                }
-                return theSingle.ToString("F7").TrimEnd('0');
+                return formatSingle(data);
             }
 
             return data.ToString();
+        }
+
+        public static string formatSingle(object data)
+        {
+            Single theSingle = (Single)data;
+            if (partAfterDecimal(theSingle) == 0)
+            {
+                return theSingle.ToString("F0");
+            }
+            return theSingle.ToString("F7", englishUSCulture).TrimEnd('0');
+        }
+
+        public static string formatDouble(object data)
+        {
+            Double theDbl = (Double)data;
+            if (partAfterDecimal(theDbl) == 0)
+            {
+                return theDbl.ToString("F0");
+            }
+            return theDbl.ToString("F7", englishUSCulture).TrimEnd('0');
         }
 
         public static double partAfterDecimal(Single theSingle)
@@ -344,17 +368,17 @@ namespace TSqlFlex.Core
             return theDec - Math.Truncate(theDec);
         }
 
-        public static string getDataAsSql_variantFormat(object data)
+        public static string getDataAsSql_variantFormat(object data, bool forTSQLScript = true)
         {
             //SQL-CLR Type Mapping documentation: http://msdn.microsoft.com/en-us/library/bb386947(v=vs.110).aspx
 
             if (data is SqlGeometry)
             {
-                return formatGeometry(data);
+                return formatGeometry(data, forTSQLScript);
             }
             else if (data is SqlGeography)
             {
-                return formatGeography(data);
+                return formatGeography(data, forTSQLScript);
             }
             else if (data is SqlHierarchyId)
             {
@@ -362,7 +386,7 @@ namespace TSqlFlex.Core
             }
             else if (data is Guid)
             {
-                return formatGuid(data);
+                return formatGuid(data, forTSQLScript);
             }
             else if (data is byte[])
             {
@@ -370,15 +394,15 @@ namespace TSqlFlex.Core
             }
             else if (data is DateTimeOffset)
             {
-                return formatDatetimeoffset(data);
+                return formatDatetimeoffset(data, forTSQLScript);
             }
             else if (data is DateTime)
             {
-                return formatDateTime(data);
+                return formatDateTime(data, forTSQLScript);
             }
             else if (data is TimeSpan)
             {
-                return formatTime(data);
+                return formatTime(data, forTSQLScript);
             }
             else if (data is bool)
             {

@@ -35,20 +35,41 @@ namespace TSqlFlex.Core.Tests
             DateTime baseData = new DateTime(2000, 10, 31, 2, 33, 44);
             object data = baseData;
             
-            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "datetime2", false, 0, 0);
-            Assert.AreEqual("'2000-10-31T02:33:44'", FieldScripting.formatDateTime(data, true), "datetime2 no fractional seconds");
+            Assert.AreEqual("'2000-10-31T02:33:44'", FieldScripting.formatDateTime(data, true), "we expect to have : as the time separator despite the set culture.");
 
-            
-            data = baseData;
-            Assert.AreEqual("'2000-10-31T02:33:44.1234567'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "datetime2 fractional seconds");
+        }
 
-            baseData = baseData = new DateTime(2000, 10, 31, 2, 33, 44).AddMilliseconds(100);
-            data = baseData;
-            Assert.AreEqual("'2000-10-31T02:33:44.1'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "partial fractional seconds");
+        [Test()]
+        public void DECIMAL_WhenDecimalSeparatorIsPeriod_ScriptsCorrectly()
+        {
+            setToItalianUsingCommaDecimalSeparator();
 
-            baseData = new DateTime(2000, 10, 31, 0, 0, 0);
-            data = baseData;
-            Assert.AreEqual("'2000-10-31'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "midnight omits time altogether");
+            Decimal baseData = 1.5M;
+            object data = baseData;
+
+            Assert.AreEqual("1.5", FieldScripting.formatDecimal(data), "we expect to have . as the decimal separator despite the set culture.");
+        }
+
+        [Test()]
+        public void DOUBLE_WhenDecimalSeparatorIsPeriod_ScriptsCorrectly()
+        {
+            setToItalianUsingCommaDecimalSeparator();
+
+            double baseData = 1.5;
+            object data = baseData;
+
+            Assert.AreEqual("1.5", FieldScripting.formatDouble(data), "we expect to have . as the decimal separator despite the set culture.");
+        }
+
+        [Test()]
+        public void SINGLE_WhenDecimalSeparatorIsPeriod_ScriptsCorrectly()
+        {
+            setToItalianUsingCommaDecimalSeparator();
+
+            float baseData = 1.5F;
+            object data = baseData;
+
+            Assert.AreEqual("1.5", FieldScripting.formatSingle(data), "we expect to have . as the decimal separator despite the set culture.");
         }
 
         private static void setToItalianUsingDotTimeSeparator()
@@ -61,6 +82,19 @@ namespace TSqlFlex.Core.Tests
 
             Thread.CurrentThread.CurrentCulture = italyWithPeriods;
             Thread.CurrentThread.CurrentUICulture = italyWithPeriods;
+        }
+
+
+        private static void setToItalianUsingCommaDecimalSeparator()
+        {
+            var useCommaForDecimalSeparator = new NumberFormatInfo();
+            useCommaForDecimalSeparator.NumberDecimalSeparator = ",";
+
+            var italyWithCommas = new CultureInfo("it-IT");
+            italyWithCommas.NumberFormat = useCommaForDecimalSeparator;
+
+            Thread.CurrentThread.CurrentCulture = italyWithCommas;
+            Thread.CurrentThread.CurrentUICulture = italyWithCommas;
         }
     }
 }
