@@ -238,15 +238,15 @@ namespace TSqlFlex.Core
             }
             else if (fieldTypeName == "date")
             {
-                return getDataAsDateFormat(data);
+                return formatDate(data);
             }
             else if (fieldTypeName == "datetimeoffset")
             {
-                return getDataAsDatetimeoffsetFormat(data);
+                return formatDatetimeoffset(data);
             }
             else if (fieldTypeName == "datetime2")
             {
-                return getDataAsDatetime2Format(data);
+                return formatDatetime2(data);
             }
             else if (fieldTypeName == "time")
             {
@@ -370,7 +370,7 @@ namespace TSqlFlex.Core
             }
             else if (data is DateTimeOffset)
             {
-                return getDataAsDatetimeoffsetFormat(data);
+                return formatDatetimeoffset(data);
             }
             else if (data is DateTime)
             {
@@ -475,11 +475,12 @@ namespace TSqlFlex.Core
                 return possiblyEncloseInQuotes(d.ToString("yyyy-MM-dd"), forTSQLScript);
             }
             //but the seconds are required if the time is in ISO string format...
-            return possiblyEncloseInQuotes(d.ToString("yyyy-MM-ddTHH:mm:ss"), forTSQLScript);
+            return possiblyEncloseInQuotes(d.ToString("s"), forTSQLScript);
         }
 
         public static string formatDateTime(object data, bool forTSQLScript = true)
         {
+            string quoting = forTSQLScript ? "'" : "";
             DateTime d = (DateTime)data;
             if (d.ToString("fff") == "000")
             {
@@ -487,9 +488,9 @@ namespace TSqlFlex.Core
                 {
                     return possiblyEncloseInQuotes(d.ToString("yyyy-MM-dd"), forTSQLScript);
                 }
-                return possiblyEncloseInQuotes(d.ToString("yyyy-MM-ddTHH:mm:ss"), forTSQLScript);
+                return possiblyEncloseInQuotes(d.ToString("s"), forTSQLScript);
             }
-            return possiblyEncloseInQuotes(d.ToString("yyyy-MM-ddTHH:mm:ss.fff").TrimEnd('0'), forTSQLScript);
+            return possiblyEncloseInQuotes(String.Format("{0}.{1}",d.ToString("s"), d.ToString("fff").TrimEnd('0')), forTSQLScript);
         }
 
 
@@ -520,48 +521,63 @@ namespace TSqlFlex.Core
 
                 if (d.ToString("fffffff") == "0000000")
                 {
-                    return String.Format("{1}{0}{1}", d.ToString("HH:mm:ss"),quoting);
+                    return String.Format("{3}{0}:{1}:{2}{3}",
+                        d.Hour.ToString().PadLeft(2, '0'),
+                        d.Minute.ToString().PadLeft(2, '0'),
+                        d.Second.ToString().PadLeft(2, '0'),
+                        quoting);
                 }
-                return String.Format("{1}{0}{1}", d.ToString("HH:mm:ss.fffffff").TrimEnd('0'), quoting);
+                return String.Format("{4}{0}:{1}:{2}.{3}{4}",
+                        d.Hour.ToString().PadLeft(2, '0'),
+                        d.Minute.ToString().PadLeft(2, '0'),
+                        d.Second.ToString().PadLeft(2, '0'),
+                        d.ToString("fffffff").TrimEnd('0'),
+                        quoting);
             }
 
             return String.Format("{1}{0}{1}", data.ToString(), quoting); //todo: this should not get hit, but should have a consistent strategy for dealing with this.
         }
 
-        public static string getDataAsDatetime2Format(object data)
+        public static string formatDatetime2(object data, bool forTSQLScript = true)
         {
             DateTime d = (DateTime)data;
+            string quoting = forTSQLScript ? "'" : "";
 
             if (d.ToString("fffffff") == "0000000")
             {
                 if (d.Hour == 0 && d.Minute == 0 & d.Second == 0)
                 {
-                    return "'" + d.ToString("yyyy-MM-dd") + "'";
+
+                    return String.Format("{1}{0}{1}", d.ToString("yyyy-MM-dd"), quoting);
                 }
-                return "'" + d.ToString("s") + "'";
+                return String.Format("{1}{0}{1}", d.ToString("s"), quoting);
+                
             }
             return string.Format("{1}{0}.{2}{1}",
                 d.ToString("s"),
-                "'",
+                quoting,
                 d.ToString("fffffff").TrimEnd('0')
                 );
-            //todo: this still needs refactoring to not put ' conditionally, etc.
         }
 
-        public static string getDataAsDatetimeoffsetFormat(object data)
+        public static string formatDatetimeoffset(object data, bool forTSQLScript = true)
         {
+            string quoting = forTSQLScript ? "'" : "";
             DateTimeOffset d = (DateTimeOffset)data;
+
             if (d.ToString("fffffff") == "0000000")
             {
-                return "'" + d.ToString("yyyy-MM-ddTHH:mm:sszzzz") + "'";
+                return String.Format("{1}{0}{2}{1}",d.ToString("s"),quoting,d.ToString("zzzz"));
             }
-            return "'" + d.ToString("yyyy-MM-ddTHH:mm:ss.fffffffzzzz") + "'";
+            return String.Format("{1}{0}.{3}{2}{1}", d.ToString("s"), quoting, d.ToString("zzzz"), d.ToString("fffffff").TrimEnd('0'));
         }
 
-        public static string getDataAsDateFormat(object data)
+        public static string formatDate(object data, bool forTSQLScript = true)
         {
             DateTime d = (DateTime)data;
-            return "'" + d.ToString("yyyy-MM-dd") + "'";
+            string quoting = forTSQLScript ? "'" : "";
+
+            return String.Format("{1}{0}{1}",d.ToString("yyyy-MM-dd"),quoting);
         }
 
         public static string formatTimestamp(object data)

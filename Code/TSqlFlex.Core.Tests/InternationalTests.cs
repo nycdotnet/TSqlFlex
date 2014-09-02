@@ -27,7 +27,7 @@ namespace TSqlFlex.Core.Tests
         }
 
         [Test()]
-        public void AllTimeTypes_ScriptCorrectlyIfTimeSeparatorIsDot()
+        public void DATETIME2_WhenTimeSeparatorIsDot_ScriptsCorrectly()
         {
 
             setToItalianUsingDotTimeSeparator();
@@ -36,7 +36,7 @@ namespace TSqlFlex.Core.Tests
             object data = baseData;
             
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "datetime2", false, 0, 0);
-            Assert.AreEqual("'2000-10-31T02:33:44'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "datetime2 no fractional seconds");
+            Assert.AreEqual("'2000-10-31T02:33:44'", FieldScripting.formatDateTime(data, true), "datetime2 no fractional seconds");
 
             
             data = baseData;

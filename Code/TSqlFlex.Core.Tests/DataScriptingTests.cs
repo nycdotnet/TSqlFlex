@@ -232,6 +232,7 @@ namespace TSqlFlex.Core.Tests
             object data = baseData;
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "date", false, 0, 0);
             Assert.AreEqual("'2000-10-31'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "date");
+            Assert.AreEqual("2000-10-31", FieldScripting.formatDate(data, false), "date");
         }
 
         [Test()]
@@ -241,10 +242,12 @@ namespace TSqlFlex.Core.Tests
             object data = baseData;
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "datetimeoffset", false, 0, 0);
             Assert.AreEqual("'2000-10-31T02:33:44+03:00'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "datetimeoffset no fractional seconds");
+            Assert.AreEqual("2000-10-31T02:33:44+03:00", FieldScripting.formatDatetimeoffset(data, false), "datetimeoffset no fractional seconds");
 
             baseData = baseData.AddTicks(1234567);
             data = baseData;
             Assert.AreEqual("'2000-10-31T02:33:44.1234567+03:00'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "datetimeoffset fractional seconds");
+            Assert.AreEqual("2000-10-31T02:33:44.1234567+03:00", FieldScripting.formatDatetimeoffset(data, false), "datetimeoffset fractional seconds");
         }
 
         [Test()]
@@ -254,18 +257,22 @@ namespace TSqlFlex.Core.Tests
             object data = baseData;
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "datetime2", false, 0, 0);
             Assert.AreEqual("'2000-10-31T02:33:44'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "datetime2 no fractional seconds");
+            Assert.AreEqual("2000-10-31T02:33:44", FieldScripting.formatDatetime2(data, false), "datetime2 no fractional seconds");
 
             baseData = baseData.AddTicks(1234567);
             data = baseData;
             Assert.AreEqual("'2000-10-31T02:33:44.1234567'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "datetime2 fractional seconds");
+            Assert.AreEqual("2000-10-31T02:33:44.1234567", FieldScripting.formatDatetime2(data, false), "datetime2 fractional seconds");
 
             baseData = baseData = new DateTime(2000, 10, 31, 2, 33, 44).AddMilliseconds(100);
             data = baseData;
             Assert.AreEqual("'2000-10-31T02:33:44.1'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "partial fractional seconds");
+            Assert.AreEqual("2000-10-31T02:33:44.1", FieldScripting.formatDatetime2(data, false), "partial fractional seconds");
 
             baseData = new DateTime(2000, 10, 31, 0, 0, 0);
             data = baseData;
             Assert.AreEqual("'2000-10-31'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "midnight omits time altogether");
+            Assert.AreEqual("2000-10-31", FieldScripting.formatDatetime2(data, false), "midnight omits time altogether");
         }
 
         [Test()]
