@@ -18,6 +18,11 @@ Follow the instructions [here](https://github.com/nycdotnet/TSqlFlex/blob/master
 Please either create issues on GitHub, or reach out to Steve on Twitter at [@nycdotnet](https://twitter.com/nycdotnet).
 
 **Patch notes:**
+  * v0.0.7-alpha (2014-09-02):
+      * Significant bug fixes for internationalization issues surrounding time and number formatting including tests.  Cultures where . is used as the time separator and , as a decimal point should work OK now for both Excel and SQL INSERT scripts.  Special thanks to Gianluca Sartori (@SpaghettiDBA) for assistance with troubleshooting these issues.
+	  * Bug fixes for incorrect columns and commas appearing in INSERT scripts due to hidden fields.
+	  * Added more line-feeds to the scripted XML Spreadsheet 2003 output.
+	  * Finished refactoring to "format" functions (this is an internal change only).
   * v0.0.6-alpha (2014-08-30):
       * Significant improvements to exception handling during all phases of querying and scripting
 	  * Significant changes to disk-based buffering.  Now uses .NET IsolatedStorage.
