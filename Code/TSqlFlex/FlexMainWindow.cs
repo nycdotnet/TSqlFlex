@@ -36,8 +36,10 @@ namespace TSqlFlex
 
         private void SetConnectionText()
         {
-            //bug: got cross thread error here. need to check for access for any UI updates.
-            lblConnectionInfo.Text = currentConnectionText();
+            InvokeOnFormThread(() =>
+            {
+                lblConnectionInfo.Text = currentConnectionText();
+            });
         }
 
         private string currentConnectionText()
@@ -129,8 +131,11 @@ namespace TSqlFlex
 
         private void setProgressText(bool isComplete)
         {
-            lblProgress.Text = getFormattedElapsedSqlStopwatchTime(isComplete) + " " + progressText;
-            lblProgress.Refresh();
+            InvokeOnFormThread(() =>
+            {
+                lblProgress.Text = getFormattedElapsedSqlStopwatchTime(isComplete) + " " + progressText;
+                lblProgress.Refresh();
+            });
         }
 
         private string getFormattedElapsedSqlStopwatchTime(bool includeMilliseconds)
@@ -224,14 +229,16 @@ namespace TSqlFlex
 
         private void drawExceptions(SqlRunParameters srp, string header = "")
         {
-            if (header == "")
-            {
-                txtOutput.Text = srp.exceptionsText.ToString();
-            }
-            else
-            {
-                txtOutput.Text = header + "\r\n\r\n" + srp.exceptionsText.ToString();
-            }
+            InvokeOnFormThread(() => {
+                    if (header == "")
+                    {
+                        txtOutput.Text = srp.exceptionsText.ToString();
+                    }
+                    else
+                    {
+                        txtOutput.Text = header + "\r\n\r\n" + srp.exceptionsText.ToString();
+                    }
+                });
         }
 
         private void TryToSaveSpreadsheet(SqlRunParameters srp)
@@ -250,21 +257,27 @@ namespace TSqlFlex
             if (fileName != "")
             {
                 srp.saveOutputStreamTo(fileName);
-                txtOutput.Text = "--Results written to \"" + fileName + "\".\r\n\r\n--You can open this file in Excel.";
+                InvokeOnFormThread(() =>
+                {
+                    txtOutput.Text = "--Results written to \"" + fileName + "\".\r\n\r\n--You can open this file in Excel.";
+                });
             }
         }
 
         private void setUIState(bool queryIsRunning) {
-            cmdCancel.Enabled = queryIsRunning;
-            cmdRunNRollback.Enabled = !queryIsRunning;
-            if (queryIsRunning)
+            InvokeOnFormThread(() =>
             {
-                Cursor.Current = Cursors.WaitCursor;
-            }
-            else
-            {
-                Cursor.Current = Cursors.Default;
-            }
+                cmdCancel.Enabled = queryIsRunning;
+                cmdRunNRollback.Enabled = !queryIsRunning;
+                if (queryIsRunning)
+                {
+                    Cursor.Current = Cursors.WaitCursor;
+                }
+                else
+                {
+                    Cursor.Current = Cursors.Default;
+                }
+            });
 
         }
 
@@ -279,5 +292,16 @@ namespace TSqlFlex
             setProgressText(false);
         }
 
+        private void InvokeOnFormThread(Action behavior)
+        {
+            if (IsHandleCreated && InvokeRequired)
+            {
+                Invoke(behavior);
+            }
+            else
+            {
+                behavior();
+            }
+        }
     }
 }
