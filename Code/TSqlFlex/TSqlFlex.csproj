@@ -45,6 +45,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AboutBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutBox.Designer.cs">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Extension.cs" />
     <Compile Include="FlexMainWindow.cs">
       <SubType>UserControl</SubType>
@@ -56,6 +62,9 @@
     <Compile Include="RunCommand.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="AboutBox.resx">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FlexMainWindow.resx">
       <DependentUpon>FlexMainWindow.cs</DependentUpon>
     </EmbeddedResource>

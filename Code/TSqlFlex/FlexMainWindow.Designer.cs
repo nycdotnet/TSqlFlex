@@ -29,10 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.btnCopyToNewWindow = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panelTop = new System.Windows.Forms.Panel();
-            this.lblVersion = new System.Windows.Forms.Label();
+            this.btnAbout = new System.Windows.Forms.Button();
             this.lblConnectionInfo = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -47,24 +46,13 @@
             this.cmdRunNRollback = new System.Windows.Forms.Button();
             this.queryWorker = new System.ComponentModel.BackgroundWorker();
             this.queryTimer = new System.Windows.Forms.Timer(this.components);
+            this.btnExcel = new System.Windows.Forms.Button();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.panelTop.SuspendLayout();
             this.panelBottom.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // btnCopyToNewWindow
-            // 
-            this.btnCopyToNewWindow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCopyToNewWindow.Location = new System.Drawing.Point(979, 3);
-            this.btnCopyToNewWindow.Name = "btnCopyToNewWindow";
-            this.btnCopyToNewWindow.Size = new System.Drawing.Size(121, 23);
-            this.btnCopyToNewWindow.TabIndex = 3;
-            this.btnCopyToNewWindow.Text = "Copy to new window";
-            this.btnCopyToNewWindow.UseVisualStyleBackColor = true;
-            this.btnCopyToNewWindow.Visible = false;
-            this.btnCopyToNewWindow.Click += new System.EventHandler(this.btnCopyToNewWindow_Click);
             // 
             // splitContainer1
             // 
@@ -83,32 +71,34 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.panelBottom);
             this.splitContainer1.Size = new System.Drawing.Size(1112, 548);
-            this.splitContainer1.SplitterDistance = 272;
+            this.splitContainer1.SplitterDistance = 199;
+            this.splitContainer1.SplitterWidth = 2;
             this.splitContainer1.TabIndex = 1;
             // 
             // panelTop
             // 
-            this.panelTop.Controls.Add(this.lblVersion);
+            this.panelTop.Controls.Add(this.btnAbout);
             this.panelTop.Controls.Add(this.lblConnectionInfo);
             this.panelTop.Controls.Add(this.label2);
             this.panelTop.Controls.Add(this.label1);
             this.panelTop.Controls.Add(this.txtSqlInput);
+            this.panelTop.Cursor = System.Windows.Forms.Cursors.Default;
             this.panelTop.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelTop.Location = new System.Drawing.Point(0, 0);
             this.panelTop.Name = "panelTop";
-            this.panelTop.Size = new System.Drawing.Size(1112, 272);
+            this.panelTop.Size = new System.Drawing.Size(1112, 199);
             this.panelTop.TabIndex = 0;
             // 
-            // lblVersion
+            // btnAbout
             // 
-            this.lblVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVersion.AutoSize = true;
-            this.lblVersion.Location = new System.Drawing.Point(1008, 12);
-            this.lblVersion.Name = "lblVersion";
-            this.lblVersion.Size = new System.Drawing.Size(41, 13);
-            this.lblVersion.TabIndex = 5;
-            this.lblVersion.Text = "version";
-            this.lblVersion.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.btnAbout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAbout.Location = new System.Drawing.Point(1048, 3);
+            this.btnAbout.Name = "btnAbout";
+            this.btnAbout.Size = new System.Drawing.Size(61, 22);
+            this.btnAbout.TabIndex = 6;
+            this.btnAbout.Text = "&About...";
+            this.btnAbout.UseVisualStyleBackColor = true;
+            this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
             // 
             // lblConnectionInfo
             // 
@@ -150,28 +140,30 @@
             this.txtSqlInput.Multiline = true;
             this.txtSqlInput.Name = "txtSqlInput";
             this.txtSqlInput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtSqlInput.Size = new System.Drawing.Size(1112, 201);
+            this.txtSqlInput.Size = new System.Drawing.Size(1112, 128);
             this.txtSqlInput.TabIndex = 0;
             this.txtSqlInput.WordWrap = false;
             // 
             // panelBottom
             // 
+            this.panelBottom.Controls.Add(this.btnExcel);
             this.panelBottom.Controls.Add(this.cmbResultsType);
             this.panelBottom.Controls.Add(this.lblProgress);
             this.panelBottom.Controls.Add(this.cmdCancel);
             this.panelBottom.Controls.Add(this.queryProgress);
-            this.panelBottom.Controls.Add(this.btnCopyToNewWindow);
             this.panelBottom.Controls.Add(this.btnCopyToClipboard);
             this.panelBottom.Controls.Add(this.txtOutput);
             this.panelBottom.Controls.Add(this.cmdRunNRollback);
+            this.panelBottom.Cursor = System.Windows.Forms.Cursors.Default;
             this.panelBottom.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelBottom.Location = new System.Drawing.Point(0, 0);
             this.panelBottom.Name = "panelBottom";
-            this.panelBottom.Size = new System.Drawing.Size(1112, 272);
+            this.panelBottom.Size = new System.Drawing.Size(1112, 347);
             this.panelBottom.TabIndex = 1;
             // 
             // cmbResultsType
             // 
+            this.cmbResultsType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbResultsType.FormattingEnabled = true;
             this.cmbResultsType.Location = new System.Drawing.Point(3, 5);
             this.cmbResultsType.Name = "cmbResultsType";
@@ -194,7 +186,7 @@
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 7;
-            this.cmdCancel.Text = "Cancel";
+            this.cmdCancel.Text = "Ca&ncel";
             this.cmdCancel.UseVisualStyleBackColor = true;
             this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
             // 
@@ -208,7 +200,7 @@
             // btnCopyToClipboard
             // 
             this.btnCopyToClipboard.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCopyToClipboard.Location = new System.Drawing.Point(868, 3);
+            this.btnCopyToClipboard.Location = new System.Drawing.Point(1004, 5);
             this.btnCopyToClipboard.Name = "btnCopyToClipboard";
             this.btnCopyToClipboard.Size = new System.Drawing.Size(105, 23);
             this.btnCopyToClipboard.TabIndex = 2;
@@ -228,7 +220,7 @@
             this.txtOutput.Name = "txtOutput";
             this.txtOutput.ReadOnly = true;
             this.txtOutput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtOutput.Size = new System.Drawing.Size(1112, 240);
+            this.txtOutput.Size = new System.Drawing.Size(1112, 315);
             this.txtOutput.TabIndex = 4;
             this.txtOutput.WordWrap = false;
             // 
@@ -254,6 +246,17 @@
             // 
             this.queryTimer.Tick += new System.EventHandler(this.queryTimer_Tick);
             // 
+            // btnExcel
+            // 
+            this.btnExcel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExcel.Location = new System.Drawing.Point(912, 5);
+            this.btnExcel.Name = "btnExcel";
+            this.btnExcel.Size = new System.Drawing.Size(86, 23);
+            this.btnExcel.TabIndex = 7;
+            this.btnExcel.Text = "Open in &Excel";
+            this.btnExcel.UseVisualStyleBackColor = true;
+            this.btnExcel.Click += new System.EventHandler(this.btnExcel_Click);
+            // 
             // FlexMainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -274,7 +277,6 @@
 
         #endregion
 
-        private System.Windows.Forms.Button btnCopyToNewWindow;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Panel panelTop;
         private System.Windows.Forms.Label lblConnectionInfo;
@@ -285,12 +287,13 @@
         private System.Windows.Forms.Button btnCopyToClipboard;
         private System.Windows.Forms.TextBox txtOutput;
         private System.Windows.Forms.Button cmdRunNRollback;
-        private System.Windows.Forms.Label lblVersion;
         private System.ComponentModel.BackgroundWorker queryWorker;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.ProgressBar queryProgress;
         private System.Windows.Forms.Label lblProgress;
         private System.Windows.Forms.Timer queryTimer;
         private System.Windows.Forms.ComboBox cmbResultsType;
+        private System.Windows.Forms.Button btnAbout;
+        private System.Windows.Forms.Button btnExcel;
     }
 }

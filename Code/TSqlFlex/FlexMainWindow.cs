@@ -16,11 +16,11 @@ namespace TSqlFlex
         private SqlConnectionStringBuilder connStringBuilder = null;
         private Stopwatch sqlStopwatch = null;
         private string progressText = "";
+        private string lastExcelSheetPath = "";
         
         public FlexMainWindow()
         {
             InitializeComponent();
-            lblVersion.Text = TSqlFlex.Core.Info.Version();
             lblProgress.Text = "";
             cmbResultsType.Items.Add(SqlRunParameters.TO_INSERT_STATEMENTS);
             cmbResultsType.Items.Add(SqlRunParameters.TO_XML_SPREADSHEET);
@@ -60,6 +60,7 @@ namespace TSqlFlex
             }
 
             if (!queryWorker.IsBusy) {
+                lastExcelSheetPath = "";
                 sqlStopwatch = new Stopwatch();
                 sqlStopwatch.Start();
                 queryTimer.Enabled = true;
@@ -257,6 +258,7 @@ namespace TSqlFlex
             if (fileName != "")
             {
                 srp.saveOutputStreamTo(fileName);
+                this.lastExcelSheetPath = fileName;
                 InvokeOnFormThread(() =>
                 {
                     txtOutput.Text = "--Results written to \"" + fileName + "\".\r\n\r\n--You can open this file in Excel.";
@@ -277,6 +279,7 @@ namespace TSqlFlex
                 {
                     Cursor.Current = Cursors.Default;
                 }
+                btnExcel.Enabled = (lastExcelSheetPath.Length > 0);
             });
 
         }
@@ -301,6 +304,25 @@ namespace TSqlFlex
             else
             {
                 behavior();
+            }
+        }
+
+        private void btnAbout_Click(object sender, EventArgs e)
+        {
+            AboutBox ab = new AboutBox();
+            ab.ShowDialog();
+        }
+
+        private void btnExcel_Click(object sender, EventArgs e)
+        {
+            var Excel = new ExcelLauncher();
+            if (Excel.ExcelFound)
+            {
+                Excel.Launch(this.lastExcelSheetPath);
+            }
+            else
+            {
+                MessageBox.Show(Excel.ExcelError, "T-SQL Flex couldn't launch Excel");
             }
         }
     }
