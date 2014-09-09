@@ -3,6 +3,7 @@ T-SQL Flex Installation Instructions
 
   * Download the latest release from the [GitHub releases page](https://github.com/nycdotnet/TSqlFlex/releases).
   * Extract the contents of the ZIP file somewhere, for example `C:\ProgramData\T-SQL Flex\`
+  * Right-click on each of the extracted DLLs, choose properties, and click `Unblock` on the bottom of the general tab.  This will allow SSMS to load the DLL.
   * Install the [Red Gate SIP framework](http://documentation.red-gate.com/display/MA/Redistributing+the+framework).
   * Figure out if you have 32-bit or 64-bit Windows; it affects the next step.
   * Open Regedit and create or navigate to the below registry key:
