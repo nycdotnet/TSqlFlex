@@ -187,23 +187,45 @@ namespace TSqlFlex
             }
             else
             {
+                bool success = false;
                 progressText = "Complete.";
                 if (cmbResultsType.SelectedItem.ToString() == SqlRunParameters.TO_INSERT_STATEMENTS)
                 {
-                    if (srp.exceptionsText.Length > 0)
+                    try
                     {
-                        if (srp.resultsText.Length > 0)
+                        if (srp.exceptionsText.Length > 0)
                         {
-                            txtOutput.Text = srp.exceptionsText.ToString() + "\r\n\r\n" + srp.resultsText.ToString();
+                            if (srp.resultsText.Length > 0)
+                            {
+                                txtOutput.Text = srp.exceptionsText.ToString() + "\r\n\r\n" + srp.resultsText.ToString();
+                                success = true;
+                            }
+                            else
+                            {
+                                drawExceptions(srp);
+                                success = true;
+                            }
                         }
                         else
                         {
-                            drawExceptions(srp);
+                            txtOutput.Text = srp.resultsText.ToString();
+                            success = true;
                         }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        txtOutput.Text = srp.resultsText.ToString();
+                        srp.resultsText = null;
+                        srp.exceptionsText.Append("\r\n\r\n/*\r\n\r\nException while attempting to display results: ");
+                        srp.exceptionsText.Append(ex.Message);
+                        srp.exceptionsText.Append("\r\n\r\n");
+                        srp.exceptionsText.Append(ex.StackTrace);
+                        srp.exceptionsText.Append("\r\n*/");
+                    }
+
+                    if (!success)
+                    {
+                        GC.Collect();
+                        txtOutput.Text = srp.exceptionsText.ToString();
                     }
                     
                 }

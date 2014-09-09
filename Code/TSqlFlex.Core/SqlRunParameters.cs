@@ -32,7 +32,8 @@ namespace TSqlFlex.Core
             this.connStringBuilder = csb;
             this.sqlToRun = sqlToRun;
             this.outputType = outputType;
-            //need a non-roaming store.
+
+            this.exceptionsText.EnsureCapacity(8000); //ensure there is plenty of reserved room for stack traces / error messages in case of an out of memory error.
 
             var isolatedStore = IsolatedStorageFile.GetUserStoreForDomain();
 
