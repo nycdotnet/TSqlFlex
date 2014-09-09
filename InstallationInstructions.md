@@ -9,7 +9,9 @@ T-SQL Flex Installation Instructions
     * If 32-bit Windows: `HKLM\SOFTWARE\Red Gate\SIPFramework\Plugins`
     * If 64-bit Windows: `HKLM\SOFTWARE\Wow6432Node\Red Gate\SIPFramework\Plugins`
   * Create a new registry string value (REG_SZ) there to point to the extracted TSqlFlex.dll.
-    * For example: `C:\ProgramData\T-SQL Flex\TSqlFlex.dll`
+    * For example:
+      * value name: `TSqlFlex`
+      * value data: `C:\ProgramData\T-SQL Flex\TSqlFlex.dll`
 
 **Using T-SQL Flex:**
   * Launch SQL Server Management Studio and click the T-SQL Flex button.
