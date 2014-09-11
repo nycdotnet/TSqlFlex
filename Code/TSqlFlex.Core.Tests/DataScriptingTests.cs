@@ -793,7 +793,7 @@ namespace TSqlFlex.Core.Tests
         }
 
         [Test()]
-        public void FieldWithCloseSquareBracket_IsScriptedWithBracketsAndNotFurtherEscaped()
+        public void FieldWithCloseSquareBracket_IsScriptedWithBracketsAndAlsoFurtherEscaped()
         {
 
             string fieldName = "test]ing";
