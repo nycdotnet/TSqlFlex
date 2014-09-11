@@ -58,9 +58,9 @@ namespace TSqlFlex
                     formWindow.Window.IsFloating = true;
                     formWindow.Window.WindowState = WindowState.Maximize;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    
+                    //This is copied code from a Red-Gate sample.  If SIP is updated to address this better, it can be updated, but for now this works.
                 }
                 formWindow.Window.IsFloating = false; // can't be docked
                 formWindow.Window.Linkable = false;
