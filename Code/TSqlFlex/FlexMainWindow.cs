@@ -27,6 +27,44 @@ namespace TSqlFlex
             cmbResultsType.SelectedItem = SqlRunParameters.TO_INSERT_STATEMENTS;
             setUIState(false);
         }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            var control = FindFocusedControl(this);
+
+            if (keyData == (Keys.Control | Keys.A))
+            {
+                if (control == txtSqlInput || control == txtOutput)
+                {
+                    var txt = control as TextBox;
+                    txt.SelectAll();
+                }
+                return true;
+            }
+            else if (keyData == (Keys.Control | Keys.C))
+            {
+                if (control == txtSqlInput || control == txtOutput)
+                {
+                    var txt = control as TextBox;
+                    CopyThisTextOrShowErrorMessageBox(txt.SelectedText);
+                }
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        
+        }
+
+        //Thanks!  http://stackoverflow.com/questions/435433/what-is-the-preferred-way-to-find-focused-control-in-winforms-app/
+        public static Control FindFocusedControl(Control control)
+        {
+            var container = control as ContainerControl;
+            while (container != null)
+            {
+                control = container.ActiveControl;
+                container = control as ContainerControl;
+            }
+            return control;
+        }
     
         public void SetConnection(SqlConnectionStringBuilder theConnectionStringBuilder)
         {
@@ -92,11 +130,15 @@ namespace TSqlFlex
 
         private void btnCopyToClipboard_Click(object sender, EventArgs e)
         {
+            CopyThisTextOrShowErrorMessageBox(txtOutput.Text);
+        }
+
+        private void CopyThisTextOrShowErrorMessageBox(string theTextToCopy) {
             try
             {
-                if (txtOutput.Text.Length > 0)
+                if (!String.IsNullOrEmpty(theTextToCopy))
                 {
-                    Clipboard.SetText(txtOutput.Text);
+                    Clipboard.SetText(theTextToCopy);
                 }
             }
             catch (Exception ex)
