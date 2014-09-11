@@ -16,6 +16,7 @@ namespace TSqlFlex.Core
         public string outputType;
         public StringBuilder exceptionsText = new StringBuilder();
         public StringBuilder resultsText = new StringBuilder();
+        private IsolatedStorageFile isolatedStore;
         private string fileName;
         private StreamWriter outputStream;
         public int exceptionCount = 0;
@@ -35,11 +36,11 @@ namespace TSqlFlex.Core
 
             this.exceptionsText.EnsureCapacity(8000); //ensure there is plenty of reserved room for stack traces / error messages in case of an out of memory error.
 
-            var isolatedStore = IsolatedStorageFile.GetUserStoreForDomain();
+            isolatedStore = Utils.getIsolatedStorageFile();
 
             this.fileName = "TSQLFlex_" + DateTime.UtcNow.ToString("yyyyMMddhhmmss.fffffff") + "_temp.txt";
 
-            var isoStream = new IsolatedStorageFileStream(this.fileName, FileMode.OpenOrCreate, FileAccess.Write, isolatedStore);
+            Stream isoStream = new IsolatedStorageFileStream(this.fileName, FileMode.OpenOrCreate, FileAccess.Write, isolatedStore);
             this.outputStream = new StreamWriter(isoStream, Encoding.UTF8);
 
         }
@@ -75,8 +76,7 @@ namespace TSqlFlex.Core
         {
             flushAndCloseOutputStreamIfNeeded();
 
-            var isolatedStore = IsolatedStorageFile.GetUserStoreForDomain();
-            var isoStream = new IsolatedStorageFileStream(this.fileName, FileMode.Open, FileAccess.Read, isolatedStore);
+            Stream isoStream = new IsolatedStorageFileStream(this.fileName, FileMode.Open, FileAccess.Read, this.isolatedStore);
 
             var outputStreamWriter = new FileStream(saveAsFileName, FileMode.OpenOrCreate, FileAccess.Write);
             
@@ -85,7 +85,6 @@ namespace TSqlFlex.Core
             outputStreamWriter.Flush();
             outputStreamWriter.Close();
             isoStream.Close();
-
         }
 
         //thanks! http://stackoverflow.com/questions/12970957/when-shall-i-do-a-explicity-flush-while-copying-streams-in-c

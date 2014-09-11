@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
+using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -32,6 +33,47 @@ namespace TSqlFlex.Core
                 result = reader.ReadToEnd();
             }
             return result;
+        }
+
+        //attempt to open all user stores in order of preference.
+        public static IsolatedStorageFile getIsolatedStorageFile()
+        {
+            IsolatedStorageFile isf = null;
+            try
+            {
+                isf = IsolatedStorageFile.GetUserStoreForDomain();
+            }
+            catch (Exception)
+            {
+                isf = null;
+            }
+            
+            if (isf == null)
+            {
+                try
+                {
+                    isf = IsolatedStorageFile.GetUserStoreForAssembly();
+                }
+                catch (Exception)
+                {
+                    isf = null;
+                }
+            }
+
+            if (isf == null)
+            {
+                try
+                {
+                    isf = IsolatedStorageFile.GetUserStoreForApplication();
+                }
+                catch (Exception)
+                {
+                    //since this is the last one, give up and throw the exception.
+                    throw;
+                }
+            }
+
+            return isf;
         }
 
     }
