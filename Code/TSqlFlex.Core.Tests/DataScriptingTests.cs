@@ -748,9 +748,68 @@ namespace TSqlFlex.Core.Tests
             string fieldName = "Drop";
             var fieldInfo = SchemaScriptingTests.FakeColumn(fieldName, "test", 32, "int", false, 0, 0);
 
-            Assert.AreEqual(true, TSqlRules.IsReservedWord(fieldName));
             Assert.AreEqual("[Drop]", FieldScripting.FieldNameOrDefault(fieldInfo,0));
 
+        }
+
+        [Test()]
+        public void FieldWithSpaces_IsScriptedWithBrackets()
+        {
+
+            string fieldName = "What We Should Be Sending";
+            var fieldInfo = SchemaScriptingTests.FakeColumn(fieldName, "test", 32, "int", false, 0, 0);
+
+            Assert.AreEqual("[What We Should Be Sending]", FieldScripting.FieldNameOrDefault(fieldInfo, 0));
+        }
+
+        [Test()]
+        public void FieldWithTab_IsScriptedWithBrackets()
+        {
+
+            string fieldName = "This\tThat";
+            var fieldInfo = SchemaScriptingTests.FakeColumn(fieldName, "test", 32, "int", false, 0, 0);
+
+            Assert.AreEqual("[This\tThat]", FieldScripting.FieldNameOrDefault(fieldInfo, 0));
+        }
+
+        [Test()]
+        public void FieldWithLineFeed_IsScriptedWithBrackets()
+        {
+
+            string fieldName = "This\nis";
+            var fieldInfo = SchemaScriptingTests.FakeColumn(fieldName, "test", 32, "int", false, 0, 0);
+
+            Assert.AreEqual("[This\nis]", FieldScripting.FieldNameOrDefault(fieldInfo, 0));
+        }
+
+        [Test()]
+        public void FieldWithOpenSquareBracket_IsScriptedWithBracketsButNotFurtherEscaped()
+        {
+
+            string fieldName = "test[ing";
+            var fieldInfo = SchemaScriptingTests.FakeColumn(fieldName, "test", 32, "int", false, 0, 0);
+
+            Assert.AreEqual("[test[ing]", FieldScripting.FieldNameOrDefault(fieldInfo, 0));
+        }
+
+        [Test()]
+        public void FieldWithCloseSquareBracket_IsScriptedWithBracketsAndNotFurtherEscaped()
+        {
+
+            string fieldName = "test]ing";
+            var fieldInfo = SchemaScriptingTests.FakeColumn(fieldName, "test", 32, "int", false, 0, 0);
+
+            Assert.AreEqual("[test]]ing]", FieldScripting.FieldNameOrDefault(fieldInfo, 0));
+        }
+
+        [Test()]
+        public void FieldWithCarriageReturn_IsScriptedWithBrackets()
+        {
+
+            string fieldName = "Crazy\rtown";
+            var fieldInfo = SchemaScriptingTests.FakeColumn(fieldName, "test", 32, "int", false, 0, 0);
+
+            Assert.AreEqual("[Crazy\rtown]", FieldScripting.FieldNameOrDefault(fieldInfo, 0));
         }
 
         [Test()]

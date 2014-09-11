@@ -117,11 +117,11 @@ namespace TSqlFlex.Core
             {
                 return "anonymousColumn" + (fieldIndex + 1).ToString();
             }
-            if (TSqlRules.IsReservedWord(r))
+            if (TSqlRules.IsReservedWord(r) || TSqlRules.ContainsWhitespace(r) || TSqlRules.ContainsSquareBracket(r))
             {
-                return "[" + r + "]";
+                return "[" + r.Replace("]","]]") + "]";
             }
-            return r; //bug: possibly need to escape [ or ] in field names?
+            return r;
         }
 
         public static StringBuilder scriptDataAsInsertForSQL2008Plus(string tableName, FlexResult result, int MaxRowsInValuesClause)

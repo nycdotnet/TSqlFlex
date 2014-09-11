@@ -56,5 +56,18 @@ namespace TSqlFlex.Core
                     return false;
             }
         }
+
+        public static bool ContainsWhitespace(string fieldName)
+        {
+            return (fieldName.Contains(' ')
+                || fieldName.Contains('\t')
+                || fieldName.Contains('\n')
+                || fieldName.Contains('\r'));
+        }
+
+        public static bool ContainsSquareBracket(string fieldName)
+        {
+            return (fieldName.Contains('[') || fieldName.Contains(']'));
+        }
     }
 }
