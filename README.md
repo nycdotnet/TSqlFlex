@@ -18,6 +18,13 @@ Follow the instructions [here](https://github.com/nycdotnet/TSqlFlex/blob/master
 Please either create issues on GitHub, or reach out to Steve on Twitter at [@nycdotnet](https://twitter.com/nycdotnet).
 
 **Patch notes:**
+  * v0.0.9-alpha (2014-09-11):
+      * Fix for "Invalid class string" exception in SSMS 2008 or lower (via pull request from David Pond - many thanks!)
+      * Fix for "unable to determine identity of domain" isolated storage initialization bug in SSMS 2008 or lower.
+      * Fixes for CTRL+A and CTRL+C - "Select all" and "copy" keyboard shortcuts now work as expected with T-SQL Flex.
+      * Additional exception handling during data scripting - hopefully will allow more graceful recovery from out of memory exceptions, in particular.
+      * Some clarifications to the installation instructions including mentioning that the user must unblock the DLLs.
+      * Fixed the T-SQL Flex metadata so that the add-in info appears in the "SSMS Add-ins" dialog.
   * v0.0.8-alpha (2014-09-06):
       * Added about box with version info and links for feedback, issues, and updates.
 	  * Added button to open the latest scripted XML spreadsheet in Excel.
