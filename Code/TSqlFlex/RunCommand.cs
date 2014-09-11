@@ -10,23 +10,13 @@ namespace TSqlFlex
         private readonly ICommandImage commandImage = new CommandImageNone();
         private ObjectExplorerNodeDescriptorBase currentNode = null;
 
-        private ISsmsTabPage formWindow;
+        private IToolWindow formWindow;
+        private FlexMainWindow flexMainWindow;
         private Guid formGuid = new Guid("579fa20c-38cb-4da6-9f57-6651d10e31d0");
 
         private FlexMainWindow TheWindow()
         {
-            try //This can be a race condition so just give up if there's an exception.
-            {
-                if (formWindow == null)
-                {
-                    return null;
-                }
-                return (FlexMainWindow)formWindow.GetUserControl();
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            return flexMainWindow;
         }
 
         public void SetSelectedDBNode(ObjectExplorerNodeDescriptorBase theSelectedNode)
@@ -60,11 +50,24 @@ namespace TSqlFlex
         {
             if (formWindow == null)
             {
-                formWindow = ssmsProvider.CreateTabPage(typeof(FlexMainWindow), Caption, formGuid.ToString());
+                flexMainWindow = new FlexMainWindow();
+                formWindow = ssmsProvider.ToolWindow.Create(flexMainWindow, Caption, formGuid, true);
+
+                try
+                {
+                    formWindow.Window.IsFloating = true;
+                    formWindow.Window.WindowState = WindowState.Maximize;
+                }
+                catch (Exception ex)
+                {
+                    
+                }
+                formWindow.Window.IsFloating = false; // can't be docked
+                formWindow.Window.Linkable = false;
                 SetSelectedDBNode(currentNode);                
             }
 
-            formWindow.Activate();
+            formWindow.Activate(true);
         }
 
         public string Name { get { return "Open_TSQL_Flex"; } }
