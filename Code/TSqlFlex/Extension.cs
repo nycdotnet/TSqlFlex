@@ -1,9 +1,10 @@
 ﻿using System;
 using RedGate.SIPFrameworkShared;
+using TSqlFlex.Core;
 
 namespace TSqlFlex
 {
-    public class Extension : ISsmsAddin
+    public class Extension : ISsmsAddin4
     {
         private ObjectExplorerNodeDescriptorBase currentNode;
         private ISsmsFunctionalityProvider6 ssmsProvider;
@@ -36,9 +37,9 @@ namespace TSqlFlex
         }
 
         public string Author { get { return "Steve Ognibene"; } }
-        public string Description { get { return "An add-on for Microsoft SQL Server Management Studio that uses the Red Gate SIP Framework"; } }
+        public string Description { get { return "Scripts data to INSERT statements or Excel-compatible spreadsheets."; } }
         public string Name { get { return "T-SQL Flex"; } }
         public string Url { get { return @"https://twitter.com/nycdotnet"; } }
-        public string Version { get { return "0.0.1"; } }
+        public string Version { get { return Info.VersionNumbersOnly(); } }
     }
 }
