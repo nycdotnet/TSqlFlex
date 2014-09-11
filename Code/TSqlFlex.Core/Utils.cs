@@ -10,7 +10,7 @@ using System.Text;
 
 namespace TSqlFlex.Core
 {
-    public class Utils
+    public static class Utils
     {
         public static bool IsValidConnectionStringBuilder(SqlConnectionStringBuilder builder)
         {
@@ -78,12 +78,18 @@ namespace TSqlFlex.Core
 
     }
 
-    public class Info
+    public static class Info
     {
         public static string Version() {
+
+            return "v" + VersionNumbersOnly() + "-alpha";
+        }
+
+        public static string VersionNumbersOnly()
+        {
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-            return "v" + fvi.FileVersion + "-alpha";
+            return fvi.FileVersion;
         }
     }
 
