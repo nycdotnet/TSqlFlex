@@ -39,7 +39,7 @@ namespace TSqlFlex
         public string Author { get { return "Steve Ognibene"; } }
         public string Description { get { return "Scripts data to INSERT statements or Excel-compatible spreadsheets."; } }
         public string Name { get { return "T-SQL Flex"; } }
-        public string Url { get { return @"https://twitter.com/nycdotnet"; } }
+        public string Url { get { return @"https://github.com/nycdotnet/TSqlFlex/"; } }
         public string Version { get { return Info.VersionNumbersOnly(); } }
     }
 }
