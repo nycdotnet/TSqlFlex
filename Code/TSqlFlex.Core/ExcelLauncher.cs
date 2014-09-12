@@ -99,7 +99,17 @@ namespace TSqlFlex.Core
 
         public void Launch(string FilePathToOpen)
         {
-            Process.Start(this.excelLaunchPath, FilePathToOpen);
+            Process.Start(this.excelLaunchPath, quoteThePath(FilePathToOpen));
+        }
+
+
+        internal static string quoteThePath(string FilePath)
+        {
+            if (FilePath.Contains("\""))
+            {
+                return FilePath;
+            }
+            return "\"" + FilePath + "\"";
         }
 
         public bool ExcelFound {
