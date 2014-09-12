@@ -37,6 +37,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.txtSqlInput = new System.Windows.Forms.TextBox();
             this.panelBottom = new System.Windows.Forms.Panel();
+            this.btnExcel = new System.Windows.Forms.Button();
             this.cmbResultsType = new System.Windows.Forms.ComboBox();
             this.lblProgress = new System.Windows.Forms.Label();
             this.cmdCancel = new System.Windows.Forms.Button();
@@ -46,7 +47,6 @@
             this.cmdRunNRollback = new System.Windows.Forms.Button();
             this.queryWorker = new System.ComponentModel.BackgroundWorker();
             this.queryTimer = new System.Windows.Forms.Timer(this.components);
-            this.btnExcel = new System.Windows.Forms.Button();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -132,6 +132,7 @@
             // 
             // txtSqlInput
             // 
+            this.txtSqlInput.AllowDrop = true;
             this.txtSqlInput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -143,6 +144,8 @@
             this.txtSqlInput.Size = new System.Drawing.Size(1112, 128);
             this.txtSqlInput.TabIndex = 0;
             this.txtSqlInput.WordWrap = false;
+            this.txtSqlInput.DragDrop += new System.Windows.Forms.DragEventHandler(this.txtSqlInput_DragDrop);
+            this.txtSqlInput.DragEnter += new System.Windows.Forms.DragEventHandler(this.txtSqlInput_DragEnter);
             // 
             // panelBottom
             // 
@@ -160,6 +163,17 @@
             this.panelBottom.Name = "panelBottom";
             this.panelBottom.Size = new System.Drawing.Size(1112, 347);
             this.panelBottom.TabIndex = 1;
+            // 
+            // btnExcel
+            // 
+            this.btnExcel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExcel.Location = new System.Drawing.Point(912, 5);
+            this.btnExcel.Name = "btnExcel";
+            this.btnExcel.Size = new System.Drawing.Size(86, 23);
+            this.btnExcel.TabIndex = 7;
+            this.btnExcel.Text = "Open in &Excel";
+            this.btnExcel.UseVisualStyleBackColor = true;
+            this.btnExcel.Click += new System.EventHandler(this.btnExcel_Click);
             // 
             // cmbResultsType
             // 
@@ -245,17 +259,6 @@
             // queryTimer
             // 
             this.queryTimer.Tick += new System.EventHandler(this.queryTimer_Tick);
-            // 
-            // btnExcel
-            // 
-            this.btnExcel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnExcel.Location = new System.Drawing.Point(912, 5);
-            this.btnExcel.Name = "btnExcel";
-            this.btnExcel.Size = new System.Drawing.Size(86, 23);
-            this.btnExcel.TabIndex = 7;
-            this.btnExcel.Text = "Open in &Excel";
-            this.btnExcel.UseVisualStyleBackColor = true;
-            this.btnExcel.Click += new System.EventHandler(this.btnExcel_Click);
             // 
             // FlexMainWindow
             // 

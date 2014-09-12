@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -387,6 +388,33 @@ namespace TSqlFlex
             else
             {
                 MessageBox.Show(Excel.ExcelError, "T-SQL Flex couldn't launch Excel");
+            }
+        }
+
+        private void txtSqlInput_DragDrop(object sender, DragEventArgs e)
+        {
+            try
+            {
+                string theObjectName = e.Data.GetData(DataFormats.Text).ToString();
+                Point pointOnTextbox = txtSqlInput.PointToClient(new Point(e.X, e.Y));
+                int charIndex = txtSqlInput.GetCharIndexFromPosition(pointOnTextbox);
+                txtSqlInput.Text = txtSqlInput.Text.Insert(charIndex, FieldScripting.EscapeObjectNames(theObjectName));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Could not drag and drop.\r\n\r\n" + ex.Message, "T-SQL Flex");
+            }
+        }
+
+        private void txtSqlInput_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.Text))
+            {
+                e.Effect = DragDropEffects.Copy;
+            }
+            else
+            { 
+                e.Effect = DragDropEffects.None;
             }
         }
     }
