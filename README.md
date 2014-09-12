@@ -18,6 +18,10 @@ Follow the instructions [here](https://github.com/nycdotnet/TSqlFlex/blob/master
 Please either create issues on GitHub, or reach out to Steve on Twitter at [@nycdotnet](https://twitter.com/nycdotnet).
 
 **Patch notes:**
+  * v0.0.10-alpha (2014-09-11):
+      * Implemented drag and drop of database objects from object explorer.
+      * Fix for launching Excel exported files when there is a space in the profile path name.
+      * Fix for scripting a field name that includes spaces without bracketizing it.
   * v0.0.9-alpha (2014-09-11):
       * Fix for "Invalid class string" exception in SSMS 2008 or lower (via pull request from David Pond - many thanks!)
       * Fix for "unable to determine identity of domain" isolated storage initialization bug in SSMS 2008 or lower.
