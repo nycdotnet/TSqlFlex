@@ -117,11 +117,26 @@ namespace TSqlFlex.Core
             {
                 return "anonymousColumn" + (fieldIndex + 1).ToString();
             }
-            if (TSqlRules.IsReservedWord(r) || TSqlRules.ContainsWhitespace(r) || TSqlRules.ContainsSquareBracket(r))
+            return EscapeObjectName(r);
+        }
+
+        public static string EscapeObjectName(string rawObjectName)
+        {
+            if (TSqlRules.IsReservedWord(rawObjectName) || TSqlRules.ContainsWhitespace(rawObjectName) || TSqlRules.ContainsSquareBracket(rawObjectName))
             {
-                return "[" + r.Replace("]","]]") + "]";
+                return "[" + rawObjectName.Replace("]", "]]") + "]";
             }
-            return r;
+            return rawObjectName;
+        }
+
+        public static string EscapeObjectNames(string dotSeparatedRawObjectNames)
+        {
+            var items = dotSeparatedRawObjectNames.Split('.');
+            for (int i = 0; i < items.Length; i += 1 )
+            {
+                items[i] = EscapeObjectName(items[i]);
+            }
+            return string.Join(".", items);
         }
 
         public static StringBuilder scriptDataAsInsertForSQL2008Plus(string tableName, FlexResult result, int MaxRowsInValuesClause)

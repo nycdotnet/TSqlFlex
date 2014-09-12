@@ -836,6 +836,24 @@ namespace TSqlFlex.Core.Tests
 
         }
 
+        [Test()]
+        public void SimpleObjectName_IsNotEscaped()
+        {
+            Assert.AreEqual("dbo.mytable", FieldScripting.EscapeObjectNames("dbo.mytable"));
+        }
+
+        [Test()]
+        public void ObjectNameWithSpace_IsEscaped()
+        {
+            Assert.AreEqual("dbo.[my table]", FieldScripting.EscapeObjectNames("dbo.my table"));
+        }
+
+        [Test()]
+        public void UnqualifiedObjectNameWithSpace_IsEscaped()
+        {
+            Assert.AreEqual("[my table]", FieldScripting.EscapeObjectNames("my table"));
+        }
+
         private static void EnsureByteArrayIsBigEndianLikeSQLServer(byte[] data)
         {
             //SQL Server represents binary as Big Endian
