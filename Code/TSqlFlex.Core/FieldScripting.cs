@@ -134,9 +134,16 @@ namespace TSqlFlex.Core
             var items = dotSeparatedRawObjectNames.Split('.');
             for (int i = 0; i < items.Length; i += 1 )
             {
-                items[i] = EscapeObjectName(items[i]);
+                if (!IsBracketEscaped(items[i])) { 
+                    items[i] = EscapeObjectName(items[i]);
+                }
             }
             return string.Join(".", items);
+        }
+
+        private static bool IsBracketEscaped(string objectName)
+        {
+            return (objectName.StartsWith("[") && objectName.EndsWith("]"));  //bug: this is good enough for now, but may not properly consider edge case escaped ] as the final character for example
         }
 
         public static StringBuilder scriptDataAsInsertForSQL2008Plus(string tableName, FlexResult result, int MaxRowsInValuesClause)

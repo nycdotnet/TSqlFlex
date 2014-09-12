@@ -843,6 +843,12 @@ namespace TSqlFlex.Core.Tests
         }
 
         [Test()]
+        public void AlreadyEscapedObjectName_IsNotEscaped()
+        {
+            Assert.AreEqual("[dbo].[mytable]", FieldScripting.EscapeObjectNames("[dbo].[mytable]"));
+        }
+
+        [Test()]
         public void ObjectNameWithSpace_IsEscaped()
         {
             Assert.AreEqual("dbo.[my table]", FieldScripting.EscapeObjectNames("dbo.my table"));
