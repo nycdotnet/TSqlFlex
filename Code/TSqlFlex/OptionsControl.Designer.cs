@@ -45,12 +45,14 @@
             this.cmbResultNaming = new System.Windows.Forms.ComboBox();
             this.label8 = new System.Windows.Forms.Label();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.btnOK = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(198, 78);
+            this.label1.Location = new System.Drawing.Point(166, 78);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(95, 13);
             this.label1.TabIndex = 0;
@@ -60,7 +62,7 @@
             // 
             this.cmbScriptCompatibility.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbScriptCompatibility.FormattingEnabled = true;
-            this.cmbScriptCompatibility.Location = new System.Drawing.Point(299, 75);
+            this.cmbScriptCompatibility.Location = new System.Drawing.Point(267, 75);
             this.cmbScriptCompatibility.Name = "cmbScriptCompatibility";
             this.cmbScriptCompatibility.Size = new System.Drawing.Size(74, 21);
             this.cmbScriptCompatibility.TabIndex = 1;
@@ -121,18 +123,19 @@
             // 
             // btnResetDefaults
             // 
-            this.btnResetDefaults.Location = new System.Drawing.Point(472, 3);
+            this.btnResetDefaults.Location = new System.Drawing.Point(406, 3);
             this.btnResetDefaults.Name = "btnResetDefaults";
-            this.btnResetDefaults.Size = new System.Drawing.Size(100, 32);
+            this.btnResetDefaults.Size = new System.Drawing.Size(115, 21);
             this.btnResetDefaults.TabIndex = 8;
             this.btnResetDefaults.Text = "Reset Defaults";
             this.btnResetDefaults.UseVisualStyleBackColor = true;
+            this.btnResetDefaults.Click += new System.EventHandler(this.btnResetDefaults_Click);
             // 
             // comboBox1
             // 
             this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(299, 3);
+            this.comboBox1.Location = new System.Drawing.Point(267, 3);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(112, 21);
             this.comboBox1.TabIndex = 10;
@@ -140,7 +143,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(198, 6);
+            this.label5.Location = new System.Drawing.Point(166, 6);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(84, 13);
             this.label5.TabIndex = 9;
@@ -149,7 +152,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(198, 30);
+            this.label6.Location = new System.Drawing.Point(166, 30);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(84, 13);
             this.label6.TabIndex = 11;
@@ -157,7 +160,7 @@
             // 
             // txtBatchSeparator
             // 
-            this.txtBatchSeparator.Location = new System.Drawing.Point(299, 27);
+            this.txtBatchSeparator.Location = new System.Drawing.Point(267, 27);
             this.txtBatchSeparator.Name = "txtBatchSeparator";
             this.txtBatchSeparator.Size = new System.Drawing.Size(112, 20);
             this.txtBatchSeparator.TabIndex = 12;
@@ -165,7 +168,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(198, 54);
+            this.label7.Location = new System.Drawing.Point(166, 54);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(63, 13);
             this.label7.TabIndex = 13;
@@ -175,7 +178,7 @@
             // 
             this.cmbResultNaming.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbResultNaming.FormattingEnabled = true;
-            this.cmbResultNaming.Location = new System.Drawing.Point(299, 51);
+            this.cmbResultNaming.Location = new System.Drawing.Point(267, 51);
             this.cmbResultNaming.Name = "cmbResultNaming";
             this.cmbResultNaming.Size = new System.Drawing.Size(112, 21);
             this.cmbResultNaming.TabIndex = 14;
@@ -198,10 +201,30 @@
             this.checkBox2.TabIndex = 15;
             this.checkBox2.UseVisualStyleBackColor = true;
             // 
+            // btnOK
+            // 
+            this.btnOK.Location = new System.Drawing.Point(406, 68);
+            this.btnOK.Name = "btnOK";
+            this.btnOK.Size = new System.Drawing.Size(55, 32);
+            this.btnOK.TabIndex = 17;
+            this.btnOK.Text = "OK";
+            this.btnOK.UseVisualStyleBackColor = true;
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Location = new System.Drawing.Point(466, 68);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(55, 32);
+            this.btnCancel.TabIndex = 18;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            // 
             // OptionsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.btnOK);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.cmbResultNaming);
@@ -220,7 +243,7 @@
             this.Controls.Add(this.cmbScriptCompatibility);
             this.Controls.Add(this.label1);
             this.Name = "OptionsControl";
-            this.Size = new System.Drawing.Size(575, 104);
+            this.Size = new System.Drawing.Size(524, 108);
             this.Load += new System.EventHandler(this.OptionsControl_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -246,5 +269,7 @@
         private System.Windows.Forms.ComboBox cmbResultNaming;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Button btnCancel;
     }
 }

@@ -20,5 +20,10 @@ namespace TSqlFlex
         {
 
         }
+
+        private void btnResetDefaults_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
