@@ -52,7 +52,7 @@ namespace TSqlFlex.Core
         {
             get
             {
-                return "In SQL Server, you can't insert explicit values to a ROWVERSION or TIMESTAMP field.\n" +
+                return "In SQL Server, you can't insert an explicit value in a ROWVERSION or TIMESTAMP field.\n" +
                     "'Script for INSERT' will script these fields as either BINARY(8) or VARBINARY(8) so the INSERTs will work.\n" +
                     "'Script for schema' will keeps the field as ROWVERSION or TIMESTAMP, but the scripted INSERTs will not run.\n" +
                     "'Skip them' will simply exclude TIMESTAMP or ROWVERSION fields from the output.";
