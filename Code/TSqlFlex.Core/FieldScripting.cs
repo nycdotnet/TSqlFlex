@@ -22,6 +22,10 @@ namespace TSqlFlex.Core
 
         public static string DataTypeName(DataRow fieldInfo)
         {
+            //todo: consider using binary(8) or varbinary(8) for rowversion or timestamp fields if the appropriate option is set.
+            //http://msdn.microsoft.com/en-us/library/ms182776.aspx
+            //A nonnullable rowversion column is semantically equivalent to a binary(8) column. A nullable rowversion column is semantically equivalent to a varbinary(8) column.
+
             var fieldTypeName = fieldInfo[(int)FieldInfo.DataType].ToString();
             if (fieldTypeName == "real")
             {
