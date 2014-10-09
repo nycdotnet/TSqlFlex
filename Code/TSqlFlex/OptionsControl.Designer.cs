@@ -32,7 +32,6 @@
             this.cmbScriptCompatibility = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.chkScriptIdentity = new System.Windows.Forms.CheckBox();
-            this.chkScriptTimestamp = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -72,9 +71,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(3, 54);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(100, 13);
+            this.label2.Size = new System.Drawing.Size(70, 13);
             this.label2.TabIndex = 2;
-            this.label2.Text = "Script TIMESTAMP";
+            this.label2.Text = "TIMESTAMP";
             // 
             // chkScriptIdentity
             // 
@@ -84,15 +83,6 @@
             this.chkScriptIdentity.Size = new System.Drawing.Size(15, 14);
             this.chkScriptIdentity.TabIndex = 3;
             this.chkScriptIdentity.UseVisualStyleBackColor = true;
-            // 
-            // chkScriptTimestamp
-            // 
-            this.chkScriptTimestamp.AutoSize = true;
-            this.chkScriptTimestamp.Location = new System.Drawing.Point(122, 54);
-            this.chkScriptTimestamp.Name = "chkScriptTimestamp";
-            this.chkScriptTimestamp.Size = new System.Drawing.Size(15, 14);
-            this.chkScriptTimestamp.TabIndex = 5;
-            this.chkScriptTimestamp.UseVisualStyleBackColor = true;
             // 
             // label3
             // 
@@ -236,7 +226,6 @@
             this.Controls.Add(this.btnResetDefaults);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.chkScriptTimestamp);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.chkScriptIdentity);
             this.Controls.Add(this.label2);
@@ -256,7 +245,6 @@
         private System.Windows.Forms.ComboBox cmbScriptCompatibility;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox chkScriptIdentity;
-        private System.Windows.Forms.CheckBox chkScriptTimestamp;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Label label4;

@@ -51,6 +51,7 @@
     <Compile Include="CustomExceptions.cs" />
     <Compile Include="QueryWorker.cs" />
     <Compile Include="SqlRunParameters.cs" />
+    <Compile Include="ScriptingOptions.cs" />
     <Compile Include="TSqlRules.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="XmlSpreadsheetRenderer.cs" />
