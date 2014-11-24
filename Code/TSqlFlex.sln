@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30626.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSqlFlex", "TSqlFlex\TSqlFlex.csproj", "{5D764D2E-1BB8-41C7-8F82-428C687A2C6A}"
 EndProject
@@ -19,21 +19,43 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{5D764D2E-1BB8-41C7-8F82-428C687A2C6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5D764D2E-1BB8-41C7-8F82-428C687A2C6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D764D2E-1BB8-41C7-8F82-428C687A2C6A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5D764D2E-1BB8-41C7-8F82-428C687A2C6A}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5D764D2E-1BB8-41C7-8F82-428C687A2C6A}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{5D764D2E-1BB8-41C7-8F82-428C687A2C6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D764D2E-1BB8-41C7-8F82-428C687A2C6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D764D2E-1BB8-41C7-8F82-428C687A2C6A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{5D764D2E-1BB8-41C7-8F82-428C687A2C6A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{5D764D2E-1BB8-41C7-8F82-428C687A2C6A}.Release|x86.ActiveCfg = Release|Any CPU
 		{6C3E3EF0-D9A2-4DB8-94DF-1D71BF3A7CDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6C3E3EF0-D9A2-4DB8-94DF-1D71BF3A7CDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C3E3EF0-D9A2-4DB8-94DF-1D71BF3A7CDF}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{6C3E3EF0-D9A2-4DB8-94DF-1D71BF3A7CDF}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{6C3E3EF0-D9A2-4DB8-94DF-1D71BF3A7CDF}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{6C3E3EF0-D9A2-4DB8-94DF-1D71BF3A7CDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C3E3EF0-D9A2-4DB8-94DF-1D71BF3A7CDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C3E3EF0-D9A2-4DB8-94DF-1D71BF3A7CDF}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{6C3E3EF0-D9A2-4DB8-94DF-1D71BF3A7CDF}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{6C3E3EF0-D9A2-4DB8-94DF-1D71BF3A7CDF}.Release|x86.ActiveCfg = Release|Any CPU
 		{4BBD123B-0D08-4E16-A990-11A310C522BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4BBD123B-0D08-4E16-A990-11A310C522BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BBD123B-0D08-4E16-A990-11A310C522BE}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{4BBD123B-0D08-4E16-A990-11A310C522BE}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{4BBD123B-0D08-4E16-A990-11A310C522BE}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{4BBD123B-0D08-4E16-A990-11A310C522BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4BBD123B-0D08-4E16-A990-11A310C522BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BBD123B-0D08-4E16-A990-11A310C522BE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{4BBD123B-0D08-4E16-A990-11A310C522BE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{4BBD123B-0D08-4E16-A990-11A310C522BE}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

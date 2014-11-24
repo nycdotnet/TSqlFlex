@@ -12,6 +12,7 @@ namespace TSqlFlex
 
         public void OnLoad(ISsmsExtendedFunctionalityProvider provider)
         {
+            Logging.Log("Extension.OnLoad", true);
             ssmsProvider = provider as ISsmsFunctionalityProvider6;
             if (ssmsProvider == null)
             {
@@ -21,19 +22,23 @@ namespace TSqlFlex
             runCommand.SetSelectedDBNode(currentNode);
 
             ssmsProvider.AddToolbarItem(runCommand);
+            Logging.Log("Extension.OnLoad complete.", true);
         }
         
         public void OnNodeChanged(ObjectExplorerNodeDescriptorBase node)
         {
+            Logging.Log("Extension.OnNodeChanged", true);
             currentNode = node;
             if (runCommand != null)
             {
                 runCommand.SetSelectedDBNode(currentNode);
             }
+            Logging.Log("Extension.OnNodeChanged complete.", true);
         }
 
         public void OnShutdown()
         {
+            Logging.Log("Extension.OnShutdown", true);
         }
 
         public string Author { get { return "Steve Ognibene"; } }

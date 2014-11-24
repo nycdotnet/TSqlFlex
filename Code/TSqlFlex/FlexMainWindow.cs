@@ -69,24 +69,32 @@ namespace TSqlFlex
     
         public void SetConnection(SqlConnectionStringBuilder theConnectionStringBuilder)
         {
+            Logging.Log("FlexMainWindow.SetConnection", true);
             connStringBuilder = theConnectionStringBuilder;
             SetConnectionText();
+            Logging.Log("FlexMainWindow.SetConnection Complete", true);
         }
 
         private void SetConnectionText()
         {
-            InvokeOnFormThread(() =>
+            Logging.Log("FlexMainWindow.SetConnectionText", true);
+            InvokeFireAndForgetOnFormThread(() =>
             {
                 lblConnectionInfo.Text = currentConnectionText();
             });
+            Logging.Log("FlexMainWindow.SetConnectionText Complete", true);
         }
 
         private string currentConnectionText()
         {
+            Logging.Log("FlexMainWindow.currentConnectionText", true);
+
             if (Utils.IsValidConnectionStringBuilder(connStringBuilder))
             {
+                Logging.Log("FlexMainWindow.currentConnectionText valid builder", true);
                 return "Instance: " + connStringBuilder.DataSource + ", DB: " + connStringBuilder.InitialCatalog;
             }
+            Logging.Log("FlexMainWindow.currentConnectionText not connected", true);
             return "Not connected.";
         }
         
@@ -175,7 +183,7 @@ namespace TSqlFlex
 
         private void setProgressText(bool isComplete)
         {
-            InvokeOnFormThread(() =>
+            InvokeFireAndForgetOnFormThread(() =>
             {
                 lblProgress.Text = getFormattedElapsedSqlStopwatchTime(isComplete) + " " + progressText;
                 lblProgress.Refresh();
@@ -295,7 +303,7 @@ namespace TSqlFlex
 
         private void drawExceptions(SqlRunParameters srp, string header = "")
         {
-            InvokeOnFormThread(() => {
+            InvokeFireAndForgetOnFormThread(() => {
                     if (header == "")
                     {
                         txtOutput.Text = srp.exceptionsText.ToString();
@@ -324,7 +332,7 @@ namespace TSqlFlex
             {
                 srp.saveOutputStreamTo(fileName);
                 this.lastExcelSheetPath = fileName;
-                InvokeOnFormThread(() =>
+                InvokeFireAndForgetOnFormThread(() =>
                 {
                     txtOutput.Text = "--Results written to \"" + fileName + "\".\r\n\r\n--You can open this file in Excel.";
                 });
@@ -332,7 +340,8 @@ namespace TSqlFlex
         }
 
         private void setUIState(bool queryIsRunning) {
-            InvokeOnFormThread(() =>
+            Logging.Log("FlexMainWindow.setUIState", true);
+            InvokeFireAndForgetOnFormThread(() =>
             {
                 cmdCancel.Enabled = queryIsRunning;
                 cmdRunNRollback.Enabled = !queryIsRunning;
@@ -346,7 +355,7 @@ namespace TSqlFlex
                 }
                 btnExcel.Enabled = (lastExcelSheetPath.Length > 0);
             });
-
+            Logging.Log("FlexMainWindow.setUIState complete", true);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -357,19 +366,28 @@ namespace TSqlFlex
 
         private void queryTimer_Tick(object sender, EventArgs e)
         {
+            Logging.Log("FlexMainWindow.queryTimerTick", true);
             setProgressText(false);
+            Logging.Log("FlexMainWindow.queryTimerTick Complete", true);
         }
 
-        private void InvokeOnFormThread(Action behavior)
+        private void InvokeFireAndForgetOnFormThread(Action behavior)
         {
+            Logging.Log("FlexMainWindow.InvokeOnFormThread", true);
             if (IsHandleCreated && InvokeRequired)
             {
-                Invoke(behavior);
+                //Thanks to http://stackoverflow.com/questions/229554/whats-the-difference-between-invoke-and-begininvoke/229558#229558 
+                Logging.Log("FlexMainWindow.InvokeOnFormThread (attempting to invoke)", true);
+                BeginInvoke(behavior);
+                Logging.Log("FlexMainWindow.InvokeOnFormThread (finished invoke)", true);
             }
             else
             {
+                Logging.Log("FlexMainWindow.InvokeOnFormThread (attempting to do behavior)", true);
                 behavior();
+                Logging.Log("FlexMainWindow.InvokeOnFormThread (finished behavior)", true);
             }
+            Logging.Log("FlexMainWindow.InvokeOnFormThread Complete", true);
         }
 
         private void btnAbout_Click(object sender, EventArgs e)
