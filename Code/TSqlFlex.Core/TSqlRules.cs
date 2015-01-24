@@ -50,6 +50,7 @@ namespace TSqlFlex.Core
                 case "update":
                 case "user":
                 case "view":
+                case "weight":
                 case "where":
                     return true;
                 default:
