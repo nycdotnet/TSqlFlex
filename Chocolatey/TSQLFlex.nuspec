@@ -3,9 +3,9 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <!-- Read this before publishing packages to chocolatey.org: https://github.com/chocolatey/chocolatey/wiki/CreatePackages -->
-    <id>TSQLFlex</id>
+    <id>tsqlflex</id>
     <title>T-SQL Flex</title>
-    <version>v0.0.10-alpha</version>
+    <version>0.0.10-alpha</version>
     <authors>Steve Ognibene</authors>
     <owners>NYCdotNet</owners>
     <summary>SSMS scripting add-in</summary>
