@@ -18,6 +18,13 @@ Follow the instructions [here](https://github.com/nycdotnet/TSqlFlex/blob/master
 Please either create issues on GitHub, or reach out to Steve on Twitter at [@nycdotnet](https://twitter.com/nycdotnet).
 
 **Patch notes:**
+  * v0.0.11-alpha (2015-01-23):
+      * Updated to use .NET 4.5 - this Framework version is now required to run T-SQL Flex.
+	  * Improved scripter to continuously increment the "#Result" table number to prevent conflicts in a session.
+      * Fixed lockup of SSMS when switching between database servers. (#33)
+      * Fixed missing column header for anonymous columns in Excel export (#29)
+	  * Added "Weight" as a T-SQL Keyword.
+      * Implemented improved logging.
   * v0.0.10-alpha (2014-09-11):
       * Implemented drag and drop of database objects from object explorer.
       * Fix for launching Excel exported files when there is a space in the profile path name.
