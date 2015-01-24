@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.SqlClient;
 using RedGate.SIPFrameworkShared;
+using TSqlFlex.Core;
 
 namespace TSqlFlex
 {
@@ -13,6 +14,7 @@ namespace TSqlFlex
         private IToolWindow formWindow;
         private FlexMainWindow flexMainWindow;
         private Guid formGuid = new Guid("579fa20c-38cb-4da6-9f57-6651d10e31d0");
+        private Logging logger;
 
         private FlexMainWindow TheWindow()
         {
@@ -37,12 +39,15 @@ namespace TSqlFlex
             }
         }
 
-        public RunCommand(ISsmsFunctionalityProvider6 provider)
+        public RunCommand(ISsmsFunctionalityProvider6 provider, Logging logger)
         {
+            this.logger = logger;
             ssmsProvider = provider;
             if (ssmsProvider == null)
             {
-                throw new ArgumentException("Could not initialize provider for RunCommand.");
+                var error = "Could not initialize provider for RunCommand.";
+                logger.Log(error);
+                throw new ArgumentException(error);
             }
         }
 
@@ -50,7 +55,7 @@ namespace TSqlFlex
         {
             if (formWindow == null)
             {
-                flexMainWindow = new FlexMainWindow();
+                flexMainWindow = new FlexMainWindow(logger);
                 formWindow = ssmsProvider.ToolWindow.Create(flexMainWindow, Caption, formGuid, true);
 
                 try
@@ -58,9 +63,11 @@ namespace TSqlFlex
                     formWindow.Window.IsFloating = true;
                     formWindow.Window.WindowState = WindowState.Maximize;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     //This is copied code from a Red-Gate sample.  If SIP is updated to address this better, it can be updated, but for now this works.
+                    var error = "Exception setting Window State.";
+                    logger.Log(error + " " + ex.Message);
                 }
                 formWindow.Window.IsFloating = false; // can't be docked
                 formWindow.Window.Linkable = false;

@@ -9,36 +9,40 @@ namespace TSqlFlex
         private ObjectExplorerNodeDescriptorBase currentNode;
         private ISsmsFunctionalityProvider6 ssmsProvider;
         private RunCommand runCommand;
+        public Logging logger = new Logging();
 
         public void OnLoad(ISsmsExtendedFunctionalityProvider provider)
         {
-            Logging.Log("Extension.OnLoad", true);
+            logger.Log("Extension.OnLoad");
             ssmsProvider = provider as ISsmsFunctionalityProvider6;
             if (ssmsProvider == null)
             {
-                throw new ArgumentException("Could not initialize SIP provider for TSqlFlex extension.");
+                string error = "Could not initialize SIP provider for TSqlFlex extension.";
+                logger.Log(error);
+                throw new ArgumentException(error);
             }
-            runCommand = new RunCommand(ssmsProvider);
+            runCommand = new RunCommand(ssmsProvider, logger);
             runCommand.SetSelectedDBNode(currentNode);
 
             ssmsProvider.AddToolbarItem(runCommand);
-            Logging.Log("Extension.OnLoad complete.", true);
+            logger.LogVerbose("Extension.OnLoad complete.");
         }
         
         public void OnNodeChanged(ObjectExplorerNodeDescriptorBase node)
         {
-            Logging.Log("Extension.OnNodeChanged", true);
+            logger.LogVerbose("Extension.OnNodeChanged");
             currentNode = node;
             if (runCommand != null)
             {
                 runCommand.SetSelectedDBNode(currentNode);
             }
-            Logging.Log("Extension.OnNodeChanged complete.", true);
+            logger.LogVerbose("Extension.OnNodeChanged complete.");
         }
 
         public void OnShutdown()
         {
-            Logging.Log("Extension.OnShutdown", true);
+            logger.Log("Extension.OnShutdown");
+            logger = null;
         }
 
         public string Author { get { return "Steve Ognibene"; } }
