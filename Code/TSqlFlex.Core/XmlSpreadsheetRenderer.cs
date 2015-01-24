@@ -29,7 +29,8 @@ namespace TSqlFlex.Core
                     srp.WriteToStream("<Row>");
                     for (int colIndex = 0; colIndex < columnCount; colIndex += 1)
                     {
-                        srp.WriteToStream(String.Format("<Cell ss:StyleID=\"s62\"><Data ss:Type=\"String\">{0}</Data></Cell>", escapeForXML((string)result.schema.Rows[colIndex].ItemArray[(int)FieldScripting.FieldInfo.Name])));
+
+                        srp.WriteToStream(String.Format("<Cell ss:StyleID=\"s62\"><Data ss:Type=\"String\">{0}</Data></Cell>", columnName(result, colIndex)));
                     }
                     srp.WriteToStream("</Row>\r\n");
 
@@ -83,6 +84,16 @@ namespace TSqlFlex.Core
                 }
             }
             srp.WriteToStream("</Workbook>\r\n");
+        }
+
+        private static string columnName(FlexResult result, int zeroBasedColumnIndex)
+        {
+            string headerName = (string)result.schema.Rows[zeroBasedColumnIndex].ItemArray[(int)FieldScripting.FieldInfo.Name];
+            if (headerName == "")
+            {
+                return "anonymousColumn" + (zeroBasedColumnIndex + 1).ToString();
+            }
+            return escapeForXML(headerName);
         }
 
         private static string escapeForXML(string input)
