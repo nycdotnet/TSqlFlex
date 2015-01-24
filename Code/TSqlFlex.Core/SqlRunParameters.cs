@@ -21,6 +21,7 @@ namespace TSqlFlex.Core
         private StreamWriter outputStream;
         public int exceptionCount = 0;
         public bool worksheetIsValid = false;
+        public UInt32 completedResultsCount = 0;
 
         public string outputFilename()
         {

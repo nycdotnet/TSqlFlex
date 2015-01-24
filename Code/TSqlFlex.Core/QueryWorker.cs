@@ -174,14 +174,16 @@ namespace TSqlFlex.Core
                 {
                     sb.AppendLine(String.Format("--Records affected: {0:G}\r\n\r\n", resultSet.results[i].recordsAffected));
                 }
-
-                sb.AppendLine(resultSet.ScriptResultAsCreateTable(i, "#Result" + (i + 1).ToString()));
+                string resultTableName = "#Result" + (i + 1 + srp.completedResultsCount).ToString();
+                sb.AppendLine(resultSet.ScriptResultAsCreateTable(i, resultTableName));
                 sb.Append("\r\n");
 
                 if (FieldScripting.ResultIsRenderableAsScriptedData(resultSet.results[i]))
                 {
-                    sb.AppendLine(FieldScripting.ScriptResultDataAsInsert(resultSet.results[i], "#Result" + (i + 1).ToString(), FlexResultSet.SQL2008MaxRowsInValuesClause).ToString());
+                    sb.AppendLine(FieldScripting.ScriptResultDataAsInsert(resultSet.results[i], resultTableName, FlexResultSet.SQL2008MaxRowsInValuesClause).ToString());
                 }
+
+                srp.completedResultsCount += 1;
 
                 sb.Append("\r\n");
             }
