@@ -2,31 +2,25 @@
 <!-- Do not remove this test for UTF-8: if “Ω” doesn’t appear as greek uppercase omega letter enclosed in quotation marks, you should use an editor that supports UTF-8, not this one. -->
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
-    <!-- Read this before publishing packages to chocolatey.org: https://github.com/chocolatey/chocolatey/wiki/CreatePackages -->
     <id>tsqlflex</id>
     <title>T-SQL Flex</title>
-    <version>0.0.10-alpha</version>
+    <version>0.0.10</version>
     <authors>Steve Ognibene</authors>
     <owners>NYCdotNet</owners>
-    <summary>SSMS scripting add-in</summary>
-    <description>T-SQL Flex is a scripting productivity tool for SQL Server Management Studio that uses the Red Gate SIP Framework.</description>
+    <summary>SSMS add-in for scripting and Excel export.</summary>
+    <description>SSMS add-in for scripting and Excel export.</description>
     <projectUrl>https://github.com/nycdotnet/TSqlFlex</projectUrl>
-    <tags>sql ssms flex</tags>
+    <tags>T-SQL Flex SQL Server SSMS</tags>
     <copyright>2015</copyright>
     <licenseUrl>https://github.com/nycdotnet/TSqlFlex/blob/master/License.md</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <!-- Important note about https://cdn.rawgit.com: Files are cached permanently after the first request. Use commit URLs when updating the icon. -->
-    <!--<iconUrl>http://cdn.rawgit.com/__CHOCO_PKG_MAINTAINER_REPO__/master/icons/__NAME__.png</iconUrl>-->
-    <!--<dependencies>
-      <dependency id="" version="" />
-    </dependencies>-->
-    <releaseNotes> **v0.0.10-alpha (2014-09-11):** 1 enhancement, 2 bug fixes
+    <releaseNotes>
   * Implemented drag and drop of database objects from object explorer.
   * Fix for launching Excel exported files when there is a space in the profile path name.
-  * Fix for scripting a field name that includes spaces without bracketizing it.</releaseNotes>
+  * Fix for scripting a field name that includes spaces without bracketizing it.
+	</releaseNotes>
   </metadata>
   <files>
     <file src="tools\**" target="tools" />
   </files>
 </package>
-
