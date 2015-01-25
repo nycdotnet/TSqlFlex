@@ -14,6 +14,9 @@
     <copyright>2015</copyright>
     <licenseUrl>https://github.com/nycdotnet/TSqlFlex/blob/master/License.md</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
+	<dependencies> 
+        <dependency id="sipfw" version="1.0.3.4" />
+    </dependencies>
     <releaseNotes>
   * Implemented drag and drop of database objects from object explorer.
   * Fix for launching Excel exported files when there is a space in the profile path name.
