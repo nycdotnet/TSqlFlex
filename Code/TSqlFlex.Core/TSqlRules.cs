@@ -35,6 +35,7 @@ namespace TSqlFlex.Core
                 case "key":
                 case "level":
                 case "nonclustered":
+                case "none":
                 case "oct":
                 case "order":
                 case "primary":
@@ -46,6 +47,7 @@ namespace TSqlFlex.Core
                 case "statistics":
                 case "status":
                 case "table":
+                case "target":
                 case "trigger":
                 case "update":
                 case "user":
