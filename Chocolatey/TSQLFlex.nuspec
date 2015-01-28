@@ -4,7 +4,7 @@
   <metadata>
     <id>tsqlflex</id>
     <title>T-SQL Flex</title>
-    <version>0.0.10</version>
+    <version>0.0.11-alpha</version>
     <authors>Steve Ognibene</authors>
     <owners>NYCdotNet</owners>
     <summary>SSMS add-in for scripting and Excel export.</summary>
