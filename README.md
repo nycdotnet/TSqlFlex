@@ -75,3 +75,12 @@ Please either create issues on GitHub, or reach out to Steve on Twitter at [@nyc
   * Build in release mode and test it out.
   * Zip up the DLLs with the license, README, and installation instructions (rename all to .txt) and post to GitHub.
   * Add a screenshot via GitHub and edit the README and release FAQ.
+  * Chocolatey
+    * Quit SSMS.
+    * edit .nuspec with version and chocolateyInstall.ps1 with new GitHub release URL.
+	* cpack
+	* Test from admin powershell:
+	  * `cinst tsqlflex -source %cd% -pre`   ( use `-force` if already installed)
+	  * `cuninst tsqlflex`
+	* `cpush tsqlflex.VERSION_NUMBER.nupkg`  (you can type cpush t<tab>)
+	
