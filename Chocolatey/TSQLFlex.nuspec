@@ -18,9 +18,13 @@
         <dependency id="sipfw" version="1.0.3.4" />
     </dependencies>
     <releaseNotes>
-  * Implemented drag and drop of database objects from object explorer.
-  * Fix for launching Excel exported files when there is a space in the profile path name.
-  * Fix for scripting a field name that includes spaces without bracketizing it.
+* v0.0.11-alpha (2015-01-23):
+  * Updated to use .NET 4.5 - this version is now required to run T-SQL Flex.
+  * Improved scripter to continuously increment the "#Result" table number to prevent conflicts in a session.
+  * Fixed lockup of SSMS when switching between database servers. (#33)
+  * Fixed missing column header for anonymous columns in Excel export (#29)
+  * Added WEIGHT, TARGET, and NONE as T-SQL keywords.
+  * Implemented improved logging.
 	</releaseNotes>
   </metadata>
   <files>

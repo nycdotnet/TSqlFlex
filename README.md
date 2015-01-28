@@ -77,7 +77,8 @@ Please either create issues on GitHub, or reach out to Steve on Twitter at [@nyc
   * Add a screenshot via GitHub and edit the README and release FAQ.
   * Chocolatey
     * Quit SSMS.
-    * edit .nuspec with version and chocolateyInstall.ps1 with new GitHub release URL.
+    * edit .nuspec with version and patch notes.
+	* edit chocolateyInstall.ps1 with new GitHub release URL.
 	* cpack
 	* Test from admin powershell:
 	  * `cinst tsqlflex -source %cd% -pre`   ( use `-force` if already installed)
