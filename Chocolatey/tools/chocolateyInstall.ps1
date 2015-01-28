@@ -45,6 +45,8 @@ try {
 	
 	if ((Test-RegistryValue $createdKey "TSQLFlex") -eq $false) {
 		New-ItemProperty -Name "TSQLFlex" -Path $createdKey -Value "$installLocation\TSqlFlex.dll" | Out-Null
+	} else {
+	    Set-ItemProperty -Name "TSQLFlex" -Path $createdKey -Value "$installLocation\TSqlFlex.dll" | Out-Null
 	}
 
 } catch {
