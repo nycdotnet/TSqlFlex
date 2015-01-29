@@ -44,6 +44,7 @@ namespace TSqlFlex.Core
                 case "rule":
                 case "schema":
                 case "select":
+                case "shift":
                 case "statistics":
                 case "status":
                 case "table":
