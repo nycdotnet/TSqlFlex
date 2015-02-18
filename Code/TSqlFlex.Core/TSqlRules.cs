@@ -16,6 +16,7 @@ namespace TSqlFlex.Core
                 case "alter":
                 case "as":
                 case "asc":
+                case "auto":
                 case "by":
                 case "clustered":
                 case "column":
@@ -25,6 +26,7 @@ namespace TSqlFlex.Core
                 case "delete":
                 case "desc":
                 case "drop":
+                case "elements":
                 case "exec":
                 case "execute":
                 case "from":
@@ -41,6 +43,8 @@ namespace TSqlFlex.Core
                 case "primary":
                 case "proc":
                 case "procedure":
+                case "raw":
+                case "root":
                 case "rule":
                 case "schema":
                 case "select":
@@ -55,6 +59,7 @@ namespace TSqlFlex.Core
                 case "view":
                 case "weight":
                 case "where":
+                case "xml":
                     return true;
                 default:
                     return false;
