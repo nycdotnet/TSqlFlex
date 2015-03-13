@@ -1,6 +1,29 @@
 T-SQL Flex Installation Instructions
 ====================================
 
+## Best way
+T-SQL Flex is now [available](https://chocolatey.org/packages/tsqlflex) via Chocolatey!  This is the best and easiest way to install T-SQL Flex and the Red Gate SIP Framework (which is configured as a dependent package and automatically downloaded and installed too).
+
+First, get Chocolatey from https://chocolatey.org/ .  Once Chocolatey is installed, close all copies of SSMS and open an *administrative* PowerShell prompt (right-click, Run as Administrator).  From that *administrative* PowerShell prompt, run one of the following commands:
+
+```PowerShell
+#install the latest version of T-SQL Flex
+choco install tsqlflex -pre 
+
+#install a specific version of T-SQL Flex
+choco install tsqlflex -pre -version 0.0.11
+
+#upgrade T-SQL Flex (only if you installed it via Chocolatey)
+choco upgrade tsqlflex -pre
+
+#uninstall T-SQL Flex
+choco uninstall tsqlflex
+```
+
+Here's the code for the T-SQL Flex Chocolatey packages in case you want to know what you're running: https://github.com/nycdotnet/TSqlFlex/tree/master/Chocolatey/tools
+
+
+## Manual Install Instructions
   * Download the latest release from the [GitHub releases page](https://github.com/nycdotnet/TSqlFlex/releases).
   * Extract the contents of the ZIP file somewhere, for example `C:\ProgramData\T-SQL Flex\`
   * Right-click on each of the extracted DLLs, choose properties, and click `Unblock` on the bottom of the general tab.  This will allow SSMS to load the DLL.
