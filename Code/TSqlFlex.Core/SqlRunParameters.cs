@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using System.IO.IsolatedStorage;
@@ -10,6 +11,7 @@ namespace TSqlFlex.Core
     {
         public const string TO_INSERT_STATEMENTS = "To INSERT Statements";
         public const string TO_XML_SPREADSHEET = "To XML Spreadsheet (Excel)";
+        public const string TO_CSV = "To CSV file";
 
         public SqlConnectionStringBuilder connStringBuilder;
         public string sqlToRun;
@@ -17,15 +19,16 @@ namespace TSqlFlex.Core
         public StringBuilder exceptionsText = new StringBuilder();
         public StringBuilder resultsText = new StringBuilder();
         private IsolatedStorageFile isolatedStore;
-        private string fileName;
+        private string currentFileName;
         private StreamWriter outputStream;
         public int exceptionCount = 0;
         public bool worksheetIsValid = false;
         public UInt32 completedResultsCount = 0;
+        public List<string> outputFiles = new List<string>();
 
         public string outputFilename()
         {
-            return this.fileName;
+            return this.currentFileName;
         }
         
 
@@ -39,11 +42,22 @@ namespace TSqlFlex.Core
 
             isolatedStore = Utils.getIsolatedStorageFile();
 
-            this.fileName = "TSQLFlex_" + DateTime.UtcNow.ToString("yyyyMMddhhmmss.fffffff") + "_temp.txt";
+            openNewOutputStream();
+        }
 
-            Stream isoStream = new IsolatedStorageFileStream(this.fileName, FileMode.OpenOrCreate, FileAccess.Write, isolatedStore);
+        private string getNextFileName()
+        {
+            return "TSQLFlex_" + DateTime.UtcNow.ToString("yyyyMMddhhmmss.fffffff") + "_temp_" + outputFiles.Count + ".txt";
+        }
+
+        public void openNewOutputStream()
+        {
+            flushAndCloseOutputStreamIfNeeded();
+            this.currentFileName = getNextFileName();
+            outputFiles.Add(this.currentFileName);
+
+            Stream isoStream = new IsolatedStorageFileStream(this.currentFileName, FileMode.OpenOrCreate, FileAccess.Write, isolatedStore);
             this.outputStream = new StreamWriter(isoStream, Encoding.UTF8);
-
         }
 
         public void flushAndCloseOutputStreamIfNeeded()
@@ -73,11 +87,24 @@ namespace TSqlFlex.Core
             outputStream.Write(dataToWrite);
         }
 
-        public void saveOutputStreamTo(string saveAsFileName)
+        public void saveOutputStreamsTo(string saveAsFileNameWithAsteriskForIndex)
+        {
+            if (saveAsFileNameWithAsteriskForIndex.IndexOf("*") == -1 && outputFiles.Count > 1)
+            {
+                throw new ArgumentException("Need an * in the file name passed to saveOutputStreamsTo.");
+            }
+
+            for (int i = 0; i < outputFiles.Count; i+= 1) {
+                saveOutputStreamTo(outputFiles[i], saveAsFileNameWithAsteriskForIndex.Replace("*", i.ToString()));
+            }
+
+        }
+
+        public void saveOutputStreamTo(string streamName, string saveAsFileName)
         {
             flushAndCloseOutputStreamIfNeeded();
 
-            Stream isoStream = new IsolatedStorageFileStream(this.fileName, FileMode.Open, FileAccess.Read, this.isolatedStore);
+            Stream isoStream = new IsolatedStorageFileStream(streamName, FileMode.Open, FileAccess.Read, this.isolatedStore);
 
             var outputStreamWriter = new FileStream(saveAsFileName, FileMode.OpenOrCreate, FileAccess.Write);
             
