@@ -114,7 +114,12 @@ namespace TSqlFlex.Core
             {
                 return "";
             }
-            if (input.Contains('"') || input.Contains(',') || input.Substring(0, 1) == "0")
+            if (input.Substring(0, 1) == "0" ||
+                input.Contains('"') ||
+                input.Contains(',') ||
+                input.Contains('\n') ||
+                input.Contains('\r'))
+                
             {
                 return "\"" + input.Replace("\"", "\"\"") + "\"";
             }
