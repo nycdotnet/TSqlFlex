@@ -51,6 +51,7 @@ namespace TSqlFlex.Core
                 case "shift":
                 case "statistics":
                 case "status":
+                case "sysname":
                 case "table":
                 case "target":
                 case "trigger":
