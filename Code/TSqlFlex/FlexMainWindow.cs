@@ -368,7 +368,7 @@ namespace TSqlFlex
                     this.lastExportedFilePath = fileName;
                     InvokeFireAndForgetOnFormThread(() =>
                     {
-                        txtOutput.Text += "--Results written to \"" + fileName + "\".\r\n\r\n--You can open this file in your text editor.";
+                        txtOutput.Text += "--Results written to \"" + fileName + "\".\r\n--You can open this file in your text editor.\r\n\r\n";
                     });
                 }
             }
@@ -396,7 +396,7 @@ namespace TSqlFlex
                 this.lastExportedFilePath = fileName;
                 InvokeFireAndForgetOnFormThread(() =>
                 {
-                    txtOutput.Text = "--Results written to \"" + fileName + "\".\r\n\r\n--You can open this file in Excel.";
+                    txtOutput.Text = "--Results written to \"" + fileName + "\".\r\n--You can open this file in Excel.\r\n\r\n";
                 });
             }
         }
