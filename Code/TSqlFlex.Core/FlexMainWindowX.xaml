@@ -5,9 +5,33 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid Background="#FFA8ED9D">
-        <Button Content="Button" Margin="0,10,10,0" Click="Button_Click" HorizontalAlignment="Right" Width="75" Height="22" VerticalAlignment="Top"/>
-        <TextBox x:Name="txtTest" Margin="10,37,10,10" TextWrapping="Wrap" Text="TextBox"/>
-
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="2*"/>
+            <RowDefinition />
+            <RowDefinition Height="2*" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Label Name="lblConnectionInfo" Grid.ColumnSpan="3" Content="Connection Info" />
+        <ProgressBar Name="queryProgress" Grid.Column="3" />
+        <Label Name="lblProgress" Grid.Column="4" Content="Progress" />
+        <Button Name="btnAbout" Grid.Column="5" Content="About..." Click="btnAbout_Click" />
+        <TextBox Name="txtSqlInput" Grid.Row="1" Grid.ColumnSpan="6" ></TextBox>
+        <ComboBox Name="cmbResultsType" Grid.Row="2" />
+        <Button Name="cmdRunNRollback" Grid.Row="2" Grid.Column="1" Content="Run n Rollback" Click="cmdRunNRollback_Click" />
+        <Button Name="cmdCancel" Grid.Row="2" Grid.Column="2" Content="Cancel" Click="cmdCancel_Click" />
+        <Button Name="btnExcel" Grid.Row="2" Grid.Column="3" Content="Excel" Click="btnExcel_Click" />
+        <Button Name="btnTxt" Grid.Row="2" Grid.Column="4" Content="Text" Click="btnTxt_Click" />
+        <TextBox Name="txtOutput" Grid.Row="3" Grid.ColumnSpan="6" ></TextBox>
+        <Button Name="btnCopyToClipboard" Grid.Row="4" Content="Copy to Clipboard" Click="btnCopyToClipboard_Click" />
     </Grid>
 </UserControl>
