@@ -22,6 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,25 +34,54 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CommandLine">
+      <HintPath>..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.SqlServer.Types, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft SQL Server\110\SDK\Assemblies\Microsoft.SqlServer.Types.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="RedGate.AppHost.Client">
+      <HintPath>..\packages\RedGate.AppHost.0.0.1.81\lib\RedGate.AppHost.Client.exe</HintPath>
+    </Reference>
+    <Reference Include="RedGate.AppHost.Interfaces">
+      <HintPath>..\packages\RedGate.AppHost.0.0.1.81\lib\RedGate.AppHost.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="RedGate.AppHost.Remoting.WPF">
+      <HintPath>..\packages\RedGate.AppHost.0.0.1.81\lib\RedGate.AppHost.Remoting.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="RedGate.AppHost.Server">
+      <HintPath>..\packages\RedGate.AppHost.0.0.1.81\lib\RedGate.AppHost.Server.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CSVRenderer.cs" />
     <Compile Include="ExcelLauncher.cs" />
     <Compile Include="ExternalProgramLauncher.cs" />
     <Compile Include="FieldScripting.cs" />
+    <Compile Include="FlexMainWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FlexMainWindow.Designer.cs">
+      <DependentUpon>FlexMainWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="FlexResult.cs" />
     <Compile Include="FlexResultSet.cs" />
     <Compile Include="Logging.cs" />
+    <Compile Include="OutOfProcessEntryPoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CustomExceptions.cs" />
     <Compile Include="QueryWorker.cs" />
@@ -62,7 +92,19 @@
     <Compile Include="XmlSpreadsheetRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="FlexMainWindow.resx">
+      <DependentUpon>FlexMainWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\XMLSpreadsheetTemplateHeader.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TSqlFlex\TSqlFlex.csproj">
+      <Project>{5d764d2e-1bb8-41c7-8f82-428c687a2c6a}</Project>
+      <Name>TSqlFlex</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
