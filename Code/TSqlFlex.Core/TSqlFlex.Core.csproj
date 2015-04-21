@@ -72,11 +72,8 @@
     <Compile Include="ExcelLauncher.cs" />
     <Compile Include="ExternalProgramLauncher.cs" />
     <Compile Include="FieldScripting.cs" />
-    <Compile Include="FlexMainWindow.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="FlexMainWindow.Designer.cs">
-      <DependentUpon>FlexMainWindow.cs</DependentUpon>
+    <Compile Include="FlexMainWindowX.xaml.cs">
+      <DependentUpon>FlexMainWindowX.xaml</DependentUpon>
     </Compile>
     <Compile Include="FlexResult.cs" />
     <Compile Include="FlexResultSet.cs" />
@@ -92,9 +89,6 @@
     <Compile Include="XmlSpreadsheetRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="FlexMainWindow.resx">
-      <DependentUpon>FlexMainWindow.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Resources\XMLSpreadsheetTemplateHeader.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -105,6 +99,12 @@
       <Project>{5d764d2e-1bb8-41c7-8f82-428c687a2c6a}</Project>
       <Name>TSqlFlex</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="FlexMainWindowX.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

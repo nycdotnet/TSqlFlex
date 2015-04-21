@@ -15,9 +15,9 @@ namespace TSqlFlex
 
         private IToolWindow formWindow;
         private Guid formGuid = new Guid("579fa20c-38cb-4da6-9f57-6651d10e31d0");
-        private ExtensionHostControl flexMainWindow;
+        private MainWindow flexMainWindow;
 
-        private ExtensionHostControl TheWindow()
+        private MainWindow TheWindow()
         {
             return flexMainWindow;
         }
@@ -55,7 +55,7 @@ namespace TSqlFlex
         {
             if (formWindow == null)
             {
-                flexMainWindow = new ExtensionHostControl();
+                flexMainWindow = new MainWindow();
                 formWindow = ssmsProvider.ToolWindow.Create(flexMainWindow, Caption, formGuid, true);
 
                 try

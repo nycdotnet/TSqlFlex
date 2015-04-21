@@ -11,16 +11,20 @@ namespace TSqlFlex.Core
 {
     class OutOfProcessEntryPoint : IOutOfProcessEntryPoint
     {
-        private FlexMainWindow m_MainWindowControl;
+        private FlexMainWindowX m_MainWindowControl;
 
         public FrameworkElement CreateElement(IAppHostServices service)
         {
-            m_MainWindowControl = new FlexMainWindow();
+            //m_MainWindowControl = new FlexMainWindow();
 
-            return new WindowsFormsHost
-            {
-                Child = m_MainWindowControl
-            };
+            //return new WindowsFormsHost
+            //{
+            //    Child = m_MainWindowControl
+            //};
+
+            m_MainWindowControl = new FlexMainWindowX();
+
+            return m_MainWindowControl;
         }
     }
 }

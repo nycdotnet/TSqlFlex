@@ -66,17 +66,20 @@
   <ItemGroup>
     <Compile Include="BoilerPlate.cs" />
     <Compile Include="Extension.cs" />
-    <Compile Include="ExtensionHostControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ExtensionHostControl.Designer.cs">
-      <DependentUpon>ExtensionHostControl.cs</DependentUpon>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RunCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
