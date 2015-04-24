@@ -36,6 +36,9 @@
     <Reference Include="CommandLine">
       <HintPath>..\packages\CommandLineParser.1.9.71\lib\net35\CommandLine.dll</HintPath>
     </Reference>
+    <Reference Include="Ninject">
+      <HintPath>..\packages\Ninject.3.2.2.0\lib\net35\Ninject.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="RedGate.AppHost.Interfaces">
@@ -52,6 +55,7 @@
       <HintPath>..\packages\RedGate.SIPFrameworkShared.1.0.1.243\lib\RedGate.SIPFrameworkShared.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.AddIn.Contract" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />

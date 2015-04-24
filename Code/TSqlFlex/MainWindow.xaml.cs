@@ -1,6 +1,7 @@
 ﻿using RedGate.AppHost.Server;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -21,30 +22,20 @@ namespace TSqlFlex
     /// </summary>
     public partial class MainWindow : UserControl
     {
+        private readonly RemoteBridge m_RemoteBridge;
+
         public MainWindow()
         {
             InitializeComponent();
 
-
-            /*
-             * var appHostChildHandle = new ChildProcessFactory().Create(Extension.UIDllName, Debugger.IsAttached, Extension.Is64Bit);
-
-            AppHostServices appHostServices = new AppHostServices();
-
-            var element = appHostChildHandle.CreateElement(appHostServices);
-
-            Controls.Add(new ElementHost
-            {
-                Dock = DockStyle.Fill,
-                Child = element
-            });
-             * */
-
             try
             {
+                m_RemoteBridge = ObjectFactory.Get<RemoteBridge>();
+
                 var safeAppHostChildHandle = new ChildProcessFactory().Create(Extension.UIDllName, Debugger.IsAttached, Extension.Is64Bit);
 
                 AppHostServices appHostServices = new AppHostServices();
+                appHostServices.RegisterService<RemoteBridge, ITSQLFlexWindow>(m_RemoteBridge);
 
                 Content = safeAppHostChildHandle.CreateElement(appHostServices);
             }
@@ -57,5 +48,33 @@ namespace TSqlFlex
             }
 
         }
+
+        public event EventHandler ConnectionChanged;
+
+        internal void SetConnection(SqlConnectionStringBuilder sqlConnectionStringBuilder)
+        {
+            OnConnectionChanged(new ConnectionChangedEventArgs(sqlConnectionStringBuilder));
+        }
+
+        protected virtual void OnConnectionChanged(ConnectionChangedEventArgs e)
+        {
+            if (ConnectionChanged != null)
+            {
+                ConnectionChanged(this, e);
+            }
+        }
+
+
     }
+
+    public class ConnectionChangedEventArgs : EventArgs
+    {
+        SqlConnectionStringBuilder sqlConnectionStringBuilder;
+
+        public ConnectionChangedEventArgs(SqlConnectionStringBuilder builder)
+        {
+            this.sqlConnectionStringBuilder = builder;
+        }
+    }
+
 }

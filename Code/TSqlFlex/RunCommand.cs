@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using RedGate.SIPFrameworkShared;
+using System.Data.SqlClient;
 
 namespace TSqlFlex
 {
@@ -35,7 +36,7 @@ namespace TSqlFlex
                 var w = TheWindow();
                 if (w != null)
                 {
-                    //w.SetConnection(new SqlConnectionStringBuilder(ci.ConnectionString));
+                    w.SetConnection(new SqlConnectionStringBuilder(ci.ConnectionString));
                 }
             }
         }
