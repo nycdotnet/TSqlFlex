@@ -36,9 +36,6 @@
     <Reference Include="CommandLine">
       <HintPath>..\packages\CommandLineParser.1.9.71\lib\net35\CommandLine.dll</HintPath>
     </Reference>
-    <Reference Include="Ninject">
-      <HintPath>..\packages\Ninject.3.2.2.0\lib\net35\Ninject.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="RedGate.AppHost.Interfaces">
@@ -69,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BoilerPlate.cs" />
+    <Compile Include="ConnectionProxy.cs" />
     <Compile Include="Extension.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

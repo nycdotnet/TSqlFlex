@@ -23,14 +23,15 @@ namespace TSqlFlex
     public partial class MainWindow : UserControl
     {
         private readonly RemoteBridge m_RemoteBridge;
+        private ConnectionProxy connection;
 
-        public MainWindow()
+        public MainWindow(ConnectionProxy conn)
         {
             InitializeComponent();
 
             try
             {
-                m_RemoteBridge = ObjectFactory.Get<RemoteBridge>();
+                connection = conn;
 
                 var safeAppHostChildHandle = new ChildProcessFactory().Create(Extension.UIDllName, Debugger.IsAttached, Extension.Is64Bit);
 
@@ -49,32 +50,6 @@ namespace TSqlFlex
 
         }
 
-        public event EventHandler ConnectionChanged;
-
-        internal void SetConnection(SqlConnectionStringBuilder sqlConnectionStringBuilder)
-        {
-            OnConnectionChanged(new ConnectionChangedEventArgs(sqlConnectionStringBuilder));
-        }
-
-        protected virtual void OnConnectionChanged(ConnectionChangedEventArgs e)
-        {
-            if (ConnectionChanged != null)
-            {
-                ConnectionChanged(this, e);
-            }
-        }
-
-
-    }
-
-    public class ConnectionChangedEventArgs : EventArgs
-    {
-        SqlConnectionStringBuilder sqlConnectionStringBuilder;
-
-        public ConnectionChangedEventArgs(SqlConnectionStringBuilder builder)
-        {
-            this.sqlConnectionStringBuilder = builder;
-        }
     }
 
 }

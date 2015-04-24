@@ -5,10 +5,6 @@ using System.Linq;
 using System.Runtime.Remoting.Lifetime;
 using System.Text;
 using System.Windows.Threading;
-using Ninject;
-using Ninject.Activation;
-using Ninject.Modules;
-using Ninject.Syntax;
 using RedGate.AppHost.Interfaces;
 using RedGate.SIPFrameworkShared;
 
@@ -32,27 +28,19 @@ namespace TSqlFlex
         }
     }
 
-    internal class RemoteBridge : MarshalByRefObject, ITSQLFlexWindow
+    internal class RemoteBridge : MarshalByRefObject, IConnectionProxy
     {
         
         private readonly Dispatcher m_Dispatcher;
-        private readonly ITSQLFlexWindow m_TSQLFlexWindow;
+        private readonly IConnectionProxy m_ConnectionProxy;
 
 
-        public RemoteBridge(ITSQLFlexWindow tSqlFlexWindow, Dispatcher dispatcher)
+        public RemoteBridge(IConnectionProxy conn, Dispatcher dispatcher)
         {
-            m_TSQLFlexWindow = tSqlFlexWindow;
-            m_TSQLFlexWindow.ConnectionChanged += ConnectionChanged;
+            m_ConnectionProxy = conn;
             m_Dispatcher = dispatcher;
-
-            //left off here.
         }
 
-        public event EventHandler ConnectionChanged;
-        public SqlConnectionStringBuilder CurrentConnection()
-        {
-            return m_TSQLFlexWindow.CurrentConnection();
-        }
 
         public TimeSpan Renewal(ILease lease)
         {
@@ -68,42 +56,11 @@ namespace TSqlFlex
         }
     }
 
-    public interface ITSQLFlexWindow : ISponsor
-    {
-        event EventHandler ConnectionChanged;
-        SqlConnectionStringBuilder CurrentConnection();
-    }
+    //public interface ITSQLFlexWindow : ISponsor
+    //{
+    //    event EventHandler ConnectionChanged;
+    //    SqlConnectionStringBuilder CurrentConnection();
+    //}
 
-
-    public static class ObjectFactory
-    {
-        private static readonly IKernel s_Kernel = new StandardKernel(new NinjectSettings
-        {
-            InjectNonPublic = true
-        }, new HostModule());
-
-        public static T Get<T>()
-        {
-            return s_Kernel.Get<T>();
-        }
-
-        public static IBindingToSyntax<T> Bind<T>()
-        {
-            if (s_Kernel.GetBindings(typeof(T)).Any())
-            {
-                throw new InvalidOperationException(String.Format("Binding already exists for type [{0}]", typeof(T)));
-            }
-
-            return s_Kernel.Bind<T>();
-        }
-    }
-
-    internal class HostModule : NinjectModule
-    {
-        public override void Load()
-        {
-            Bind<RemoteBridge>().ToSelf().InSingletonScope();
-        }
-    }
 
 }

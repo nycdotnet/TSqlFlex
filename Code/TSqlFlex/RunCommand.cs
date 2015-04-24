@@ -17,6 +17,7 @@ namespace TSqlFlex
         private IToolWindow formWindow;
         private Guid formGuid = new Guid("579fa20c-38cb-4da6-9f57-6651d10e31d0");
         private MainWindow flexMainWindow;
+        private ConnectionProxy connection = new ConnectionProxy();
 
         private MainWindow TheWindow()
         {
@@ -33,11 +34,7 @@ namespace TSqlFlex
                     && objectExplorerNode.HasConnection
                     && objectExplorerNode.TryGetConnection(out ci))
             {
-                var w = TheWindow();
-                if (w != null)
-                {
-                    w.SetConnection(new SqlConnectionStringBuilder(ci.ConnectionString));
-                }
+                connection.SetConnection(new SqlConnectionStringBuilder(ci.ConnectionString));
             }
         }
 
@@ -56,7 +53,7 @@ namespace TSqlFlex
         {
             if (formWindow == null)
             {
-                flexMainWindow = new MainWindow();
+                flexMainWindow = new MainWindow(connection);
                 formWindow = ssmsProvider.ToolWindow.Create(flexMainWindow, Caption, formGuid, true);
 
                 try
