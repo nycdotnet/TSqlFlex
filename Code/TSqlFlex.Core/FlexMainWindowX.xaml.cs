@@ -20,16 +20,24 @@ namespace TSqlFlex.Core
         private Logging logger = new Logging();
         private uint completedResultsCount = 0;
         private BackgroundWorker queryWorker = null;
+        private IConnectionProxy connectionProxy = null;
 
-        public FlexMainWindowX()
+        public FlexMainWindowX(IConnectionProxy connProxy)
         {
             InitializeComponent();
+            connectionProxy = connProxy;
+            connectionProxy.OnConnectionChanged += connectionChangedHandler;
             lblProgress.Content = "";
             cmbResultsType.Items.Add(SqlRunParameters.TO_INSERT_STATEMENTS);
             cmbResultsType.Items.Add(SqlRunParameters.TO_XML_SPREADSHEET);
             cmbResultsType.Items.Add(SqlRunParameters.TO_CSV);
             cmbResultsType.SelectedItem = SqlRunParameters.TO_INSERT_STATEMENTS;
             setUIState(false);
+        }
+
+        private void connectionChangedHandler(object sender, EventArgs args)
+        {
+            SetConnection(((ConnectionChangedEventArgs)args).sqlConnectionStringBuilder);
         }
         
         //protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

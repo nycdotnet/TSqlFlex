@@ -13,15 +13,12 @@ namespace TSqlFlex.Core
     class OutOfProcessEntryPoint : IOutOfProcessEntryPoint
     {
         private FlexMainWindowX m_MainWindowControl;
-        private ITSQLFlexWindow tSqlFlexWindow;
+        private IConnectionProxy m_connectionProxy;
 
         public FrameworkElement CreateElement(IAppHostServices service)
         {
-
-            m_MainWindowControl = new FlexMainWindowX();
-            this.tSqlFlexWindow = service.GetService<ITSQLFlexWindow>();
-
-            //ObjectFactory.Bind<ITSQLFlexWindow>().ToConstant(tSqlFlexWindow).InSingletonScope();
+            m_connectionProxy = service.GetService<IConnectionProxy>();
+            m_MainWindowControl = new FlexMainWindowX(m_connectionProxy);
 
             return m_MainWindowControl;
         }

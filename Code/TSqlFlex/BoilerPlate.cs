@@ -28,7 +28,7 @@ namespace TSqlFlex
         }
     }
 
-    internal class RemoteBridge : MarshalByRefObject, IConnectionProxy
+    public class RemoteBridge : MarshalByRefObject, IConnectionProxy, ISponsor
     {
         
         private readonly Dispatcher m_Dispatcher;
@@ -54,13 +54,18 @@ namespace TSqlFlex
             ret.Register(this);
             return ret;
         }
+
+        void IConnectionProxy.SetConnection(SqlConnectionStringBuilder sqlConnectionStringBuilder)
+        {
+            m_ConnectionProxy.SetConnection(sqlConnectionStringBuilder);
+        }
+
+        event EventHandler IConnectionProxy.OnConnectionChanged
+        {
+            add { m_ConnectionProxy.OnConnectionChanged += value; }
+            remove { m_ConnectionProxy.OnConnectionChanged -= value; }
+        }
     }
-
-    //public interface ITSQLFlexWindow : ISponsor
-    //{
-    //    event EventHandler ConnectionChanged;
-    //    SqlConnectionStringBuilder CurrentConnection();
-    //}
-
-
 }
+
+ 

@@ -22,21 +22,17 @@ namespace TSqlFlex
     /// </summary>
     public partial class MainWindow : UserControl
     {
-        private readonly RemoteBridge m_RemoteBridge;
-        private ConnectionProxy connection;
 
-        public MainWindow(ConnectionProxy conn)
+        public MainWindow(ConnectionProxy connection)
         {
             InitializeComponent();
 
             try
             {
-                connection = conn;
-
                 var safeAppHostChildHandle = new ChildProcessFactory().Create(Extension.UIDllName, Debugger.IsAttached, Extension.Is64Bit);
 
                 AppHostServices appHostServices = new AppHostServices();
-                appHostServices.RegisterService<RemoteBridge, ITSQLFlexWindow>(m_RemoteBridge);
+                appHostServices.RegisterService<ConnectionProxy, IConnectionProxy>(connection);
 
                 Content = safeAppHostChildHandle.CreateElement(appHostServices);
             }
@@ -51,5 +47,6 @@ namespace TSqlFlex
         }
 
     }
+
 
 }

@@ -9,30 +9,52 @@ namespace TSqlFlex
 {
     public interface IConnectionProxy
     {
-        //event EventHandler ConnectionChanged;
         void SetConnection(SqlConnectionStringBuilder sqlConnectionStringBuilder);
-        void OnConnectionChanged(ConnectionChangedEventArgs e);
+        event EventHandler OnConnectionChanged;
     }
 
     public class ConnectionProxy : MarshalByRefObject, IConnectionProxy, ISponsor
     {
-        public void SetConnection(SqlConnectionStringBuilder sqlConnectionStringBuilder)
+
+        event EventHandler OnConnectionChanged;
+        event EventHandler IConnectionProxy.OnConnectionChanged
         {
-            OnConnectionChanged(new ConnectionChangedEventArgs(sqlConnectionStringBuilder));
-        }
-
-        public delegate void ConnectionChangedHandler(object sender, ConnectionChangedEventArgs e);
-
-        public event ConnectionChangedHandler ConnectionChanged;
-
-        public void OnConnectionChanged(ConnectionChangedEventArgs e)
-        {
-            if (ConnectionChanged != null)
+            add
             {
-                ConnectionChanged(this, e);
+                if (OnConnectionChanged != null)
+                {
+                    lock (OnConnectionChanged)
+                    {
+                        OnConnectionChanged += value;
+                    }
+                }
+                else
+                {
+                    OnConnectionChanged = new EventHandler(value);
+                }
+            }
+            remove
+            {
+                if (OnConnectionChanged != null)
+                {
+                    lock (OnConnectionChanged)
+                    {
+                        OnConnectionChanged -= value;
+                    }
+                }
             }
         }
 
+        public void SetConnection(SqlConnectionStringBuilder sqlConnectionStringBuilder)
+        {
+            EventHandler handler = OnConnectionChanged;
+            if (handler != null)
+            {
+                ConnectionChangedEventArgs connArgs = new ConnectionChangedEventArgs(sqlConnectionStringBuilder);
+                handler(this, connArgs);
+            }
+        }
+        
         public TimeSpan Renewal(ILease lease)
         {
             return TimeSpan.FromMinutes(1);
@@ -45,12 +67,13 @@ namespace TSqlFlex
             ret.Register(this);
             return ret;
         }
+
     }
 
 
     public class ConnectionChangedEventArgs : EventArgs
     {
-        SqlConnectionStringBuilder sqlConnectionStringBuilder;
+        public SqlConnectionStringBuilder sqlConnectionStringBuilder;
 
         public ConnectionChangedEventArgs(SqlConnectionStringBuilder builder)
         {
