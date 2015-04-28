@@ -10,6 +10,7 @@ namespace TSqlFlex.Core
     /// <summary>
     /// Interaction logic for FlexMainWindowX.xaml
     /// </summary>
+    [Serializable()]
     public partial class FlexMainWindowX : System.Windows.Controls.UserControl
     {
 
@@ -20,13 +21,14 @@ namespace TSqlFlex.Core
         private Logging logger = new Logging();
         private uint completedResultsCount = 0;
         private BackgroundWorker queryWorker = null;
-        private IConnectionProxy connectionProxy = null;
+        private ConnectionProxy connectionProxy = null;
+        private ConnectionProxyClient connectionProxyClient = new ConnectionProxyClient();
 
         public FlexMainWindowX(IConnectionProxy connProxy)
         {
             InitializeComponent();
-            connectionProxy = connProxy;
-            connectionProxy.OnConnectionChanged += connectionChangedHandler;
+            connectionProxy = connProxy as ConnectionProxy;
+            connectionProxy.OnConnectionChanged += connectionProxyClient.connectionChangedHandler;
             lblProgress.Content = "";
             cmbResultsType.Items.Add(SqlRunParameters.TO_INSERT_STATEMENTS);
             cmbResultsType.Items.Add(SqlRunParameters.TO_XML_SPREADSHEET);

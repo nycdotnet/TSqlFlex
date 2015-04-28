@@ -4,20 +4,13 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Runtime.Remoting.Lifetime;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace TSqlFlex
+namespace TSqlFlex.Core
 {
-
-    public interface IConnectionProxy
-    {
-        void SetConnection(SqlConnectionStringBuilder sqlConnectionStringBuilder);
-        event EventHandler OnConnectionChanged;
-    }
-
     [Serializable()]
-    public class ConnectionProxy : MarshalByRefObject, IConnectionProxy, ISponsor
+    public class ConnectionProxyClient : IConnectionProxy
     {
-
         public event EventHandler OnConnectionChanged;
         event EventHandler IConnectionProxy.OnConnectionChanged
         {
@@ -47,6 +40,11 @@ namespace TSqlFlex
             }
         }
 
+        public void connectionChangedHandler(object sender, EventArgs args)
+        {
+            SetConnection(((ConnectionChangedEventArgs)args).sqlConnectionStringBuilder);
+        }
+
         public void SetConnection(SqlConnectionStringBuilder sqlConnectionStringBuilder)
         {
             EventHandler handler = OnConnectionChanged;
@@ -56,31 +54,6 @@ namespace TSqlFlex
                 handler(this, connArgs);
             }
         }
-        
-        public TimeSpan Renewal(ILease lease)
-        {
-            return TimeSpan.FromMinutes(1);
-        }
-
-        public override object InitializeLifetimeService()
-        {
-            ILease ret = (ILease)base.InitializeLifetimeService();
-            ret.SponsorshipTimeout = TimeSpan.FromMinutes(2);
-            ret.Register(this);
-            return ret;
-        }
 
     }
-
-    [Serializable()]
-    public class ConnectionChangedEventArgs : EventArgs
-    {
-        public SqlConnectionStringBuilder sqlConnectionStringBuilder;
-
-        public ConnectionChangedEventArgs(SqlConnectionStringBuilder builder)
-        {
-            this.sqlConnectionStringBuilder = builder;
-        }
-    }
-
 }

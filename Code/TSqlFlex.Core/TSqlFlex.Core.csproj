@@ -68,6 +68,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConnectionProxyClient.cs" />
     <Compile Include="CSVRenderer.cs" />
     <Compile Include="ExcelLauncher.cs" />
     <Compile Include="ExternalProgramLauncher.cs" />
