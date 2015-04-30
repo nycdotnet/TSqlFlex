@@ -33,19 +33,23 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommandLine">
-      <HintPath>..\packages\CommandLineParser.1.9.71\lib\net35\CommandLine.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="RedGate.AppHost.Interfaces">
-      <HintPath>..\packages\RedGate.AppHost.0.0.1.81\lib\RedGate.AppHost.Interfaces.dll</HintPath>
+    <Reference Include="RedGate.AppHost.Interfaces, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\References\RedGate.AppHost\RedGate.AppHost.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="RedGate.AppHost.Remoting.WPF">
-      <HintPath>..\packages\RedGate.AppHost.0.0.1.81\lib\RedGate.AppHost.Remoting.WPF.dll</HintPath>
+    <Reference Include="RedGate.AppHost.Remoting, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\References\RedGate.AppHost\RedGate.AppHost.Remoting.dll</HintPath>
     </Reference>
-    <Reference Include="RedGate.AppHost.Server">
-      <HintPath>..\packages\RedGate.AppHost.0.0.1.81\lib\RedGate.AppHost.Server.dll</HintPath>
+    <Reference Include="RedGate.AppHost.Remoting.WPF, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\References\RedGate.AppHost\RedGate.AppHost.Remoting.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="RedGate.AppHost.Server, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\References\RedGate.AppHost\RedGate.AppHost.Server.dll</HintPath>
     </Reference>
     <Reference Include="RedGate.SIPFrameworkShared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7f465a1c156d4d57, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
