@@ -42,7 +42,7 @@ namespace TSqlFlex.Core
                 verboseLogging = verboseLoggingRegistryValue();
                 lastException = null;
                 var lfn = logFileNameRegistryValue();
-                if (lfn.Length > 0 && lastException == null){
+                if (!String.IsNullOrEmpty(lfn) && lastException == null){
                     Stream logStream = new FileStream(lfn, FileMode.Append, FileAccess.Write, FileShare.Read);
                     outputLogStream = new StreamWriter(logStream, Encoding.UTF8);
                     LogVerbose("Opened outputLogStream at " + lfn + ".");

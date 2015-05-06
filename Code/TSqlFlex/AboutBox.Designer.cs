@@ -70,16 +70,20 @@
             // labelCompanyName
             // 
             this.labelCompanyName.AutoSize = true;
+            this.labelCompanyName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelCompanyName.ForeColor = System.Drawing.SystemColors.HotTrack;
             this.labelCompanyName.Location = new System.Drawing.Point(12, 83);
             this.labelCompanyName.Name = "labelCompanyName";
             this.labelCompanyName.Size = new System.Drawing.Size(79, 13);
             this.labelCompanyName.TabIndex = 5;
             this.labelCompanyName.Text = "CompanyName";
+            this.labelCompanyName.Click += new System.EventHandler(this.labelCompanyName_Click);
             // 
             // btnClose
             // 
             this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClose.Location = new System.Drawing.Point(201, 215);
+            this.btnClose.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnClose.Location = new System.Drawing.Point(206, 215);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 6;
@@ -98,7 +102,7 @@
             // 
             // btnTwitter
             // 
-            this.btnTwitter.ForeColor = System.Drawing.Color.Blue;
+            this.btnTwitter.ForeColor = System.Drawing.SystemColors.HotTrack;
             this.btnTwitter.Location = new System.Drawing.Point(201, 116);
             this.btnTwitter.Name = "btnTwitter";
             this.btnTwitter.Size = new System.Drawing.Size(80, 25);
@@ -118,7 +122,7 @@
             // 
             // btnIssues
             // 
-            this.btnIssues.ForeColor = System.Drawing.Color.Blue;
+            this.btnIssues.ForeColor = System.Drawing.SystemColors.HotTrack;
             this.btnIssues.Location = new System.Drawing.Point(167, 147);
             this.btnIssues.Name = "btnIssues";
             this.btnIssues.Size = new System.Drawing.Size(113, 25);
@@ -138,7 +142,7 @@
             // 
             // btnReleases
             // 
-            this.btnReleases.ForeColor = System.Drawing.Color.Blue;
+            this.btnReleases.ForeColor = System.Drawing.SystemColors.HotTrack;
             this.btnReleases.Location = new System.Drawing.Point(168, 178);
             this.btnReleases.Name = "btnReleases";
             this.btnReleases.Size = new System.Drawing.Size(113, 25);

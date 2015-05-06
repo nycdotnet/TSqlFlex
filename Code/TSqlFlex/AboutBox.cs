@@ -65,6 +65,9 @@ namespace TSqlFlex
             proc.Start();
         }
 
-
+        private void labelCompanyName_Click(object sender, EventArgs e)
+        {
+            launchUrl("http://www.legendaryapps.com/");
+        }
     }
 }

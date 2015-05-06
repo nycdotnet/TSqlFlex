@@ -33,10 +33,10 @@
             this.panelTop = new System.Windows.Forms.Panel();
             this.btnAbout = new System.Windows.Forms.Button();
             this.lblConnectionInfo = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.txtSqlInput = new System.Windows.Forms.TextBox();
             this.panelBottom = new System.Windows.Forms.Panel();
+            this.btnTxt = new System.Windows.Forms.Button();
             this.btnExcel = new System.Windows.Forms.Button();
             this.cmbResultsType = new System.Windows.Forms.ComboBox();
             this.lblProgress = new System.Windows.Forms.Label();
@@ -79,7 +79,6 @@
             // 
             this.panelTop.Controls.Add(this.btnAbout);
             this.panelTop.Controls.Add(this.lblConnectionInfo);
-            this.panelTop.Controls.Add(this.label2);
             this.panelTop.Controls.Add(this.label1);
             this.panelTop.Controls.Add(this.txtSqlInput);
             this.panelTop.Cursor = System.Windows.Forms.Cursors.Default;
@@ -104,26 +103,16 @@
             // 
             this.lblConnectionInfo.AutoSize = true;
             this.lblConnectionInfo.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblConnectionInfo.Location = new System.Drawing.Point(12, 49);
+            this.lblConnectionInfo.Location = new System.Drawing.Point(3, 4);
             this.lblConnectionInfo.Name = "lblConnectionInfo";
             this.lblConnectionInfo.Size = new System.Drawing.Size(452, 19);
             this.lblConnectionInfo.TabIndex = 4;
             this.lblConnectionInfo.Text = "Instance: [ServerNameAndInstance], DB: [DatabaseName]";
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 25);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(435, 13);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "This is alpha software and will probably delete your database somehow.  For test " +
-    "use only!!!";
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 12);
+            this.label1.Location = new System.Drawing.Point(4, 32);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(424, 13);
             this.label1.TabIndex = 2;
@@ -137,11 +126,11 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSqlInput.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSqlInput.Location = new System.Drawing.Point(0, 71);
+            this.txtSqlInput.Location = new System.Drawing.Point(0, 48);
             this.txtSqlInput.Multiline = true;
             this.txtSqlInput.Name = "txtSqlInput";
             this.txtSqlInput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtSqlInput.Size = new System.Drawing.Size(1112, 128);
+            this.txtSqlInput.Size = new System.Drawing.Size(1112, 151);
             this.txtSqlInput.TabIndex = 0;
             this.txtSqlInput.WordWrap = false;
             this.txtSqlInput.DragDrop += new System.Windows.Forms.DragEventHandler(this.txtSqlInput_DragDrop);
@@ -149,6 +138,7 @@
             // 
             // panelBottom
             // 
+            this.panelBottom.Controls.Add(this.btnTxt);
             this.panelBottom.Controls.Add(this.btnExcel);
             this.panelBottom.Controls.Add(this.cmbResultsType);
             this.panelBottom.Controls.Add(this.lblProgress);
@@ -163,6 +153,17 @@
             this.panelBottom.Name = "panelBottom";
             this.panelBottom.Size = new System.Drawing.Size(1112, 347);
             this.panelBottom.TabIndex = 1;
+            // 
+            // btnTxt
+            // 
+            this.btnTxt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnTxt.Location = new System.Drawing.Point(831, 5);
+            this.btnTxt.Name = "btnTxt";
+            this.btnTxt.Size = new System.Drawing.Size(75, 23);
+            this.btnTxt.TabIndex = 12;
+            this.btnTxt.Text = "Open as .&txt";
+            this.btnTxt.UseVisualStyleBackColor = true;
+            this.btnTxt.Click += new System.EventHandler(this.btnTxt_Click);
             // 
             // btnExcel
             // 
@@ -283,7 +284,6 @@
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Panel panelTop;
         private System.Windows.Forms.Label lblConnectionInfo;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtSqlInput;
         private System.Windows.Forms.Panel panelBottom;
@@ -298,5 +298,6 @@
         private System.Windows.Forms.ComboBox cmbResultsType;
         private System.Windows.Forms.Button btnAbout;
         private System.Windows.Forms.Button btnExcel;
+        private System.Windows.Forms.Button btnTxt;
     }
 }

@@ -116,6 +116,19 @@ namespace TSqlFlex.Core
                     renderExceptionToSqlRunParameters("while rendering spreadsheet", srp, ex);
                 }
             }
+            else if (srp.outputType == SqlRunParameters.TO_CSV)
+            {
+                try
+                {
+                    CSVRenderer.renderAsCSV(resultSet, srp);
+                }
+                catch (Exception ex)
+                {
+                    srp.worksheetIsValid = false;
+                    srp.flushAndCloseOutputStreamIfNeeded();
+                    renderExceptionToSqlRunParameters("while rendering csv", srp, ex);
+                }
+            }
             e.Result = srp;
         }
 

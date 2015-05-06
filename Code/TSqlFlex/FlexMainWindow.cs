@@ -17,7 +17,7 @@ namespace TSqlFlex
         private SqlConnectionStringBuilder connStringBuilder = null;
         private Stopwatch sqlStopwatch = null;
         private string progressText = "";
-        private string lastExcelSheetPath = "";
+        private string lastExportedFilePath = "";
         private Logging logger;
         private uint completedResultsCount = 0;
         
@@ -29,6 +29,7 @@ namespace TSqlFlex
             lblProgress.Text = "";
             cmbResultsType.Items.Add(SqlRunParameters.TO_INSERT_STATEMENTS);
             cmbResultsType.Items.Add(SqlRunParameters.TO_XML_SPREADSHEET);
+            cmbResultsType.Items.Add(SqlRunParameters.TO_CSV);
             cmbResultsType.SelectedItem = SqlRunParameters.TO_INSERT_STATEMENTS;
             setUIState(false);
         }
@@ -111,7 +112,7 @@ namespace TSqlFlex
             }
 
             if (!queryWorker.IsBusy) {
-                lastExcelSheetPath = "";
+                lastExportedFilePath = "";
                 sqlStopwatch = new Stopwatch();
                 sqlStopwatch.Start();
                 queryTimer.Enabled = true;
@@ -303,6 +304,18 @@ namespace TSqlFlex
                     }
                     
                 }
+                else if (cmbResultsType.SelectedItem.ToString() == SqlRunParameters.TO_CSV)
+                {
+                    if (srp.worksheetIsValid)
+                    {
+                        TryToSaveCSVs(srp);
+                    }
+                    else
+                    {
+                        drawExceptions(srp);
+                    }
+
+                }
             }
             
             setProgressText(true);
@@ -326,6 +339,41 @@ namespace TSqlFlex
                 });
         }
 
+        private void TryToSaveCSVs(SqlRunParameters srp)
+        {
+            txtOutput.Text = "";
+            string personalFolder = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            string timestamp = DateTime.Now.ToString("_yyyyMMddTHHmmss");
+            for (int csvIndex = 0; csvIndex < srp.outputFiles.Count; csvIndex += 1)
+            {
+                string fileName = "";
+                try
+                {
+                    fileName = Path.Combine(personalFolder, "TSqlFlex" + timestamp +
+                        (srp.outputFiles.Count > 1 ? "_" + (csvIndex+1).ToString() : "") + ".csv");
+                }
+                catch (Exception ex)
+                {
+                    string error = "Exception when attempting to find personal documents folder for current user.  Will not save file.";
+                    logger.Log(error + " " + ex.Message);
+                    logger.Log(ex.StackTrace);
+                    MessageBox.Show(error + "  " + ex.Message);
+                    fileName = "";
+                    break;
+                }
+
+                if (fileName != "")
+                {
+                    srp.saveOutputStreamTo(srp.outputFiles[csvIndex], fileName);
+                    this.lastExportedFilePath = fileName;
+                    InvokeFireAndForgetOnFormThread(() =>
+                    {
+                        txtOutput.Text += "--Results written to \"" + fileName + "\".\r\n--You can open this file in your text editor.\r\n\r\n";
+                    });
+                }
+            }
+        }
+
         private void TryToSaveSpreadsheet(SqlRunParameters srp)
         {
             string fileName = "";
@@ -344,11 +392,11 @@ namespace TSqlFlex
 
             if (fileName != "")
             {
-                srp.saveOutputStreamTo(fileName);
-                this.lastExcelSheetPath = fileName;
+                srp.saveOutputStreamTo(srp.outputFiles[0], fileName);
+                this.lastExportedFilePath = fileName;
                 InvokeFireAndForgetOnFormThread(() =>
                 {
-                    txtOutput.Text = "--Results written to \"" + fileName + "\".\r\n\r\n--You can open this file in Excel.";
+                    txtOutput.Text = "--Results written to \"" + fileName + "\".\r\n--You can open this file in Excel.\r\n\r\n";
                 });
             }
         }
@@ -367,7 +415,8 @@ namespace TSqlFlex
                 {
                     Cursor.Current = Cursors.Default;
                 }
-                btnExcel.Enabled = (lastExcelSheetPath.Length > 0);
+                btnExcel.Enabled = (lastExportedFilePath.Length > 0);
+                btnTxt.Enabled = (lastExportedFilePath.Length > 0);
             });
             logger.LogVerbose("FlexMainWindow.setUIState complete");
         }
@@ -413,13 +462,13 @@ namespace TSqlFlex
         private void btnExcel_Click(object sender, EventArgs e)
         {
             var Excel = new ExcelLauncher();
-            if (Excel.ExcelFound)
+            if (Excel.ProgramFound)
             {
-                Excel.Launch(this.lastExcelSheetPath);
+                Excel.Launch(this.lastExportedFilePath);
             }
             else
             {
-                MessageBox.Show(Excel.ExcelError, "T-SQL Flex couldn't launch Excel");
+                MessageBox.Show(Excel.ProgramError, "T-SQL Flex couldn't launch Excel");
             }
         }
 
@@ -447,6 +496,19 @@ namespace TSqlFlex
             else
             { 
                 e.Effect = DragDropEffects.None;
+            }
+        }
+
+        private void btnTxt_Click(object sender, EventArgs e)
+        {
+            var Txt = new TxtLauncher();
+            if (Txt.ProgramFound)
+            {
+                Txt.Launch(this.lastExportedFilePath);
+            }
+            else
+            {
+                MessageBox.Show(Txt.ProgramError, "T-SQL Flex couldn't launch your default text editor.");
             }
         }
     }

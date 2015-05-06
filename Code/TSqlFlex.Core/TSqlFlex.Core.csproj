@@ -45,7 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CSVRenderer.cs" />
     <Compile Include="ExcelLauncher.cs" />
+    <Compile Include="ExternalProgramLauncher.cs" />
     <Compile Include="FieldScripting.cs" />
     <Compile Include="FlexResult.cs" />
     <Compile Include="FlexResultSet.cs" />
@@ -55,6 +57,7 @@
     <Compile Include="QueryWorker.cs" />
     <Compile Include="SqlRunParameters.cs" />
     <Compile Include="TSqlRules.cs" />
+    <Compile Include="TxtLauncher.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="XmlSpreadsheetRenderer.cs" />
   </ItemGroup>
