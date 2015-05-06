@@ -562,7 +562,7 @@ namespace TSqlFlex.Core.Tests
         [Test()]
         public void UNIQUEIDENTIFIER_Data_ScriptsCorrectly()
         {
-            Guid baseData = Guid.Parse("9631B0CA-D86F-4CA2-BFA5-93A9980D050A");
+            Guid baseData = new Guid("9631B0CA-D86F-4CA2-BFA5-93A9980D050A");
             object data = baseData;
 
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "uniqueidentifier", false, 0, 0);
@@ -588,7 +588,7 @@ namespace TSqlFlex.Core.Tests
         [Test()]
         public void SQLVARIANT_Guid_Data_ScriptsCorrectly()
         {
-            Guid baseData = Guid.Parse("9631B0CA-D86F-4CA2-BFA5-93A9980D050A");
+            Guid baseData = new Guid("9631B0CA-D86F-4CA2-BFA5-93A9980D050A");
             object data = baseData;
 
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 64, "sql_variant", false, 0, 0);
