@@ -38,5 +38,12 @@ namespace TSqlFlex.Core.Tests
             string testit = "10000000";
             Assert.AreEqual(testit, TSqlFlex.Core.CSVRenderer.escapeForCSV(testit));
         }
+
+        [Test()]
+        public void string_that_is_lone_zero_is_not_enclosed()
+        {
+            string testit = "0";
+            Assert.AreEqual(testit, TSqlFlex.Core.CSVRenderer.escapeForCSV(testit));
+        }
     }
 }

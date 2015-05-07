@@ -113,6 +113,10 @@ namespace TSqlFlex.Core
             {
                 return "";
             }
+            if (input == "0")
+            {
+                return input;
+            }
             if (input.Substring(0, 1) == "0" ||
                 input.Contains('"') ||
                 input.Contains(',') ||
