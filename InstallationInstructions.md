@@ -10,7 +10,7 @@ First, get Chocolatey from https://chocolatey.org/ .  Once Chocolatey is install
 #install the latest version of T-SQL Flex
 choco install tsqlflex -pre 
 
-#install a specific version of T-SQL Flex
+#install a specific version of T-SQL Flex  (in this case, v 0.0.11)
 choco install tsqlflex -pre -version 0.0.11
 
 #upgrade T-SQL Flex (only if you installed it via Chocolatey)
