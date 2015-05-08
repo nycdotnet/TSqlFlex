@@ -1,5 +1,5 @@
 ﻿$packageName = "T-SQL Flex";
-$url = "https://github.com/nycdotnet/TSqlFlex/releases/download/0.0.11-alpha/TSqlFlex-v0.0.11-alpha.zip";
+$url = "https://github.com/nycdotnet/TSqlFlex/releases/download/0.1.0-beta/TSqlFlex-v0.1.0-beta.zip";
 $installLocation = "$env:ProgramData\T-SQL Flex";
 
 try {

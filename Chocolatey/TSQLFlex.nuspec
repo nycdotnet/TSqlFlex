@@ -4,7 +4,7 @@
   <metadata>
     <id>tsqlflex</id>
     <title>T-SQL Flex</title>
-    <version>0.0.11-alpha</version>
+    <version>0.1.0-beta</version>
     <authors>Steve Ognibene</authors>
     <owners>NYCdotNet</owners>
     <summary>SSMS add-in for scripting and Excel export.</summary>
@@ -18,13 +18,11 @@
         <dependency id="sipfw" version="1.0.3.4" />
     </dependencies>
     <releaseNotes>
-* v0.0.11-alpha (2015-01-23):
-  * Updated to use .NET 4.5 - this version is now required to run T-SQL Flex.
-  * Improved scripter to continuously increment the "#Result" table number to prevent conflicts in a session.
-  * Fixed lockup of SSMS when switching between database servers. (#33)
-  * Fixed missing column header for anonymous columns in Excel export (#29)
-  * Added WEIGHT, TARGET, and NONE as T-SQL keywords.
-  * Implemented improved logging.
+* v0.1.0-beta (2015-05-07):
+  * Reverted to use .NET 3.5 to restore compatibility with SSMS 2008.
+  * Added CSV export feature! T-SQL Flex can now export the results of any set of queries to properly-escaped CSV files that open correctly in Excel or any text editor.
+  * Added a handful of additional T-SQL keywords.
+  * Removed "This is alpha software" warning.  Beta 1 will likely have only minimal further changes prior to the v1.0 release of T-SQL Flex.
 	</releaseNotes>
   </metadata>
   <files>
