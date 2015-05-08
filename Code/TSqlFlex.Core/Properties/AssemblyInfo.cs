@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -6,13 +7,16 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("TSqlFlex.Core")]
-[assembly: AssemblyDescription("Scripts data to INSERT statements or Excel-compatible spreadsheets.")]
+[assembly: AssemblyDescription("Scripts SQL Server data.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("TSqlFlex.Core")]
-[assembly: AssemblyCopyright("Copyright © 2014 Steve Ognibene")]
+[assembly: AssemblyCopyright("Copyright © 2015 Steve Ognibene")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
+[assembly: AssemblyVersion("0.1.0.0")]
+[assembly: AssemblyFileVersion("0.1.0.0")]
+[assembly: AssemblySemverPrereleaseTag("beta")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
@@ -22,18 +26,16 @@ using System.Runtime.InteropServices;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("f28ef710-39c6-4254-a0db-e930d24f2372")]
 
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version 
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Build and Revision Numbers 
-// by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.0.11.0")]
-[assembly: AssemblyFileVersion("0.0.11.0")]
-
 //Enable testing internal members of classes.
 [assembly: InternalsVisibleTo("TSqlFlex.Core.Tests")]
+
+[AttributeUsage(AttributeTargets.Assembly)]
+public class AssemblySemverPrereleaseTag : Attribute
+{
+    public readonly string tag;
+    public AssemblySemverPrereleaseTag() : this(string.Empty) { }
+    public AssemblySemverPrereleaseTag(string value)
+    {
+        tag = value;
+    }
+}

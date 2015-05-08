@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("TSqlFlex.Core.Tests")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
+[assembly: AssemblyCopyright("Copyright © 2015 Steve Ognibene")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

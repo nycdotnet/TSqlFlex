@@ -82,7 +82,16 @@ namespace TSqlFlex.Core
     {
         public static string Version() {
 
-            return "v" + VersionNumbersOnly() + "-alpha";
+            string tag = SemverPrereleaseTag();
+            if (string.IsNullOrEmpty(tag))
+            {
+                return "v" + VersionNumbersOnly();
+            }
+            else
+            {
+                return "v" + VersionNumbersOnly() + "-" + tag;
+            }
+            
         }
 
         public static string VersionNumbersOnly()
@@ -90,6 +99,25 @@ namespace TSqlFlex.Core
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
             return fvi.FileVersion;
+        }
+
+        public static string SemverPrereleaseTag()
+        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+
+            var attributes = assembly
+                .GetCustomAttributes(typeof(AssemblySemverPrereleaseTag), false)
+                .Cast<AssemblySemverPrereleaseTag>().ToArray();
+
+            if (attributes.Length == 0)
+            {
+                return "";
+            }
+            else
+            {
+                return attributes[0].tag;
+            }
+
         }
     }
 
