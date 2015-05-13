@@ -19,6 +19,7 @@ namespace TSqlFlex.Core
                 case "auto":
                 case "by":
                 case "clustered":
+                case "changes":
                 case "column":
                 case "constraint":
                 case "create":
