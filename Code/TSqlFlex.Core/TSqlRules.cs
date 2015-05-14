@@ -23,6 +23,7 @@ namespace TSqlFlex.Core
                 case "column":
                 case "constraint":
                 case "create":
+                case "dec":
                 case "default":
                 case "delete":
                 case "desc":
@@ -58,6 +59,7 @@ namespace TSqlFlex.Core
                 case "trigger":
                 case "update":
                 case "user":
+                case "version":
                 case "view":
                 case "weight":
                 case "where":
