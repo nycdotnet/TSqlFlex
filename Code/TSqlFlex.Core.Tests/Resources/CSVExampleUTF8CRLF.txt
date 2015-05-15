@@ -1,0 +1,2 @@
+﻿A,BC,DEF,GHIJ,KLMNO,PQRSTU,VWXYZab,cdefghij,klmnopqrs,tuvwxyz012,3456789!@#$,%%^&*()_+-=A,BCDEFGHIJKLMN,OPQRSTUVWXYZab,cdefghijklmnopq,rstuvwxyz0123456,789!@#$%%^&*()_+-=
+ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%%^&*()_+-,=,

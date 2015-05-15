@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CSVReader.cs" />
     <Compile Include="CSVRenderer.cs" />
     <Compile Include="ExcelLauncher.cs" />
     <Compile Include="ExternalProgramLauncher.cs" />
