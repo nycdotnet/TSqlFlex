@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
+using System.Threading;
 using Microsoft.SqlServer.Types;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -16,6 +17,7 @@ namespace TSqlFlex.Core
 
         public List<FlexResult> results = null;
         public List<Exception> exceptions = null;
+        private const short TenMinutes = 600;
         
         public FlexResultSet() {
             results = new List<FlexResult>();
@@ -35,11 +37,12 @@ namespace TSqlFlex.Core
             try
             {
                 SqlCommand cmd = new SqlCommand(srp.sqlToRun, openConnection, transaction);
+                cmd.CommandTimeout = TenMinutes;
                 
                 //todo: this is a bad way of doing this.  Need to abstract further.
                 bw.ReportProgress(5, "Running query...");
 
-                reader = executeSQL(resultSet, cmd, reader);
+                reader = executeSQL(resultSet, cmd, reader, bw);
                 
                 int progress = 50;
                 bw.ReportProgress(progress, "Processing results...");
@@ -110,11 +113,20 @@ namespace TSqlFlex.Core
             }
         }
 
-        private static SqlDataReader executeSQL(FlexResultSet resultSet, SqlCommand cmd, SqlDataReader reader)
+        private static SqlDataReader executeSQL(FlexResultSet resultSet, SqlCommand cmd, SqlDataReader reader, BackgroundWorker bw = null)
         {
             try
             {
-                reader = cmd.ExecuteReader(CommandBehavior.KeyInfo);
+                IAsyncResult result = cmd.BeginExecuteReader(CommandBehavior.KeyInfo);
+                while (!result.IsCompleted)
+                {
+                    Thread.Sleep(100);
+                    if (bw.CancellationPending)
+                    {
+                        return null;
+                    }
+                }
+                reader = cmd.EndExecuteReader(result);
             }
             catch (Exception ex)
             {
