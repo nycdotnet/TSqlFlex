@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace TSqlFlex.Core.Tests
@@ -30,10 +31,10 @@ namespace TSqlFlex.Core.Tests
         {
             FlexResultSet fsr = new FlexResultSet();
 
-            var dt = FakeSchemaDataTable();
-
-            dt.LoadDataRow(FakeColumn("BIGINTNotNull", "MyStuff", 8, "bigint", false,0,0), false);
-            dt.LoadDataRow(FakeColumn("BIGINTNull", "MyStuff", 8, "bigint", true, 0, 0), false);
+            var dt = new List<SQLColumn>() {
+                FakeColumn("BIGINTNotNull", "MyStuff", 8, "bigint", false, 0, 0),
+                FakeColumn("BIGINTNull", "MyStuff", 8, "bigint", true, 0, 0)
+            };
 
             fsr.results.Add(new FlexResult());
             fsr.results[0].schema = dt;
@@ -51,14 +52,13 @@ namespace TSqlFlex.Core.Tests
         {
             FlexResultSet fsr = new FlexResultSet();
 
-            var dt = FakeSchemaDataTable();
-
-            dt.LoadDataRow(FakeColumn("Numeric2_1NotNull", "MyStuff", 17, "numeric", false, 2, 1), false);
-            dt.LoadDataRow(FakeColumn("Numeric2_1Null", "MyStuff", 17, "numeric", true, 4, 3), false);
+            var dt = new List<SQLColumn>() {
+                FakeColumn("Numeric2_1NotNull", "MyStuff", 17, "numeric", false, 2, 1),
+                FakeColumn("Numeric2_1Null", "MyStuff", 17, "numeric", true, 4, 3)
+            };
 
             fsr.results.Add(new FlexResult());
             fsr.results[0].schema = dt;
-
 
             var expected = @"CREATE TABLE MyTable(
     Numeric2_1NotNull numeric(2,1) NOT NULL,
@@ -73,14 +73,13 @@ namespace TSqlFlex.Core.Tests
         {
             FlexResultSet fsr = new FlexResultSet();
 
-            var dt = FakeSchemaDataTable();
-
-            dt.LoadDataRow(FakeColumn("BitNotNull", "MyStuff", 1, "bit", false, 255, 255), false);
-            dt.LoadDataRow(FakeColumn("BitNull", "MyStuff", 1, "bit", true, 255, 255), false);
+            var dt = new List<SQLColumn>() {
+                FakeColumn("BitNotNull", "MyStuff", 1, "bit", false, 255, 255),
+                FakeColumn("BitNull", "MyStuff", 1, "bit", true, 255, 255)
+            };
 
             fsr.results.Add(new FlexResult());
             fsr.results[0].schema = dt;
-
 
             var expected = @"CREATE TABLE MyTable(
     BitNotNull bit NOT NULL,
@@ -95,10 +94,11 @@ namespace TSqlFlex.Core.Tests
         {
             FlexResultSet fsr = new FlexResultSet();
 
-            var dt = FakeSchemaDataTable();
+            var dt = new List<SQLColumn>() {
+                FakeColumn("SmallIntNotNull", "MyStuff", 16, "smallint", false, 255, 255),
+                FakeColumn("SmallIntNull", "MyStuff", 16, "smallint", true, 255, 255)
+            };
 
-            dt.LoadDataRow(FakeColumn("SmallIntNotNull", "MyStuff", 16, "smallint", false, 255, 255), false);
-            dt.LoadDataRow(FakeColumn("SmallIntNull", "MyStuff", 16, "smallint", true, 255, 255), false);
 
             fsr.results.Add(new FlexResult());
             fsr.results[0].schema = dt;
@@ -118,12 +118,12 @@ namespace TSqlFlex.Core.Tests
         {
             FlexResultSet fsr = new FlexResultSet();
 
-            var dt = FakeSchemaDataTable();
-
-            dt.LoadDataRow(FakeColumn("decimal2_1NotNull", "MyStuff", 17, "decimal", false, 2, 1), false);
-            dt.LoadDataRow(FakeColumn("decimal2_1Null", "MyStuff", 17, "decimal", true, 2, 1), false);
-            dt.LoadDataRow(FakeColumn("decimal4_3NotNull", "MyStuff", 17, "decimal", false, 4, 3), false);
-            dt.LoadDataRow(FakeColumn("decimal4_3Null", "MyStuff", 17, "decimal", true, 4, 3), false);
+            var dt = new List<SQLColumn>() {
+                FakeColumn("decimal2_1NotNull", "MyStuff", 17, "decimal", false, 2, 1),
+                FakeColumn("decimal2_1Null", "MyStuff", 17, "decimal", true, 2, 1),
+                FakeColumn("decimal4_3NotNull", "MyStuff", 17, "decimal", false, 4, 3),
+                FakeColumn("decimal4_3Null", "MyStuff", 17, "decimal", true, 4, 3)
+            };
 
             fsr.results.Add(new FlexResult());
             fsr.results[0].schema = dt;
@@ -145,10 +145,10 @@ namespace TSqlFlex.Core.Tests
         {
             FlexResultSet fsr = new FlexResultSet();
 
-            var dt = FakeSchemaDataTable();
-
-            dt.LoadDataRow(FakeColumn("SmallMoneyNotNull", "MyStuff", 4, "smallmoney", false, 0, 0), false);
-            dt.LoadDataRow(FakeColumn("SmallMoneyNull", "MyStuff", 4, "smallmoney", true, 0, 0), false);
+            var dt = new List<SQLColumn>() {
+                FakeColumn("SmallMoneyNotNull", "MyStuff", 4, "smallmoney", false, 0, 0),
+                FakeColumn("SmallMoneyNull", "MyStuff", 4, "smallmoney", true, 0, 0)
+            };
 
             fsr.results.Add(new FlexResult());
             fsr.results[0].schema = dt;
@@ -168,10 +168,10 @@ namespace TSqlFlex.Core.Tests
         {
             FlexResultSet fsr = new FlexResultSet();
 
-            var dt = FakeSchemaDataTable();
-
-            dt.LoadDataRow(FakeColumn("IntNotNull", "MyStuff", 32, "int", false, 255, 255), false);
-            dt.LoadDataRow(FakeColumn("IntNull", "MyStuff", 32, "int", true, 255, 255), false);
+            var dt = new List<SQLColumn>() {
+                FakeColumn("IntNotNull", "MyStuff", 32, "int", false, 255, 255),
+                FakeColumn("IntNull", "MyStuff", 32, "int", true, 255, 255)
+            };
 
             fsr.results.Add(new FlexResult());
             fsr.results[0].schema = dt;
@@ -189,10 +189,10 @@ namespace TSqlFlex.Core.Tests
         {
             FlexResultSet fsr = new FlexResultSet();
 
-            var dt = FakeSchemaDataTable();
-
-            dt.LoadDataRow(FakeColumn("TinyIntNotNull", "MyStuff", 8, "tinyint", false, 255, 255), false);
-            dt.LoadDataRow(FakeColumn("TinyIntNull", "MyStuff", 8, "tinyint", true, 255, 255), false);
+            var dt = new List<SQLColumn>() {
+                FakeColumn("TinyIntNotNull", "MyStuff", 8, "tinyint", false, 255, 255),
+                FakeColumn("TinyIntNull", "MyStuff", 8, "tinyint", true, 255, 255)
+            };
 
             fsr.results.Add(new FlexResult());
             fsr.results[0].schema = dt;
@@ -210,10 +210,10 @@ namespace TSqlFlex.Core.Tests
         {
             FlexResultSet fsr = new FlexResultSet();
 
-            var dt = FakeSchemaDataTable();
-
-            dt.LoadDataRow(FakeColumn("MoneyNotNull", "MyStuff", 8, "money", false, 0, 0), false);
-            dt.LoadDataRow(FakeColumn("MoneyNull", "MyStuff", 8, "money", true, 0, 0), false);
+            var dt = new List<SQLColumn>() {
+                FakeColumn("MoneyNotNull", "MyStuff", 8, "money", false, 0, 0),
+                FakeColumn("MoneyNull", "MyStuff", 8, "money", true, 0, 0)
+            };
 
             fsr.results.Add(new FlexResult());
             fsr.results[0].schema = dt;
@@ -232,16 +232,16 @@ namespace TSqlFlex.Core.Tests
         {
             FlexResultSet fsr = new FlexResultSet();
 
-            var dt = FakeSchemaDataTable();
-
-            dt.LoadDataRow(FakeColumn("Float53NotNull", "MyStuff", 64, "float", false, 2, 1), false);
-            dt.LoadDataRow(FakeColumn("Float53Null", "MyStuff", 64, "float", true, 2, 1), false);
-            dt.LoadDataRow(FakeColumn("Float40NotNull", "MyStuff", 64, "float", false, 2, 1), false);
-            dt.LoadDataRow(FakeColumn("Float40Null", "MyStuff", 64, "float", true, 2, 1), false);
-            dt.LoadDataRow(FakeColumn("Float24NotNull", "MyStuff", 32, "real", false, 4, 3), false);
-            dt.LoadDataRow(FakeColumn("Float24Null", "MyStuff", 32, "real", true, 4, 3), false);
-            dt.LoadDataRow(FakeColumn("Float17NotNull", "MyStuff", 32, "real", false, 4, 3), false);
-            dt.LoadDataRow(FakeColumn("Float17Null", "MyStuff", 32, "real", true, 4, 3), false);
+            var dt = new List<SQLColumn>() {
+                FakeColumn("Float53NotNull", "MyStuff", 64, "float", false, 2, 1),
+                FakeColumn("Float53Null", "MyStuff", 64, "float", true, 2, 1),
+                FakeColumn("Float40NotNull", "MyStuff", 64, "float", false, 2, 1),
+                FakeColumn("Float40Null", "MyStuff", 64, "float", true, 2, 1),
+                FakeColumn("Float24NotNull", "MyStuff", 32, "real", false, 4, 3),
+                FakeColumn("Float24Null", "MyStuff", 32, "real", true, 4, 3),
+                FakeColumn("Float17NotNull", "MyStuff", 32, "real", false, 4, 3),
+                FakeColumn("Float17Null", "MyStuff", 32, "real", true, 4, 3)
+            };
             
             fsr.results.Add(new FlexResult());
             fsr.results[0].schema = dt;
@@ -267,10 +267,10 @@ namespace TSqlFlex.Core.Tests
          {
              FlexResultSet fsr = new FlexResultSet();
 
-             var dt = FakeSchemaDataTable();
-
-             dt.LoadDataRow(FakeColumn("DateNotNull", "MyStuff", 8, "date", false, 0, 0), false);
-             dt.LoadDataRow(FakeColumn("DateNull", "MyStuff", 8, "date", true, 0, 0), false);
+             var dt = new List<SQLColumn>() {
+                 FakeColumn("DateNotNull", "MyStuff", 8, "date", false, 0, 0),
+                 FakeColumn("DateNull", "MyStuff", 8, "date", true, 0, 0)
+             };
 
              fsr.results.Add(new FlexResult());
              fsr.results[0].schema = dt;
@@ -288,14 +288,14 @@ namespace TSqlFlex.Core.Tests
          {
              FlexResultSet fsr = new FlexResultSet();
 
-             var dt = FakeSchemaDataTable();
-
-             dt.LoadDataRow(FakeColumn("DateTimeOffset_7NotNull", "MyStuff", 80, "datetimeoffset", false, 0, 7), false);
-             dt.LoadDataRow(FakeColumn("DateTimeOffset_7Null", "MyStuff", 80, "datetimeoffset", true, 0, 7), false);
-             dt.LoadDataRow(FakeColumn("DateTimeOffset_2NotNull", "MyStuff", 80, "datetimeoffset", false, 0, 2), false);
-             dt.LoadDataRow(FakeColumn("DateTimeOffset_2Null", "MyStuff", 80, "datetimeoffset", true, 0, 2), false);
-             dt.LoadDataRow(FakeColumn("DateTimeOffset_4NotNull", "MyStuff", 80, "datetimeoffset", false, 0, 4), false);
-             dt.LoadDataRow(FakeColumn("DateTimeOffset_4Null", "MyStuff", 80, "datetimeoffset", true, 0, 4), false);
+             var dt = new List<SQLColumn>() {
+                 FakeColumn("DateTimeOffset_7NotNull", "MyStuff", 80, "datetimeoffset", false, 0, 7),
+                 FakeColumn("DateTimeOffset_7Null", "MyStuff", 80, "datetimeoffset", true, 0, 7),
+                 FakeColumn("DateTimeOffset_2NotNull", "MyStuff", 80, "datetimeoffset", false, 0, 2),
+                 FakeColumn("DateTimeOffset_2Null", "MyStuff", 80, "datetimeoffset", true, 0, 2),
+                 FakeColumn("DateTimeOffset_4NotNull", "MyStuff", 80, "datetimeoffset", false, 0, 4),
+                 FakeColumn("DateTimeOffset_4Null", "MyStuff", 80, "datetimeoffset", true, 0, 4)
+             };
 
              fsr.results.Add(new FlexResult());
              fsr.results[0].schema = dt;
@@ -317,10 +317,10 @@ namespace TSqlFlex.Core.Tests
          {
              FlexResultSet fsr = new FlexResultSet();
 
-             var dt = FakeSchemaDataTable();
-
-             dt.LoadDataRow(FakeColumn("DateTime2NotNull", "MyStuff", 8, "datetime2", false, 0, 0), false);
-             dt.LoadDataRow(FakeColumn("DateTime2Null", "MyStuff", 8, "datetime2", true, 0, 0), false);
+             var dt = new List<SQLColumn>() {
+                 FakeColumn("DateTime2NotNull", "MyStuff", 8, "datetime2", false, 0, 0),
+                 FakeColumn("DateTime2Null", "MyStuff", 8, "datetime2", true, 0, 0)
+             };
 
              fsr.results.Add(new FlexResult());
              fsr.results[0].schema = dt;
@@ -338,10 +338,10 @@ namespace TSqlFlex.Core.Tests
          {
              FlexResultSet fsr = new FlexResultSet();
 
-             var dt = FakeSchemaDataTable();
-
-             dt.LoadDataRow(FakeColumn("SmallDateTimeNotNull", "MyStuff", 8, "smalldatetime", false, 0, 0), false);
-             dt.LoadDataRow(FakeColumn("SmallDateTimeNull", "MyStuff", 8, "smalldatetime", true, 0, 0), false);
+             var dt = new List<SQLColumn>() {
+                 FakeColumn("SmallDateTimeNotNull", "MyStuff", 8, "smalldatetime", false, 0, 0),
+                 FakeColumn("SmallDateTimeNull", "MyStuff", 8, "smalldatetime", true, 0, 0)
+             };
 
              fsr.results.Add(new FlexResult());
              fsr.results[0].schema = dt;
@@ -359,10 +359,10 @@ namespace TSqlFlex.Core.Tests
          {
              FlexResultSet fsr = new FlexResultSet();
 
-             var dt = FakeSchemaDataTable();
-
-             dt.LoadDataRow(FakeColumn("DateTimeNotNull", "MyStuff", 8, "datetime", false, 0, 0), false);
-             dt.LoadDataRow(FakeColumn("DateTimeNull", "MyStuff", 8, "datetime", true, 0, 0), false);
+             var dt = new List<SQLColumn>() {
+                 FakeColumn("DateTimeNotNull", "MyStuff", 8, "datetime", false, 0, 0),
+                 FakeColumn("DateTimeNull", "MyStuff", 8, "datetime", true, 0, 0)
+             };
 
              fsr.results.Add(new FlexResult());
              fsr.results[0].schema = dt;
@@ -380,14 +380,14 @@ namespace TSqlFlex.Core.Tests
          {
              FlexResultSet fsr = new FlexResultSet();
 
-             var dt = FakeSchemaDataTable();
-
-             dt.LoadDataRow(FakeColumn("TimeNotNull", "MyStuff", 8, "time", false, 0, 7), false);
-             dt.LoadDataRow(FakeColumn("TimeNull", "MyStuff", 8, "time", true, 0, 7), false);
-             dt.LoadDataRow(FakeColumn("Time2NotNull", "MyStuff", 8, "time", false, 0, 2), false);
-             dt.LoadDataRow(FakeColumn("Time2Null", "MyStuff", 8, "time", true, 0, 2), false);
-             dt.LoadDataRow(FakeColumn("Time4NotNull", "MyStuff", 8, "time", false, 0, 4), false);
-             dt.LoadDataRow(FakeColumn("Time4Null", "MyStuff", 8, "time", true, 0, 4), false);
+             var dt = new List<SQLColumn>() {
+                 FakeColumn("TimeNotNull", "MyStuff", 8, "time", false, 0, 7),
+                 FakeColumn("TimeNull", "MyStuff", 8, "time", true, 0, 7),
+                 FakeColumn("Time2NotNull", "MyStuff", 8, "time", false, 0, 2),
+                 FakeColumn("Time2Null", "MyStuff", 8, "time", true, 0, 2),
+                 FakeColumn("Time4NotNull", "MyStuff", 8, "time", false, 0, 4),
+                 FakeColumn("Time4Null", "MyStuff", 8, "time", true, 0, 4),
+             };
 
              fsr.results.Add(new FlexResult());
              fsr.results[0].schema = dt;
@@ -409,10 +409,10 @@ namespace TSqlFlex.Core.Tests
          {
              FlexResultSet fsr = new FlexResultSet();
 
-             var dt = FakeSchemaDataTable();
-
-             dt.LoadDataRow(FakeColumn("Char100NotNull", "MyStuff", 100, "char", false, 0, 0), false);
-             dt.LoadDataRow(FakeColumn("Char100Null", "MyStuff", 100, "char", true, 0, 0), false);
+             var dt = new List<SQLColumn>() {
+                 FakeColumn("Char100NotNull", "MyStuff", 100, "char", false, 0, 0),
+                 FakeColumn("Char100Null", "MyStuff", 100, "char", true, 0, 0)
+             };
 
              fsr.results.Add(new FlexResult());
              fsr.results[0].schema = dt;
@@ -431,12 +431,12 @@ namespace TSqlFlex.Core.Tests
          {
              FlexResultSet fsr = new FlexResultSet();
 
-             var dt = FakeSchemaDataTable();
-
-             dt.LoadDataRow(FakeColumn("Name100NotNull", "MyStuff", 100, "varchar", false, 0, 0), false);
-             dt.LoadDataRow(FakeColumn("NameMaxNotNull", "MyStuff", Int32.MaxValue, "varchar", false, 0, 0), false);
-             dt.LoadDataRow(FakeColumn("Name100Null", "MyStuff", 100, "varchar", true, 0, 0), false);
-             dt.LoadDataRow(FakeColumn("NameMaxNull", "MyStuff", Int32.MaxValue, "varchar", true, 0, 0), false);
+             var dt = new List<SQLColumn>() {
+                 FakeColumn("Name100NotNull", "MyStuff", 100, "varchar", false, 0, 0),
+                 FakeColumn("NameMaxNotNull", "MyStuff", Int32.MaxValue, "varchar", false, 0, 0),
+                 FakeColumn("Name100Null", "MyStuff", 100, "varchar", true, 0, 0),
+                 FakeColumn("NameMaxNull", "MyStuff", Int32.MaxValue, "varchar", true, 0, 0)
+             };
 
              fsr.results.Add(new FlexResult());
              fsr.results[0].schema = dt;
@@ -456,10 +456,10 @@ namespace TSqlFlex.Core.Tests
          {
              FlexResultSet fsr = new FlexResultSet();
 
-             var dt = FakeSchemaDataTable();
-
-             dt.LoadDataRow(FakeColumn("TextNotNull", "MyStuff", 0, "text", false, 0, 0), false);
-             dt.LoadDataRow(FakeColumn("TextNull", "MyStuff", 0, "text", true, 0, 0), false);
+             var dt = new List<SQLColumn>() {
+                 FakeColumn("TextNotNull", "MyStuff", 0, "text", false, 0, 0),
+                 FakeColumn("TextNull", "MyStuff", 0, "text", true, 0, 0)
+             };
 
              fsr.results.Add(new FlexResult());
              fsr.results[0].schema = dt;
@@ -477,10 +477,10 @@ namespace TSqlFlex.Core.Tests
          {
              FlexResultSet fsr = new FlexResultSet();
 
-             var dt = FakeSchemaDataTable();
-
-             dt.LoadDataRow(FakeColumn("NChar100NotNull", "MyStuff", 100, "nchar", false, 0, 0), false);
-             dt.LoadDataRow(FakeColumn("NChar100Null", "MyStuff", 100, "nchar", true, 0, 0), false);
+             var dt = new List<SQLColumn>() {
+                FakeColumn("NChar100NotNull", "MyStuff", 100, "nchar", false, 0, 0),
+                FakeColumn("NChar100Null", "MyStuff", 100, "nchar", true, 0, 0)
+             };
 
              fsr.results.Add(new FlexResult());
              fsr.results[0].schema = dt;
@@ -499,12 +499,12 @@ namespace TSqlFlex.Core.Tests
         {
             FlexResultSet fsr = new FlexResultSet();
 
-            var dt = FakeSchemaDataTable();
-
-            dt.LoadDataRow(FakeColumn("Name100NotNull", "MyStuff", 100, "nvarchar", false, 0, 0), false);
-            dt.LoadDataRow(FakeColumn("NameMaxNotNull", "MyStuff", Int32.MaxValue, "nvarchar", false, 0, 0), false);
-            dt.LoadDataRow(FakeColumn("Name100Null", "MyStuff", 100, "nvarchar", true, 0, 0), false);
-            dt.LoadDataRow(FakeColumn("NameMaxNull", "MyStuff", Int32.MaxValue, "nvarchar", true, 0, 0), false);
+            var dt = new List<SQLColumn>() {
+                FakeColumn("Name100NotNull", "MyStuff", 100, "nvarchar", false, 0, 0),
+                FakeColumn("NameMaxNotNull", "MyStuff", Int32.MaxValue, "nvarchar", false, 0, 0),
+                FakeColumn("Name100Null", "MyStuff", 100, "nvarchar", true, 0, 0),
+                FakeColumn("NameMaxNull", "MyStuff", Int32.MaxValue, "nvarchar", true, 0, 0)
+            };
 
             fsr.results.Add(new FlexResult());
             fsr.results[0].schema = dt;
@@ -524,10 +524,10 @@ namespace TSqlFlex.Core.Tests
         {
             FlexResultSet fsr = new FlexResultSet();
 
-            var dt = FakeSchemaDataTable();
-
-            dt.LoadDataRow(FakeColumn("NTextNotNull", "MyStuff", 0, "ntext", false, 0, 0), false);
-            dt.LoadDataRow(FakeColumn("NTextNull", "MyStuff", 0, "ntext", true, 0, 0), false);
+            var dt = new List<SQLColumn>() {
+                FakeColumn("NTextNotNull", "MyStuff", 0, "ntext", false, 0, 0),
+                FakeColumn("NTextNull", "MyStuff", 0, "ntext", true, 0, 0)
+            };
 
             fsr.results.Add(new FlexResult());
             fsr.results[0].schema = dt;
@@ -545,10 +545,10 @@ namespace TSqlFlex.Core.Tests
         {
             FlexResultSet fsr = new FlexResultSet();
 
-            var dt = FakeSchemaDataTable();
-
-            dt.LoadDataRow(FakeColumn("Binary100NotNull", "MyStuff", 100, "binary", false, 0, 0), false);
-            dt.LoadDataRow(FakeColumn("Binary100Null", "MyStuff", 100, "binary", true, 0, 0), false);
+            var dt = new List<SQLColumn>() {
+                FakeColumn("Binary100NotNull", "MyStuff", 100, "binary", false, 0, 0),
+                FakeColumn("Binary100Null", "MyStuff", 100, "binary", true, 0, 0)
+            };
 
             fsr.results.Add(new FlexResult());
             fsr.results[0].schema = dt;
@@ -566,12 +566,12 @@ namespace TSqlFlex.Core.Tests
         {
             FlexResultSet fsr = new FlexResultSet();
 
-            var dt = FakeSchemaDataTable();
-
-            dt.LoadDataRow(FakeColumn("VarBin100NotNull", "MyStuff", 100, "varbinary", false, 0, 0), false);
-            dt.LoadDataRow(FakeColumn("VarBinMaxNotNull", "MyStuff", Int32.MaxValue, "varbinary", false, 0, 0), false);
-            dt.LoadDataRow(FakeColumn("VarBin100Null", "MyStuff", 100, "varbinary", true, 0, 0), false);
-            dt.LoadDataRow(FakeColumn("VarBinMaxNull", "MyStuff", Int32.MaxValue, "varbinary", true, 0, 0), false);
+            var dt = new List<SQLColumn>() {
+                FakeColumn("VarBin100NotNull", "MyStuff", 100, "varbinary", false, 0, 0),
+                FakeColumn("VarBinMaxNotNull", "MyStuff", Int32.MaxValue, "varbinary", false, 0, 0),
+                FakeColumn("VarBin100Null", "MyStuff", 100, "varbinary", true, 0, 0),
+                FakeColumn("VarBinMaxNull", "MyStuff", Int32.MaxValue, "varbinary", true, 0, 0)
+            };
 
             fsr.results.Add(new FlexResult());
             fsr.results[0].schema = dt;
@@ -592,10 +592,10 @@ namespace TSqlFlex.Core.Tests
         {
             FlexResultSet fsr = new FlexResultSet();
 
-            var dt = FakeSchemaDataTable();
-
-            dt.LoadDataRow(FakeColumn("ImageNotNull", "MyStuff", 0, "image", false, 0, 0), false);
-            dt.LoadDataRow(FakeColumn("ImageNull", "MyStuff", 0, "image", true, 0, 0), false);
+            var dt = new List<SQLColumn>() {
+                FakeColumn("ImageNotNull", "MyStuff", 0, "image", false, 0, 0),
+                FakeColumn("ImageNull", "MyStuff", 0, "image", true, 0, 0)
+            };
 
             fsr.results.Add(new FlexResult());
             fsr.results[0].schema = dt;
@@ -614,10 +614,10 @@ namespace TSqlFlex.Core.Tests
         {
             FlexResultSet fsr = new FlexResultSet();
 
-            var dt = FakeSchemaDataTable();
-
-            dt.LoadDataRow(FakeColumn("TimeStampNotNull", "MyStuff", 8, "timestamp", false, 0, 0), false);
-            dt.LoadDataRow(FakeColumn("TimeStampNull", "MyStuff", 8, "timestamp", true, 0, 0), false);
+            var dt = new List<SQLColumn>() {
+                FakeColumn("TimeStampNotNull", "MyStuff", 8, "timestamp", false, 0, 0),
+                FakeColumn("TimeStampNull", "MyStuff", 8, "timestamp", true, 0, 0)
+            };
 
             fsr.results.Add(new FlexResult());
             fsr.results[0].schema = dt;
@@ -635,10 +635,10 @@ namespace TSqlFlex.Core.Tests
         {
             FlexResultSet fsr = new FlexResultSet();
 
-            var dt = FakeSchemaDataTable();
-
-            dt.LoadDataRow(FakeColumn("HierarchyIdNotNull", "MyStuff", 8, "dbname.sys.hierarchyid", false, 0, 0), false);
-            dt.LoadDataRow(FakeColumn("HierarchyIdNull", "MyStuff", 8, "dbname.sys.hierarchyid", true, 0, 0), false);
+            var dt = new List<SQLColumn>() {
+                FakeColumn("HierarchyIdNotNull", "MyStuff", 8, "dbname.sys.hierarchyid", false, 0, 0),
+                FakeColumn("HierarchyIdNull", "MyStuff", 8, "dbname.sys.hierarchyid", true, 0, 0)
+            };
 
             fsr.results.Add(new FlexResult());
             fsr.results[0].schema = dt;
@@ -656,10 +656,10 @@ namespace TSqlFlex.Core.Tests
         {
             FlexResultSet fsr = new FlexResultSet();
 
-            var dt = FakeSchemaDataTable();
-
-            dt.LoadDataRow(FakeColumn("UniqueIdentifierNotNull", "MyStuff", 128, "uniqueidentifier", false, 0, 0), false);
-            dt.LoadDataRow(FakeColumn("UniqueIdentifierNull", "MyStuff", 128, "uniqueidentifier", true, 0, 0), false);
+            var dt = new List<SQLColumn>() {
+                FakeColumn("UniqueIdentifierNotNull", "MyStuff", 128, "uniqueidentifier", false, 0, 0),
+                FakeColumn("UniqueIdentifierNull", "MyStuff", 128, "uniqueidentifier", true, 0, 0)
+            };
 
             fsr.results.Add(new FlexResult());
             fsr.results[0].schema = dt;
@@ -677,10 +677,10 @@ namespace TSqlFlex.Core.Tests
         {
             FlexResultSet fsr = new FlexResultSet();
 
-            var dt = FakeSchemaDataTable();
-
-            dt.LoadDataRow(FakeColumn("Sql_VariantNotNull", "MyStuff", 128, "sql_variant", false, 0, 0), false);
-            dt.LoadDataRow(FakeColumn("Sql_VariantNull", "MyStuff", 128, "sql_variant", true, 0, 0), false);
+            var dt = new List<SQLColumn>() {
+                FakeColumn("Sql_VariantNotNull", "MyStuff", 128, "sql_variant", false, 0, 0),
+                FakeColumn("Sql_VariantNull", "MyStuff", 128, "sql_variant", true, 0, 0)
+            };
 
             fsr.results.Add(new FlexResult());
             fsr.results[0].schema = dt;
@@ -698,10 +698,10 @@ namespace TSqlFlex.Core.Tests
         {
             FlexResultSet fsr = new FlexResultSet();
 
-            var dt = FakeSchemaDataTable();
-
-            dt.LoadDataRow(FakeColumn("XMLNotNull", "MyStuff", 0, "xml", false, 0, 0), false);
-            dt.LoadDataRow(FakeColumn("XMLNull", "MyStuff", 0, "xml", true, 0, 0), false);
+            var dt = new List<SQLColumn>() {
+                FakeColumn("XMLNotNull", "MyStuff", 0, "xml", false, 0, 0),
+                FakeColumn("XMLNull", "MyStuff", 0, "xml", true, 0, 0)
+            };
 
             fsr.results.Add(new FlexResult());
             fsr.results[0].schema = dt;
@@ -719,10 +719,10 @@ namespace TSqlFlex.Core.Tests
         {
             FlexResultSet fsr = new FlexResultSet();
 
-            var dt = FakeSchemaDataTable();
-
-            dt.LoadDataRow(FakeColumn("GeographyNotNull", "MyStuff", 0, "dbname.sys.geography", false, 0, 0), false);
-            dt.LoadDataRow(FakeColumn("GeographyNull", "MyStuff", 0, "dbname.sys.geography", true, 0, 0), false);
+            var dt = new List<SQLColumn>() {
+                FakeColumn("GeographyNotNull", "MyStuff", 0, "dbname.sys.geography", false, 0, 0),
+                FakeColumn("GeographyNull", "MyStuff", 0, "dbname.sys.geography", true, 0, 0)
+            };
 
             fsr.results.Add(new FlexResult());
             fsr.results[0].schema = dt;
@@ -740,10 +740,10 @@ namespace TSqlFlex.Core.Tests
         {
             FlexResultSet fsr = new FlexResultSet();
 
-            var dt = FakeSchemaDataTable();
-
-            dt.LoadDataRow(FakeColumn("GeometryNotNull", "MyStuff", 0, "dbname.sys.geometry", false, 0, 0), false);
-            dt.LoadDataRow(FakeColumn("GeometryNull", "MyStuff", 0, "dbname.sys.geometry", true, 0, 0), false);
+            var dt = new List<SQLColumn>() {
+                FakeColumn("GeometryNotNull", "MyStuff", 0, "dbname.sys.geometry", false, 0, 0),
+                FakeColumn("GeometryNull", "MyStuff", 0, "dbname.sys.geometry", true, 0, 0)
+            };
 
             fsr.results.Add(new FlexResult());
             fsr.results[0].schema = dt;
@@ -756,46 +756,19 @@ namespace TSqlFlex.Core.Tests
             Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));
         }
 
-
-        public static DataTable FakeSchemaDataTable() {
-            var dt = new DataTable("test");
-            dt.Columns.Add(new DataColumn("ColumnName",typeof(object)));
-            dt.Columns.Add(new DataColumn("ColumnOrdinal", typeof(object)));
-            dt.Columns.Add(new DataColumn("ColumnSize", typeof(object)));
-            dt.Columns.Add(new DataColumn("NumericPrecision", typeof(object)));
-            dt.Columns.Add(new DataColumn("NumericScale", typeof(object)));
-            dt.Columns.Add(new DataColumn("IsUnique", typeof(object)));
-            dt.Columns.Add(new DataColumn("IsKey", typeof(object)));
-            dt.Columns.Add(new DataColumn("BaseServerName", typeof(object)));
-            dt.Columns.Add(new DataColumn("BaseCatalogName", typeof(object)));
-            dt.Columns.Add(new DataColumn("BaseColumnName", typeof(object)));
-            dt.Columns.Add(new DataColumn("BaseSchemaName", typeof(object)));
-            dt.Columns.Add(new DataColumn("BaseTableName", typeof(object)));
-            dt.Columns.Add(new DataColumn("DataType", typeof(object)));
-            dt.Columns.Add(new DataColumn("AllowDBNull", typeof(object)));
-            dt.Columns.Add(new DataColumn("ProviderType", typeof(object)));
-            dt.Columns.Add(new DataColumn("IsAliased", typeof(object)));
-            dt.Columns.Add(new DataColumn("IsExpression", typeof(object)));
-            dt.Columns.Add(new DataColumn("IsIdentity", typeof(object)));
-            dt.Columns.Add(new DataColumn("IsAutoIncrement", typeof(object)));
-            dt.Columns.Add(new DataColumn("IsRowVersion", typeof(object)));
-            dt.Columns.Add(new DataColumn("IsHidden", typeof(object)));
-            dt.Columns.Add(new DataColumn("IsLong", typeof(object)));
-            dt.Columns.Add(new DataColumn("IsReadOnly", typeof(object)));
-            dt.Columns.Add(new DataColumn("ProviderSpecificDataType", typeof(object)));
-            dt.Columns.Add(new DataColumn("DataTypeName", typeof(object)));
-            dt.Columns.Add(new DataColumn("XmlSchemaCollectionDatabase", typeof(object)));
-            dt.Columns.Add(new DataColumn("XmlSchemaCollectionOwningSchema", typeof(object)));
-            dt.Columns.Add(new DataColumn("XmlSchemaCollectionName", typeof(object)));
-            dt.Columns.Add(new DataColumn("UdtAssemblyQualifiedName", typeof(object)));
-            dt.Columns.Add(new DataColumn("NonVersionedProviderType", typeof(object)));
-            dt.Columns.Add(new DataColumn("IsColumnSet", typeof(object)));
-            return dt;
-        }
-
-        public static object[] FakeColumn(string ColumnName, string TableName, int ColumnSize, string DataType, bool AllowNulls, short NumericPrecision, short NumericScale)
+        public static SQLColumn FakeColumn(string ColumnName, string BaseTableName, int ColumnSize, string DataType, bool AllowNulls, short NumericPrecision, short NumericScale, bool IsHidden = false)
         {
-            return new object[] { ColumnName, (int)0, (int)ColumnSize, NumericPrecision, NumericScale, false, false, System.DBNull.Value, DBNull.Value, ColumnName, DBNull.Value, TableName, typeof(String), AllowNulls, (int)12, false, false, false, false, false, false, false, false, typeof(System.Data.SqlTypes.SqlString), DataType, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, (int)12, false };
+            return new SQLColumn()
+            {
+                ColumnName = ColumnName,
+                BaseTableName = BaseTableName,
+                ColumnSize = ColumnSize,
+                DataType = DataType,
+                AllowNulls = AllowNulls,
+                NumericPrecision = NumericPrecision,
+                NumericScale = NumericScale,
+                IsHidden = IsHidden
+            };
         }
     }
 }

@@ -42,31 +42,31 @@ namespace TSqlFlex.Core
                         {
                             //todo: fix each of these items to work with the actual scripting stuff (requires finishing major refactoring work).
                             object fieldData = result.data[rowIndex][colIndex];
-                            object[] fieldInfo = result.schema.Rows[colIndex].ItemArray;
-                            string fieldTypeName = fieldInfo[(int)FieldScripting.FieldInfo.DataType].ToString();
+                            SQLColumn fieldInfo = result.schema[colIndex];
+                            
                             if (fieldData == null || fieldData is DBNull)
                             {
                                 srp.WriteToStream("<Cell/>");
                             }
-                            else if (fieldTypeName == "bigint" || fieldTypeName == "numeric" || fieldTypeName == "smallint" || fieldTypeName == "decimal" || fieldTypeName == "smallmoney" ||
-                                fieldTypeName == "int" || fieldTypeName == "tinyint" || fieldTypeName == "float" || fieldTypeName == "real" || fieldTypeName == "money" || fieldTypeName == "bit")
+                            else if (fieldInfo.DataType == "bigint" || fieldInfo.DataType == "numeric" || fieldInfo.DataType == "smallint" || fieldInfo.DataType == "decimal" || fieldInfo.DataType == "smallmoney" ||
+                                fieldInfo.DataType == "int" || fieldInfo.DataType == "tinyint" || fieldInfo.DataType == "float" || fieldInfo.DataType == "real" || fieldInfo.DataType == "money" || fieldInfo.DataType == "bit")
                             {
                                 srp.WriteToStream(String.Format("<Cell><Data ss:Type=\"Number\">{0}</Data></Cell>\r\n", escapeForXML(FieldScripting.valueAsTSQLLiteral(fieldData, fieldInfo, false))));
                             }
-                            else if (fieldTypeName == "date" || fieldTypeName == "datetime2" || fieldTypeName == "time" || fieldTypeName == "datetime" ||
-                                fieldTypeName == "smalldatetime")
+                            else if (fieldInfo.DataType == "date" || fieldInfo.DataType == "datetime2" || fieldInfo.DataType == "time" || fieldInfo.DataType == "datetime" ||
+                                fieldInfo.DataType == "smalldatetime")
                             {
                                 srp.WriteToStream(String.Format("<Cell ss:StyleID=\"s63\"><Data ss:Type=\"DateTime\">{0}.{1}</Data></Cell>\r\n",
                                     escapeForXML(((DateTime)fieldData).ToString("s")),
                                     escapeForXML(((DateTime)fieldData).ToString("fff"))
                                     ));
                             }
-                            else if (fieldTypeName == "binary" || fieldTypeName == "rowversion" || fieldTypeName == "timestamp")
+                            else if (fieldInfo.DataType == "binary" || fieldInfo.DataType == "rowversion" || fieldInfo.DataType == "timestamp")
                             {
                                 byte[] d = (byte[])result.data[rowIndex][colIndex];
                                 srp.WriteToStream(String.Format("<Cell ss:StyleID=\"s64\"><Data ss:Type=\"String\">{0}</Data></Cell>\r\n", escapeForXML(FieldScripting.formatBinary(d,d.Length))));
                             }
-                            else if (fieldTypeName == "varbinary" || fieldTypeName == "image")
+                            else if (fieldInfo.DataType == "varbinary" || fieldInfo.DataType == "image")
                             {
                                 srp.WriteToStream(String.Format("<Cell ss:StyleID=\"s64\"><Data ss:Type=\"String\">{0}</Data></Cell>\r\n", escapeForXML(FieldScripting.formatVarbinary(fieldData))));
                             }
@@ -88,12 +88,11 @@ namespace TSqlFlex.Core
 
         private static string columnName(FlexResult result, int zeroBasedColumnIndex)
         {
-            string headerName = (string)result.schema.Rows[zeroBasedColumnIndex].ItemArray[(int)FieldScripting.FieldInfo.Name];
-            if (headerName == "")
+            if (String.IsNullOrEmpty(result.schema[zeroBasedColumnIndex].ColumnName))
             {
                 return "anonymousColumn" + (zeroBasedColumnIndex + 1).ToString();
             }
-            return escapeForXML(headerName);
+            return escapeForXML(result.schema[zeroBasedColumnIndex].ColumnName);
         }
 
         private static string escapeForXML(string input)

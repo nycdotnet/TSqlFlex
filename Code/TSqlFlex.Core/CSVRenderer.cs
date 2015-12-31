@@ -7,6 +7,9 @@ namespace TSqlFlex.Core
 {
     public class CSVRenderer
     {
+        private static HashSet<string> numberLikeDataTypesForCSV = new HashSet<string>() { "bigint", "numeric", "smallint", "decimal", "smallmoney", "int", "tinyint", "float", "real", "money", "bit" };
+        private static HashSet<string> dateLikeDataTypesForCSV = new HashSet<string>() { "date", "datetime2", "time", "datetime", "smalldatetime" }; 
+
         public static void renderAsCSV(FlexResultSet resultSet, SqlRunParameters srp)
         {
             int writtenResultSets = 0;
@@ -24,7 +27,6 @@ namespace TSqlFlex.Core
                     int columnCount = result.visibleColumnCount;
 
                     //do header
-
                     for (int colIndex = 0; colIndex < columnCount; colIndex += 1)
                     {
                         srp.WriteToStream(columnName(result, colIndex));
@@ -38,7 +40,6 @@ namespace TSqlFlex.Core
                         }
                     }
 
-
                     //do data rows
                     for (int rowIndex = 0; rowIndex < result.data.Count; rowIndex += 1)
                     {
@@ -46,32 +47,30 @@ namespace TSqlFlex.Core
                         {
                             //todo: fix each of these items to work with the actual scripting stuff (requires finishing major refactoring work).
                             object fieldData = result.data[rowIndex][colIndex];
-                            object[] fieldInfo = result.schema.Rows[colIndex].ItemArray;
-                            string fieldTypeName = fieldInfo[(int)FieldScripting.FieldInfo.DataType].ToString();
+                            SQLColumn fieldInfo = result.schema[colIndex];
+                            
                             if (fieldData == null || fieldData is DBNull)
                             {
                                 //do nothing
                             }
-                            else if (fieldTypeName == "bigint" || fieldTypeName == "numeric" || fieldTypeName == "smallint" || fieldTypeName == "decimal" || fieldTypeName == "smallmoney" ||
-                                fieldTypeName == "int" || fieldTypeName == "tinyint" || fieldTypeName == "float" || fieldTypeName == "real" || fieldTypeName == "money" || fieldTypeName == "bit")
+                            else if (numberLikeDataTypesForCSV.Contains(fieldInfo.DataType))
                             {
                                 //todo: may be bug in German culture where they use , as the decimal separator.
                                 srp.WriteToStream(FieldScripting.valueAsTSQLLiteral(fieldData, fieldInfo, false));
                             }
-                            else if (fieldTypeName == "date" || fieldTypeName == "datetime2" || fieldTypeName == "time" || fieldTypeName == "datetime" ||
-                                fieldTypeName == "smalldatetime")
+                            else if (dateLikeDataTypesForCSV.Contains(fieldInfo.DataType))
                             {
                                 srp.WriteToStream(escapeForCSV(String.Format("{0}.{1}",
                                     ((DateTime)fieldData).ToString("s"),
                                     ((DateTime)fieldData).ToString("fff")
                                     )));
                             }
-                            else if (fieldTypeName == "binary" || fieldTypeName == "rowversion" || fieldTypeName == "timestamp")
+                            else if (fieldInfo.DataType == "binary" || fieldInfo.DataType == "rowversion" || fieldInfo.DataType == "timestamp")
                             {
                                 byte[] d = (byte[])result.data[rowIndex][colIndex];
                                 srp.WriteToStream(escapeForCSV(FieldScripting.formatBinary(d, d.Length)));
                             }
-                            else if (fieldTypeName == "varbinary" || fieldTypeName == "image")
+                            else if (fieldInfo.DataType == "varbinary" || fieldInfo.DataType == "image")
                             {
                                 srp.WriteToStream(escapeForCSV(FieldScripting.formatVarbinary(fieldData)));
                             }
@@ -99,7 +98,7 @@ namespace TSqlFlex.Core
 
         private static string columnName(FlexResult result, int zeroBasedColumnIndex)
         {
-            string headerName = (string)result.schema.Rows[zeroBasedColumnIndex].ItemArray[(int)FieldScripting.FieldInfo.Name];
+            string headerName = (string)result.schema[zeroBasedColumnIndex].ColumnName;
             if (headerName == "")
             {
                 return "anonymousColumn" + (zeroBasedColumnIndex + 1).ToString();

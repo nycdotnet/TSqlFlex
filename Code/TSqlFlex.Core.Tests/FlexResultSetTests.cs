@@ -21,8 +21,6 @@ namespace TSqlFlex.Core.Tests
         {
             FlexResultSet fsr = new FlexResultSet();
 
-            var dt = SchemaScriptingTests.FakeSchemaDataTable();
-
             var result = new FlexResult();
 
             fsr.results.Add(result);
@@ -35,10 +33,10 @@ namespace TSqlFlex.Core.Tests
         {
             FlexResultSet fsr = new FlexResultSet();
 
-            var dt = SchemaScriptingTests.FakeSchemaDataTable();
-
-            dt.LoadDataRow(SchemaScriptingTests.FakeColumn("IntNotNull", "MyStuff", 32, "int", false, 255, 255), false);
-            dt.LoadDataRow(SchemaScriptingTests.FakeColumn("IntNull", "MyStuff", 32, "int", true, 255, 255), false);
+            var dt = new List<SQLColumn>() { 
+                SchemaScriptingTests.FakeColumn("IntNotNull", "MyStuff", 32, "int", false, 255, 255),
+                SchemaScriptingTests.FakeColumn("IntNull", "MyStuff", 32, "int", true, 255, 255)
+            };
 
             FlexResult result = new FlexResult();
 

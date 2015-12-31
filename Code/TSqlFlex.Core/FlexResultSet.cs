@@ -156,8 +156,7 @@ namespace TSqlFlex.Core
         {
             try
             {
-                var st = reader.GetSchemaTable();
-                result.schema = st;
+                result.schema = SQLColumnList.CreateFromSchemaTable(reader.GetSchemaTable());
             }
             catch (Exception ex)
             {
@@ -175,18 +174,18 @@ namespace TSqlFlex.Core
             }
 
             int visibleColumnCount = results[resultIndex].visibleColumnCount;
-            var rows = results[resultIndex].schema.Rows;
+            var rows = results[resultIndex].schema;
             StringBuilder buffer = new StringBuilder("CREATE TABLE " + tableName + "(\r\n");
             for (int fieldIndex = 0; fieldIndex < results[resultIndex].visibleColumnCount; fieldIndex++)
             {
                 var fieldInfo = rows[fieldIndex];
                 buffer.Append("    " +
-                        FieldScripting.FieldNameOrDefault(fieldInfo.ItemArray, fieldIndex) +
+                        FieldScripting.FieldNameOrDefault(fieldInfo, fieldIndex) +
                         " " +
                         FieldScripting.DataTypeName(fieldInfo) +
                         FieldScripting.DataTypeParameterIfAny(fieldInfo) + 
                         " " +
-                        FieldScripting.NullOrNotNull(fieldInfo.ItemArray[(int)FieldScripting.FieldInfo.AllowsNulls])
+                        FieldScripting.NullOrNotNull(fieldInfo.AllowNulls)
                         );
 
                 if (fieldIndex + 1 < visibleColumnCount)

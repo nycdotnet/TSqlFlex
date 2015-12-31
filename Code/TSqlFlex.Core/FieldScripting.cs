@@ -10,75 +10,73 @@ namespace TSqlFlex.Core
 {
     public static class FieldScripting
     {
-        public enum FieldInfo : int
+        public enum ADONetFieldInfo : int
         {
             Name = 0,
-            FieldLength = 2,
+            ColumnSize = 2,
+            NumericPrecision = 3,
+            NumericScale = 4,
+            BaseTableName = 11,
             AllowsNulls = 13,
+            IsHidden = 20,
             DataType = 24
         }
 
         private static CultureInfo englishUSCulture = new CultureInfo("en-US");  //default culture for formatting.
 
-        public static string DataTypeName(DataRow fieldInfo)
+        public static string DataTypeName(SQLColumn fieldInfo)
         {
-            var fieldTypeName = fieldInfo[(int)FieldInfo.DataType].ToString();
-            if (fieldTypeName == "real")
+            if (fieldInfo.DataType == "real")
             {
                 return "float";  //this could be a float or a real.  There is no simple way to tell via ado.net.  Will try to keep it consistent with float.
             }
-            else if (fieldTypeName.EndsWith(".sys.hierarchyid"))
+            else if (fieldInfo.DataType.EndsWith(".sys.hierarchyid"))
             {
                 return "hierarchyid";
             }
-            else if (fieldTypeName.EndsWith(".sys.geography"))
+            else if (fieldInfo.DataType.EndsWith(".sys.geography"))
             {
                 return "geography";
             }
-            else if (fieldTypeName.EndsWith(".sys.geometry"))
+            else if (fieldInfo.DataType.EndsWith(".sys.geometry"))
             {
                 return "geometry";
             }
-            return fieldTypeName;
+            return fieldInfo.DataType;
         }
 
-        public static string DataTypeParameterIfAny(DataRow fieldInfo)
+        public static string DataTypeParameterIfAny(SQLColumn fieldInfo)
         {
-            var dataTypeName = fieldInfo[(int)FieldInfo.DataType].ToString();
-            if (dataTypeName == "nvarchar" || dataTypeName == "varchar" || dataTypeName == "nchar" || dataTypeName == "char" || dataTypeName == "binary" || dataTypeName == "varbinary")
+            if (fieldInfo.DataType == "nvarchar" || fieldInfo.DataType == "varchar" || fieldInfo.DataType == "nchar" || fieldInfo.DataType == "char" || fieldInfo.DataType == "binary" || fieldInfo.DataType == "varbinary")
             {
-                int columnSize = (int)fieldInfo[2];
-                if (columnSize == Int32.MaxValue)
+                if (fieldInfo.ColumnSize == Int32.MaxValue)
                 {
                     return "(MAX)";
                 }
-                return "(" + columnSize.ToString() + ")";
+                return "(" + fieldInfo.ColumnSize.ToString() + ")";
             }
-            else if (dataTypeName == "numeric" || dataTypeName == "decimal")
+            else if (fieldInfo.DataType == "numeric" || fieldInfo.DataType == "decimal")
             {
-                int numericPrecision = (short)fieldInfo[3];
-                int numericScale = (short)fieldInfo[4];
-                return "(" + numericPrecision.ToString() + "," + numericScale.ToString() + ")";
+                return "(" + fieldInfo.NumericPrecision.ToString() + "," + fieldInfo.NumericScale.ToString() + ")";
             }
-            else if (dataTypeName == "real")
+            else if (fieldInfo.DataType == "real")
             {
                 return "(24)";
             }
-            else if (dataTypeName == "float")
+            else if (fieldInfo.DataType == "float")
             {
                 //from MSDN: SQL Server treats n as one of two possible values. If 1<=n<=24, n is treated as 24. If 25<=n<=53, n is treated as 53.
                 return "(53)";
             }
-            else if (dataTypeName == "datetimeoffset" || dataTypeName == "time")
+            else if (fieldInfo.DataType == "datetimeoffset" || fieldInfo.DataType == "time")
             {
-                int numericPrecision = (short)fieldInfo[4];
                 //see: http://msdn.microsoft.com/en-us/library/bb630289.aspx
 
-                if (numericPrecision <= 2)
+                if (fieldInfo.NumericScale <= 2)
                 {
                     return "(2)";
                 }
-                if (numericPrecision <= 4)
+                if (fieldInfo.NumericScale <= 4)
                 {
                     return "(4)";
                 }
@@ -99,6 +97,7 @@ namespace TSqlFlex.Core
                 return "NOT NULL";
             }
             bool allowDBNullFlag;
+            Type t = allowDbNull.GetType();
             if (bool.TryParse(allowDbNull.ToString(), out allowDBNullFlag))
             {
                 if (allowDBNullFlag)
@@ -110,14 +109,13 @@ namespace TSqlFlex.Core
             return "NULL"; //safer default for our purposes.  This is unlikely to be hit anyway.
         }
 
-        public static string FieldNameOrDefault(object[] fieldInfo, int fieldIndex)
+        public static string FieldNameOrDefault(SQLColumn column, int fieldIndex)
         {
-            var r = fieldInfo[(int)FieldScripting.FieldInfo.Name].ToString();
-            if (r.Length == 0)
+            if (String.IsNullOrEmpty(column.ColumnName))
             {
                 return "anonymousColumn" + (fieldIndex + 1).ToString();
             }
-            return EscapeObjectName(r);
+            return EscapeObjectName(column.ColumnName);
         }
 
         public static string EscapeObjectName(string rawObjectName)
@@ -151,7 +149,7 @@ namespace TSqlFlex.Core
             const int INITIAL_CAPACITY = 50000; //This is small enough that it won't matter, but big enough to ensure minimal initial resizes.
             int calibrateBufferCapacityAfterRow = 0;
 
-            DataTable schema = result.schema;
+            List<SQLColumn> schema = result.schema;
             List<object[]> data = result.data;
 
             int columnCount = result.visibleColumnCount;
@@ -168,7 +166,7 @@ namespace TSqlFlex.Core
                 buffer.Append(" (");
                 for (int columnIndex = 0; columnIndex < columnCount; columnIndex++)
                 {
-                    buffer.Append(valueAsTSQLLiteral(data[rowIndex][columnIndex], schema.Rows[columnIndex].ItemArray));
+                    buffer.Append(valueAsTSQLLiteral(data[rowIndex][columnIndex], schema[columnIndex]));
                     if (columnIndex + 1 < columnCount)
                     {
                         buffer.Append(",");
@@ -228,89 +226,87 @@ namespace TSqlFlex.Core
         }
 
         //todo: may need some refactoring :-)
-        public static string valueAsTSQLLiteral(object data, object[] fieldInfo, bool forTSQLScript = true)
+        public static string valueAsTSQLLiteral(object data, SQLColumn fieldInfo, bool forTSQLScript = true)
         {
             if (data == null || data is DBNull)
             {
                 return "NULL";
             }
 
-            var fieldTypeName = fieldInfo[(int)FieldScripting.FieldInfo.DataType].ToString();
-
-            if (fieldTypeName == "char")
+            if (fieldInfo.DataType == "char")
             {
                 return formatChar(data, forTSQLScript);
             }
-            else if (fieldTypeName == "varchar" || fieldTypeName == "text")
+            else if (fieldInfo.DataType == "varchar" || fieldInfo.DataType == "text")
             {
                 return formatVarchar(data, forTSQLScript);
             }
-            else if (fieldTypeName == "nchar")
+            else if (fieldInfo.DataType == "nchar")
             {
                 return formatNchar(data, forTSQLScript);
             }
-            else if (fieldTypeName == "nvarchar" || fieldTypeName == "ntext" || fieldTypeName == "xml")
+            else if (fieldInfo.DataType == "nvarchar" || fieldInfo.DataType == "ntext" || fieldInfo.DataType == "xml")
             {
                 return formatNvarchar(data, forTSQLScript);
             }
-            else if (fieldTypeName == "bigint" || fieldTypeName == "numeric" || fieldTypeName == "smallint" || fieldTypeName == "decimal" || fieldTypeName == "smallmoney" ||
-                fieldTypeName == "int" || fieldTypeName == "tinyint" || fieldTypeName == "float" || fieldTypeName == "real" || fieldTypeName == "money")
+            else if (fieldInfo.DataType == "bigint" || fieldInfo.DataType == "numeric" || fieldInfo.DataType == "smallint" || fieldInfo.DataType == "decimal" || fieldInfo.DataType == "smallmoney" ||
+                fieldInfo.DataType == "int" || fieldInfo.DataType == "tinyint" || fieldInfo.DataType == "float" || fieldInfo.DataType == "real" || fieldInfo.DataType == "money")
             {
                 return getDataAsAppropriateNumericFormat(data);
             }
-            else if (fieldTypeName == "binary" || fieldTypeName == "rowversion" || fieldTypeName == "timestamp")
+            else if (fieldInfo.DataType == "binary" || fieldInfo.DataType == "rowversion" || fieldInfo.DataType == "timestamp")
             {
-                return formatBinary(data, fieldInfo);
+                return formatBinary(data, fieldInfo.ColumnSize);
             }
-            else if (fieldTypeName == "date")
+            else if (fieldInfo.DataType == "date")
             {
                 return formatDate(data, forTSQLScript);
             }
-            else if (fieldTypeName == "datetimeoffset")
+            else if (fieldInfo.DataType == "datetimeoffset")
             {
                 return formatDatetimeoffset(data, forTSQLScript);
             }
-            else if (fieldTypeName == "datetime2")
+            else if (fieldInfo.DataType == "datetime2")
             {
                 return formatDatetime2(data, forTSQLScript);
             }
-            else if (fieldTypeName == "time")
+            else if (fieldInfo.DataType == "time")
             {
                 return formatTime(data, forTSQLScript);
             }
-            else if (fieldTypeName == "datetime")
+            else if (fieldInfo.DataType == "datetime")
             {
                 return formatDateTime(data, forTSQLScript);
             }
-            else if (fieldTypeName == "smalldatetime")
+            else if (fieldInfo.DataType == "smalldatetime")
             {
                 return formatSmallDateTime(data, forTSQLScript);
             }
-            else if (fieldTypeName == "bit")
+            else if (fieldInfo.DataType == "bit")
             {
                 return formatBit(data);
             }
-            else if (fieldTypeName == "varbinary" || fieldTypeName == "image")
+            else if (fieldInfo.DataType == "varbinary" || fieldInfo.DataType == "image")
             {
                 return formatVarbinary(data);
             }
-            else if (fieldTypeName == "uniqueidentifier")
+            else if (fieldInfo.DataType == "uniqueidentifier")
             {
                 return formatGuid(data, forTSQLScript);
             }
-            else if (fieldTypeName == "sql_variant")
+            else if (fieldInfo.DataType == "sql_variant")
             {
                 return getDataAsSql_variantFormat(data, forTSQLScript);
             }
-            else if (fieldTypeName.EndsWith("hierarchyid"))
+            else if (fieldInfo.DataType.EndsWith("hierarchyid"))
             {
                 return formatHierarchyId(data);
             }
-            else if (fieldTypeName.EndsWith("geography"))
+            else if (fieldInfo.DataType.EndsWith("geography"))
             {
                 return formatGeography(data, forTSQLScript);
             }
-            else if (fieldTypeName.EndsWith("geometry"))
+            else if (fieldInfo.DataType.EndsWith("geometry"))
             {
                 return formatGeometry(data, forTSQLScript);
             }
@@ -631,12 +627,6 @@ namespace TSqlFlex.Core
         {
             const int SIZE_OF_TIMESTAMP_IN_BYTES = 8;
             return formatBinary(data, SIZE_OF_TIMESTAMP_IN_BYTES);
-        }
-
-        public static string formatBinary(object data, object[] fieldInfo)
-        {
-            int fieldLength = (int)fieldInfo[(int)FieldScripting.FieldInfo.FieldLength];
-            return formatBinary(data, fieldLength);
         }
 
         public static string formatBinary(object data, int fieldLength)
