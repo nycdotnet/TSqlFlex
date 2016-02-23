@@ -12,6 +12,7 @@ namespace TSqlFlex.Core
         public const string TO_INSERT_STATEMENTS = "To INSERT Statements";
         public const string TO_XML_SPREADSHEET = "To XML Spreadsheet (Excel)";
         public const string TO_CSV = "To CSV file";
+        public const string TO_CSHARP = "To C#";
 
         public SqlConnectionStringBuilder connStringBuilder;
         public string sqlToRun;

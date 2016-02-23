@@ -129,6 +129,17 @@ namespace TSqlFlex.Core
                     renderExceptionToSqlRunParameters("while rendering csv", srp, ex);
                 }
             }
+            else if (srp.outputType == SqlRunParameters.TO_CSHARP)
+            {
+                try
+                {
+                    CSharpRenderer.renderAsCSharp(resultSet, srp);
+                }
+                catch (Exception ex)
+                {
+                    renderExceptionToSqlRunParameters("while rendering C#", srp, ex);
+                }
+            }
             e.Result = srp;
         }
 

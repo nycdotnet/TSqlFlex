@@ -30,6 +30,7 @@ namespace TSqlFlex
             cmbResultsType.Items.Add(SqlRunParameters.TO_INSERT_STATEMENTS);
             cmbResultsType.Items.Add(SqlRunParameters.TO_XML_SPREADSHEET);
             cmbResultsType.Items.Add(SqlRunParameters.TO_CSV);
+            cmbResultsType.Items.Add(SqlRunParameters.TO_CSHARP);
             cmbResultsType.SelectedItem = SqlRunParameters.TO_INSERT_STATEMENTS;
             setUIState(false);
         }
@@ -250,71 +251,22 @@ namespace TSqlFlex
             }
             else
             {
-                bool success = false;
                 progressText = "Complete.";
                 if (cmbResultsType.SelectedItem.ToString() == SqlRunParameters.TO_INSERT_STATEMENTS)
                 {
-                    try
-                    {
-                        if (srp.exceptionsText.Length > 0)
-                        {
-                            if (srp.resultsText.Length > 0)
-                            {
-                                txtOutput.Text = srp.exceptionsText.ToString() + "\r\n\r\n" + srp.resultsText.ToString();
-                                success = true;
-                            }
-                            else
-                            {
-                                drawExceptions(srp);
-                                success = true;
-                            }
-                        }
-                        else
-                        {
-                            txtOutput.Text = srp.resultsText.ToString();
-                            success = true;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        srp.resultsText = null;
-                        srp.exceptionsText.Append("\r\n\r\n/*\r\n\r\nException while attempting to display results: ");
-                        srp.exceptionsText.Append(ex.Message);
-                        srp.exceptionsText.Append("\r\n\r\n");
-                        srp.exceptionsText.Append(ex.StackTrace);
-                        srp.exceptionsText.Append("\r\n*/");
-                    }
-
-                    if (!success)
-                    {
-                        GC.Collect();
-                        txtOutput.Text = srp.exceptionsText.ToString();
-                    }
-                    
+                    RenderInsertStatements(srp);
                 }
                 else if (cmbResultsType.SelectedItem.ToString() == SqlRunParameters.TO_XML_SPREADSHEET)
                 {
-                    if (srp.worksheetIsValid)
-                    {
-                        TryToSaveSpreadsheet(srp);
-                    }
-                    else
-                    {
-                        drawExceptions(srp);
-                    }
-                    
+                    RenderXmlSpreadsheet(srp);
                 }
                 else if (cmbResultsType.SelectedItem.ToString() == SqlRunParameters.TO_CSV)
                 {
-                    if (srp.worksheetIsValid)
-                    {
-                        TryToSaveCSVs(srp);
-                    }
-                    else
-                    {
-                        drawExceptions(srp);
-                    }
-
+                    RenderCsv(srp);
+                }
+                else if (cmbResultsType.SelectedItem.ToString() == SqlRunParameters.TO_CSHARP)
+                {
+                    RenderCSharp(srp);
                 }
             }
             
@@ -323,6 +275,113 @@ namespace TSqlFlex
             lblConnectionInfo.Text = currentConnectionText();
             
             setUIState(false);
+        }
+
+        private void RenderCsv(SqlRunParameters srp)
+        {
+            if (srp.worksheetIsValid)
+            {
+                TryToSaveCSVs(srp);
+            }
+            else
+            {
+                drawExceptions(srp);
+            }
+        }
+
+        private void RenderXmlSpreadsheet(SqlRunParameters srp)
+        {
+            if (srp.worksheetIsValid)
+            {
+                TryToSaveSpreadsheet(srp);
+            }
+            else
+            {
+                drawExceptions(srp);
+            }
+        }
+
+        private void RenderCSharp(SqlRunParameters srp)
+        {
+            bool success = false;
+            try
+            {
+                if (srp.exceptionsText.Length > 0)
+                {
+                    if (srp.resultsText.Length > 0)
+                    {
+                        txtOutput.Text = srp.exceptionsText.ToString() + "\r\n\r\n" + srp.resultsText.ToString();
+                        success = true;
+                    }
+                    else
+                    {
+                        drawExceptions(srp);
+                        success = true;
+                    }
+                }
+                else
+                {
+                    txtOutput.Text = srp.resultsText.ToString();
+                    success = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                srp.resultsText = null;
+                srp.exceptionsText.Append("\r\n\r\n/*\r\n\r\nException while attempting to display results: ");
+                srp.exceptionsText.Append(ex.Message);
+                srp.exceptionsText.Append("\r\n\r\n");
+                srp.exceptionsText.Append(ex.StackTrace);
+                srp.exceptionsText.Append("\r\n*/");
+            }
+
+            if (!success)
+            {
+                GC.Collect();
+                txtOutput.Text = srp.exceptionsText.ToString();
+            }
+        }
+
+
+        private void RenderInsertStatements(SqlRunParameters srp)
+        {
+            bool success = false;
+            try
+            {
+                if (srp.exceptionsText.Length > 0)
+                {
+                    if (srp.resultsText.Length > 0)
+                    {
+                        txtOutput.Text = srp.exceptionsText.ToString() + "\r\n\r\n" + srp.resultsText.ToString();
+                        success = true;
+                    }
+                    else
+                    {
+                        drawExceptions(srp);
+                        success = true;
+                    }
+                }
+                else
+                {
+                    txtOutput.Text = srp.resultsText.ToString();
+                    success = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                srp.resultsText = null;
+                srp.exceptionsText.Append("\r\n\r\n/*\r\n\r\nException while attempting to display results: ");
+                srp.exceptionsText.Append(ex.Message);
+                srp.exceptionsText.Append("\r\n\r\n");
+                srp.exceptionsText.Append(ex.StackTrace);
+                srp.exceptionsText.Append("\r\n*/");
+            }
+
+            if (!success)
+            {
+                GC.Collect();
+                txtOutput.Text = srp.exceptionsText.ToString();
+            }
         }
 
         private void drawExceptions(SqlRunParameters srp, string header = "")
