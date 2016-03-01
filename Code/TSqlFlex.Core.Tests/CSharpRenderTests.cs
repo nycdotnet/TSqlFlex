@@ -57,32 +57,36 @@ namespace TSqlFlex.Core.Tests
             
         }
 
-        [Test()]
-        public void FieldNameStartsWithAZazUnderscoreAt_WhenProcessed_FirstCharIsSame()
+        [TestCase("aaaa", 'a')]
+        [TestCase("AAAA", 'A')]
+        [TestCase("zzzz", 'z')]
+        [TestCase("ZZZZ", 'Z')]
+        [TestCase("____", '_')]
+        [TestCase("@_", '@')]
+        public void FieldNameStartsWithAZazUnderscoreAt_WhenProcessed_FirstCharIsSame(
+            string fieldName, char expectedFirstChar)
         {
-            Assert.AreEqual(CSharpRenderer.FieldNameToCSharpPropertyName("aaaa")[0], 'a');
-            Assert.AreEqual(CSharpRenderer.FieldNameToCSharpPropertyName("AAAA")[0], 'A');
-            Assert.AreEqual(CSharpRenderer.FieldNameToCSharpPropertyName("zzzz")[0], 'z');
-            Assert.AreEqual(CSharpRenderer.FieldNameToCSharpPropertyName("ZZZZ")[0], 'Z');
-            Assert.AreEqual(CSharpRenderer.FieldNameToCSharpPropertyName("____")[0], '_');
-            Assert.AreEqual(CSharpRenderer.FieldNameToCSharpPropertyName("@_")[0], '@');
+            Assert.AreEqual(CSharpRenderer.FieldNameToCSharpPropertyName(fieldName)[0], expectedFirstChar);
         }
 
-        [Test()]
-        public void AtSignAfterFirstCharacter_WhenProcessed_IsReplaced()
+        [TestCase("@", "@")]
+        [TestCase("@@", "@_")]
+        [TestCase("@@@", "@__")]
+        [TestCase("@a@", "@a_")]
+        public void AtSignAfterFirstCharacter_WhenProcessed_IsReplaced(
+            string fieldName, string expectedResult)
         {
-            Assert.AreEqual(CSharpRenderer.FieldNameToCSharpPropertyName("@"), "@");
-            Assert.AreEqual(CSharpRenderer.FieldNameToCSharpPropertyName("@@"), "@_");
-            Assert.AreEqual(CSharpRenderer.FieldNameToCSharpPropertyName("@@@"), "@__");
-            Assert.AreEqual(CSharpRenderer.FieldNameToCSharpPropertyName("@a@"), "@a_");
+            Assert.AreEqual(CSharpRenderer.FieldNameToCSharpPropertyName(fieldName), expectedResult);
         }
 
-        [Test()]
-        public void FieldNameStartsWithDashSpaceExclaim_WhenProcessed_FirstCharIsUnderscore()
+
+        [TestCase("-test", '_')]
+        [TestCase(" test", '_')]
+        [TestCase("!test", '_')]
+        public void FieldNameStartsWithDashSpaceExclaim_WhenProcessed_FirstCharIsUnderscore(
+            string fieldName, char expectedFirstChar)
         {
-            Assert.AreEqual(CSharpRenderer.FieldNameToCSharpPropertyName("-test")[0], '_');
-            Assert.AreEqual(CSharpRenderer.FieldNameToCSharpPropertyName(" test")[0], '_');
-            Assert.AreEqual(CSharpRenderer.FieldNameToCSharpPropertyName("!test")[0], '_');
+            Assert.AreEqual(CSharpRenderer.FieldNameToCSharpPropertyName(fieldName)[0], expectedFirstChar);
         }
 
         [Test()]

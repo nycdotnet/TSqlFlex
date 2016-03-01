@@ -23,7 +23,7 @@ namespace TSqlFlex.Core
                     for (int colIndex = 0; colIndex < columnCount; colIndex += 1)
                     {
                         var s = result.schema[colIndex];
-                        sb.Append(RenderCSharpProperty(s, columnNamesAndCounts));
+                        sb.Append(DisambiguateAndRenderCSharpProperty(s, columnNamesAndCounts));
                     }
                     sb.Append(classFooter);
                 }
@@ -71,10 +71,8 @@ namespace TSqlFlex.Core
             {"geography", "object"},
             {"geometry", "object"}
         };
-        
 
-  
-        public static string RenderCSharpProperty(SQLColumn s, Dictionary<string, int> columnNamesAndCounts)
+        public static string DisambiguateAndRenderCSharpProperty(SQLColumn s, Dictionary<string, int> columnNamesAndCounts)
         {
             string name = CSharpRenderer.FieldNameToCSharpPropertyName(s.ColumnName);
             if (columnNamesAndCounts.ContainsKey(name))
@@ -87,6 +85,11 @@ namespace TSqlFlex.Core
                 columnNamesAndCounts.Add(name, 1);
             }
 
+            return RenderCSharpProperty(s, name);   
+        }
+
+        public static string RenderCSharpProperty(SQLColumn s, string name)
+        {
             if (CSharpRenderer.SqlDataTypeToCSharp.ContainsKey(s.DataType))
             {
                 return String.Format(propertyBoilerplate, CSharpRenderer.SqlDataTypeToCSharp[s.DataType], name);
@@ -95,7 +98,6 @@ namespace TSqlFlex.Core
             {
                 return String.Format(propertyBoilerplate, "object", name);
             }
-            
         }
 
         public static bool IsCSharpLetterCharacter(char value)
