@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -10,6 +9,8 @@ namespace TSqlFlex.Core
 {
     public static class FieldScripting
     {
+        private static Encoding codePage1252Encoding = Encoding.GetEncoding(1252);
+
         public enum ADONetFieldInfo : int
         {
             Name = 0,
@@ -231,6 +232,14 @@ namespace TSqlFlex.Core
             if (data == null || data is DBNull)
             {
                 return "NULL";
+            }
+
+            if (data is string)
+            {
+                if ((data as string).Contains('\0'))
+                {
+                    return formatVarbinary(data);
+                }
             }
 
             if (fieldInfo.DataType == "char")
@@ -497,8 +506,27 @@ namespace TSqlFlex.Core
 
         public static string formatVarbinary(object data)
         {
-            byte[] ba = (byte[])data;
+            byte[] ba;
+            if (data is string)
+            {
+                return latinHexEncodeStringBytes(data as string);
+            }
+            else if (data is byte[])
+            {
+                ba = (byte[])data;
+            }
+            else
+            {
+                throw new InvalidCastException("FieldScripting.formatVarbinary can only be called with a string or byte[] argument.");
+            }
+            
             return "0x" + BitConverter.ToString(ba).Replace("-", "");
+        }
+
+        public static string latinHexEncodeStringBytes(string hexEncodedData)
+        {
+            var bytes = codePage1252Encoding.GetBytes(hexEncodedData);
+            return "0x" + BitConverter.ToString(bytes).Replace("-", "");
         }
 
         public static string formatBit(object data)
