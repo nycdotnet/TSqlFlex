@@ -232,12 +232,7 @@ namespace TSqlFlex
             sqlStopwatch.Stop();
             setProgressText(true); //bug: This includes the time it took to read all of the results, etc.  Should technically stop after data finishes coming in from SQL
 
-            var srp = (SqlRunParameters)e.Result;
-
-            completedResultsCount += srp.completedResultsCount - completedResultsCount;
-
-            srp.flushAndCloseOutputStreamIfNeeded();
-            
+           
             if (e.Cancelled)
             {
                 progressText = "Cancelled.";
@@ -251,6 +246,12 @@ namespace TSqlFlex
             }
             else
             {
+                var srp = (SqlRunParameters)e.Result;
+
+                completedResultsCount += srp.completedResultsCount - completedResultsCount;
+
+                srp.flushAndCloseOutputStreamIfNeeded();
+
                 progressText = "Complete.";
                 if (cmbResultsType.SelectedItem.ToString() == SqlRunParameters.TO_INSERT_STATEMENTS)
                 {
