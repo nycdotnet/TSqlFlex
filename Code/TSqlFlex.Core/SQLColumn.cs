@@ -22,6 +22,10 @@ namespace TSqlFlex.Core
     {
         public static List<SQLColumn> CreateFromSchemaTable(DataTable table)
         {
+            if (table == null || table.Columns == null)
+            {
+                return new List<SQLColumn>();
+            }
             var result = new List<SQLColumn>(table.Columns.Count);
             foreach (DataRow fieldDefinition in table.Rows)
             {

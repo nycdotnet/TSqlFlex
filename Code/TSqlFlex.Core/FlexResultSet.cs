@@ -34,13 +34,14 @@ namespace TSqlFlex.Core
 
             try
             {
-                SqlCommand cmd = new SqlCommand(srp.sqlToRun, openConnection, transaction);
+                srp.command = new SqlCommand(srp.sqlToRun, openConnection, transaction);
+                var cmd = srp.command;
+                cmd.CommandTimeout = 0; // wait forever.
                 
                 //todo: this is a bad way of doing this.  Need to abstract further.
                 bw.ReportProgress(5, "Running query...");
 
                 reader = executeSQL(resultSet, cmd, reader);
-                
                 int progress = 50;
                 bw.ReportProgress(progress, "Processing results...");
                 do
@@ -77,6 +78,7 @@ namespace TSqlFlex.Core
                     resultSet.results.Add(result);
 
                 } while (reader != null && reader.NextResult());
+                
             }
             catch (Exception ex)
             {

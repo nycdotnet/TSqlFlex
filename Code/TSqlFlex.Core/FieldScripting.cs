@@ -718,7 +718,7 @@ namespace TSqlFlex.Core
 
         public static Boolean ResultIsRenderableAsCreateTable(FlexResult result)
         {
-            return (result.schema != null);
+            return !(result.schema == null || result.schema.Count == 0);
         }
 
         public static Boolean ResultIsRenderableAsScriptedData(FlexResult result)

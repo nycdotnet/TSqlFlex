@@ -26,6 +26,7 @@ namespace TSqlFlex.Core
         public bool worksheetIsValid = false;
         public UInt32 completedResultsCount = 0;
         public List<string> outputFiles = new List<string>();
+        public SqlCommand command;
 
         public string outputFilename()
         {
