@@ -49,6 +49,7 @@ namespace TSqlFlex.Core
             {"xml", "string"},
             {"numeric", "decimal"},
             {"smallmoney", "decimal"},
+            {"decimal", "decimal"},
             {"tinyint", "byte"},
             {"float", "double"},
             {"real", "single"},
