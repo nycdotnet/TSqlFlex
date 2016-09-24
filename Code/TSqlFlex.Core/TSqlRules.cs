@@ -7,67 +7,69 @@ namespace TSqlFlex.Core
 {
     public class TSqlRules
     {
-        //todo: fill in complete list from documentation
+        private static HashSet<string> reservedWords = new HashSet<string>(StringComparer.OrdinalIgnoreCase) {
+            "action",
+            "alter",
+            "as",
+            "asc",
+            "auto",
+            "by",
+            "close",
+            "clustered",
+            "changes",
+            "column",
+            "constraint",
+            "create",
+            "dec",
+            "default",
+            "delete",
+            "desc",
+            "drop",
+            "elements",
+            "exec",
+            "execute",
+            "from",
+            "function",
+            "group",
+            "insert",
+            "index",
+            "key",
+            "level",
+            "nonclustered",
+            "none",
+            "oct",
+            "open",
+            "order",
+            "primary",
+            "proc",
+            "procedure",
+            "raw",
+            "root",
+            "rule",
+            "schema",
+            "select",
+            "shift",
+            "statistics",
+            "status",
+            "sysname",
+            "symmetric",
+            "table",
+            "target",
+            "trigger",
+            "unique",
+            "update",
+            "user",
+            "version",
+            "view",
+            "weight",
+            "with",
+            "where",
+            "xml",
+        };
+
         public static bool IsReservedWord(string word)
         {
-            switch (word.ToLower())
-            {
-                case "action":
-                case "alter":
-                case "as":
-                case "asc":
-                case "auto":
-                case "by":
-                case "clustered":
-                case "changes":
-                case "column":
-                case "constraint":
-                case "create":
-                case "dec":
-                case "default":
-                case "delete":
-                case "desc":
-                case "drop":
-                case "elements":
-                case "exec":
-                case "execute":
-                case "from":
-                case "function":
-                case "group":
-                case "insert":
-                case "index":
-                case "key":
-                case "level":
-                case "nonclustered":
-                case "none":
-                case "oct":
-                case "order":
-                case "primary":
-                case "proc":
-                case "procedure":
-                case "raw":
-                case "root":
-                case "rule":
-                case "schema":
-                case "select":
-                case "shift":
-                case "statistics":
-                case "status":
-                case "sysname":
-                case "table":
-                case "target":
-                case "trigger":
-                case "update":
-                case "user":
-                case "version":
-                case "view":
-                case "weight":
-                case "where":
-                case "xml":
-                    return true;
-                default:
-                    return false;
-            }
+            return reservedWords.Contains(word);
         }
 
         public static bool ContainsWhitespace(string fieldName)

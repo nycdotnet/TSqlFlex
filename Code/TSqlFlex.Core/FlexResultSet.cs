@@ -34,13 +34,14 @@ namespace TSqlFlex.Core
 
             try
             {
-                SqlCommand cmd = new SqlCommand(srp.sqlToRun, openConnection, transaction);
+                srp.command = new SqlCommand(srp.sqlToRun, openConnection, transaction);
+                var cmd = srp.command;
+                cmd.CommandTimeout = 0; // wait forever.
                 
                 //todo: this is a bad way of doing this.  Need to abstract further.
                 bw.ReportProgress(5, "Running query...");
 
                 reader = executeSQL(resultSet, cmd, reader);
-                
                 int progress = 50;
                 bw.ReportProgress(progress, "Processing results...");
                 do
@@ -77,6 +78,7 @@ namespace TSqlFlex.Core
                     resultSet.results.Add(result);
 
                 } while (reader != null && reader.NextResult());
+                
             }
             catch (Exception ex)
             {
@@ -156,8 +158,7 @@ namespace TSqlFlex.Core
         {
             try
             {
-                var st = reader.GetSchemaTable();
-                result.schema = st;
+                result.schema = SQLColumnList.CreateFromSchemaTable(reader.GetSchemaTable());
             }
             catch (Exception ex)
             {
@@ -175,18 +176,18 @@ namespace TSqlFlex.Core
             }
 
             int visibleColumnCount = results[resultIndex].visibleColumnCount;
-            var rows = results[resultIndex].schema.Rows;
+            var rows = results[resultIndex].schema;
             StringBuilder buffer = new StringBuilder("CREATE TABLE " + tableName + "(\r\n");
             for (int fieldIndex = 0; fieldIndex < results[resultIndex].visibleColumnCount; fieldIndex++)
             {
                 var fieldInfo = rows[fieldIndex];
                 buffer.Append("    " +
-                        FieldScripting.FieldNameOrDefault(fieldInfo.ItemArray, fieldIndex) +
+                        FieldScripting.FieldNameOrDefault(fieldInfo, fieldIndex) +
                         " " +
                         FieldScripting.DataTypeName(fieldInfo) +
                         FieldScripting.DataTypeParameterIfAny(fieldInfo) + 
                         " " +
-                        FieldScripting.NullOrNotNull(fieldInfo.ItemArray[(int)FieldScripting.FieldInfo.AllowsNulls])
+                        FieldScripting.NullOrNotNull(fieldInfo.AllowNulls)
                         );
 
                 if (fieldIndex + 1 < visibleColumnCount)

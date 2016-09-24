@@ -34,8 +34,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="RedGate.SIPFrameworkShared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7f465a1c156d4d57, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\RedGate.SIPFrameworkShared.1.0.1.243\lib\RedGate.SIPFrameworkShared.dll</HintPath>
+      <HintPath>..\packages\RedGate.SIPFrameworkShared.1.0.1.246\lib\RedGate.SIPFrameworkShared.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

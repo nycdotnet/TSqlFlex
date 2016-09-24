@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CSharpRenderer.cs" />
     <Compile Include="CSVRenderer.cs" />
     <Compile Include="ExcelLauncher.cs" />
     <Compile Include="ExternalProgramLauncher.cs" />
@@ -55,6 +56,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CustomExceptions.cs" />
     <Compile Include="QueryWorker.cs" />
+    <Compile Include="SQLColumn.cs" />
     <Compile Include="SqlRunParameters.cs" />
     <Compile Include="TSqlRules.cs" />
     <Compile Include="TxtLauncher.cs" />

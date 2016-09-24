@@ -444,6 +444,39 @@ namespace TSqlFlex.Core.Tests
         }
 
         [Test()]
+        public void StringDataWithNulls_ScriptsCorrectly()
+        {
+            var leadingNull = new char[] { '\0', 'A', 'B', 'C' };
+            var trailingNull = new char[] { 'A', 'B', 'C', '\0' };
+
+            string baseData = new string(leadingNull);
+            object data = baseData;
+
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "nvarchar", false, 0, 0);
+            Assert.AreEqual("0x00414243", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "nvarchar");
+
+            baseData = new string(trailingNull);
+            data = baseData;
+
+
+            fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "nvarchar", false, 0, 0);
+            Assert.AreEqual("0x41424300", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "nvarchar");
+        }
+
+        [Test()]
+        public void String_IncludingHighChar_ScriptsCorrectly()
+        {
+            var highChar = new char[] { '\0', '†', 'B', 'C' };
+
+            string baseData = new string(highChar);
+            object data = baseData;
+
+            var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 15, "nvarchar", false, 0, 0);
+            Assert.AreEqual("0x00864243", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "nvarchar");
+        }
+
+
+        [Test()]
         public void NVARCHAR_Data_ScriptsCorrectly()
         {
             string baseData = "hello world!";

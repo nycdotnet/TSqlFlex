@@ -12,14 +12,14 @@ namespace TSqlFlex.Core.Tests
         private CultureInfo originalCulture;
         private CultureInfo originalUICulture;
 
-        [TestFixtureSetUp()]
+        [OneTimeSetUp()]
         public void StartCultureTesting()
         {
             originalCulture = Thread.CurrentThread.CurrentCulture;
             originalUICulture = Thread.CurrentThread.CurrentUICulture;
         }
 
-        [TestFixtureTearDown()]
+        [OneTimeTearDown()]
         public void EndCultureTesting()
         {
             Thread.CurrentThread.CurrentCulture = originalCulture;
