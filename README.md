@@ -18,6 +18,11 @@ Follow the instructions [here](https://github.com/nycdotnet/TSqlFlex/blob/master
 Please either create issues on GitHub, or reach out to Steve on Twitter at [@nycdotnet](https://twitter.com/nycdotnet).
 
 **Patch notes:**
+  * v0.2.0-beta (2016-09-23):
+      * Implemented new script as C# feature.
+	  * Many behind-the-scenes code improvements.
+	  * Added escaping for several SQL keywords.
+	  * Updated to work with NUnit 3 and RedGate SIP FW 1.0.1.246.
   * v0.1.0-beta (2015-05-07):
       * Reverted to use .NET 3.5 to restore compatibility with SSMS 2008.
 	  * Added CSV export feature! T-SQL Flex can now export the results of any set of queries to properly-escaped CSV files that open correctly in Excel or any text editor.
