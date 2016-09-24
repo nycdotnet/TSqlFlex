@@ -23,23 +23,17 @@ function Get-RegistrySoftwareRootKey() {
 	Return "HKLM:\Software";
 }
 
-try {
-	Remove-ItemIfExists "$installLocation\RedGate.SIPFrameworkShared.dll";
-	Remove-ItemIfExists "$installLocation\TSqlFlex.Core.dll";
-	Remove-ItemIfExists "$installLocation\TSqlFlex.dll";
-	Remove-ItemIfExists "$installLocation\InstallationInstructions.txt";
-	Remove-ItemIfExists "$installLocation\License.txt";
-	Remove-ItemIfExists "$installLocation\README.txt";
+Remove-ItemIfExists "$installLocation\RedGate.SIPFrameworkShared.dll";
+Remove-ItemIfExists "$installLocation\TSqlFlex.Core.dll";
+Remove-ItemIfExists "$installLocation\TSqlFlex.dll";
+Remove-ItemIfExists "$installLocation\InstallationInstructions.txt";
+Remove-ItemIfExists "$installLocation\License.txt";
+Remove-ItemIfExists "$installLocation\README.txt";
 	
-	$root = Get-RegistrySoftwareRootKey;
-	$pluginsPath = "$root\Red Gate\SIPFramework\Plugins";
-	if ((Test-RegistryValue $pluginsPath "TSQLFlex") -eq $true) {
-		Remove-ItemProperty -Name "TSQLFlex" -Path $pluginsPath | Out-Null
-	}
-	
-} catch {
-    Write-ChocolateyFailure $packageName $($_.Exception.Message);
-	throw;
+$root = Get-RegistrySoftwareRootKey;
+$pluginsPath = "$root\Red Gate\SIPFramework\Plugins";
+if ((Test-RegistryValue $pluginsPath "TSQLFlex") -eq $true) {
+	Remove-ItemProperty -Name "TSQLFlex" -Path $pluginsPath | Out-Null
 }
 
 try {
@@ -47,5 +41,3 @@ try {
 } catch {
   # Don't sweat it.
 }
-
-Write-ChocolateySuccess "$packageName uninstall complete.";

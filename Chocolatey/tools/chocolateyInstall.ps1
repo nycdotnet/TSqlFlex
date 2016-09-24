@@ -2,12 +2,7 @@
 $url = "https://github.com/nycdotnet/TSqlFlex/releases/download/0.1.0-beta/TSqlFlex-v0.1.0-beta.zip";
 $installLocation = "$env:ProgramData\T-SQL Flex";
 
-try {
-  Install-ChocolateyZipPackage "$packageName" "$url" "$installLocation"
-} catch {
-	Write-ChocolateyFailure "$packageName" "$($_.Exception.Message);"
-	throw;
-}
+Install-ChocolateyZipPackage "$packageName" "$url" "$installLocation"
 
 function Create-RegistryKeyIfNotExists($parentKey, $testKey) {
   if ((test-path "$parentKey\$testKey") -eq $false) {
@@ -37,21 +32,14 @@ function Get-RegistrySoftwareRootKey() {
 	Return "HKLM:\Software";
 }
 
-try {
-	$root = Get-RegistrySoftwareRootKey;
-	$createdKey = $root;
-    $addKeys = "Red Gate\SIPFramework\Plugins";
-	$addKeys.Split("\") | % { $createdKey = Create-RegistryKeyIfNotExists $createdKey $_ }
+
+$root = Get-RegistrySoftwareRootKey;
+$createdKey = $root;
+$addKeys = "Red Gate\SIPFramework\Plugins";
+$addKeys.Split("\") | % { $createdKey = Create-RegistryKeyIfNotExists $createdKey $_ }
 	
-	if ((Test-RegistryValue $createdKey "TSQLFlex") -eq $false) {
-		New-ItemProperty -Name "TSQLFlex" -Path $createdKey -Value "$installLocation\TSqlFlex.dll" | Out-Null
-	} else {
-	    Set-ItemProperty -Name "TSQLFlex" -Path $createdKey -Value "$installLocation\TSqlFlex.dll" | Out-Null
-	}
-
-} catch {
-	Write-ChocolateyFailure "$packageName" "$($_.Exception.Message);"
-	throw;
+if ((Test-RegistryValue $createdKey "TSQLFlex") -eq $false) {
+	New-ItemProperty -Name "TSQLFlex" -Path $createdKey -Value "$installLocation\TSqlFlex.dll" | Out-Null
+} else {
+	Set-ItemProperty -Name "TSQLFlex" -Path $createdKey -Value "$installLocation\TSqlFlex.dll" | Out-Null
 }
-
-Write-ChocolateySuccess "$packageName"
