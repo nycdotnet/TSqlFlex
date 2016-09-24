@@ -4,26 +4,26 @@
   <metadata>
     <id>tsqlflex</id>
     <title>T-SQL Flex</title>
-    <version>0.1.0-beta</version>
+    <version>0.2.0-beta</version>
     <authors>Steve Ognibene</authors>
     <owners>NYCdotNet</owners>
     <summary>SSMS add-in for scripting and Excel export.</summary>
     <description>SSMS add-in for scripting and Excel export.</description>
     <projectUrl>https://github.com/nycdotnet/TSqlFlex</projectUrl>
     <tags>T-SQL Flex SQL Server SSMS</tags>
-    <copyright>2015</copyright>
+    <copyright>2016</copyright>
     <licenseUrl>https://github.com/nycdotnet/TSqlFlex/blob/master/License.md</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
 	<dependencies> 
         <dependency id="sipfw" version="1.0.3.4" />
     </dependencies>
     <releaseNotes>
-* v0.1.0-beta (2015-05-07):
-  * Reverted to use .NET 3.5 to restore compatibility with SSMS 2008.
-  * Added CSV export feature! T-SQL Flex can now export the results of any set of queries to properly-escaped CSV files that open correctly in Excel or any text editor.
-  * Added a handful of additional T-SQL keywords.
-  * Removed "This is alpha software" warning.  Beta 1 will likely have only minimal further changes prior to the v1.0 release of T-SQL Flex.
-	</releaseNotes>
+      * v0.2.0-beta (2016-09-23):
+      * Implemented new script as C# feature.
+      * Many behind-the-scenes code improvements.
+      * Added escaping for several SQL keywords.
+      * Updated to work with NUnit 3 and RedGate SIP FW 1.0.1.246.
+    </releaseNotes>
   </metadata>
   <files>
     <file src="tools\**" target="tools" />
