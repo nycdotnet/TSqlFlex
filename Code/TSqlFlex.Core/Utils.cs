@@ -80,27 +80,48 @@ namespace TSqlFlex.Core
 
     public static class Info
     {
+
+        private static string version = null;
         public static string Version() {
 
-            string tag = SemverPrereleaseTag();
-            if (string.IsNullOrEmpty(tag))
+            if (version != null)
             {
-                return "v" + VersionNumbersOnly();
+                return version;
             }
-            else
-            {
-                return "v" + VersionNumbersOnly() + "-" + tag;
-            }
-            
+
+            var tag = SemverPrereleaseTag();
+
+            version = string.Format("v{0}{1}",
+                VersionNumbersOnly(),
+                string.IsNullOrEmpty(tag) ? "" : "-" + tag);
+
+            return version;
+
         }
 
+        private static string versionNumbersOnly = null;
         public static string VersionNumbersOnly()
+        {
+            if (versionNumbersOnly != null)
+            {
+                return versionNumbersOnly;
+            }
+
+            var vi = VersionInfo();
+            versionNumbersOnly = string.Format("{0}.{1}.{2}",
+                vi.FileMajorPart,
+                vi.FileMinorPart,
+                vi.FileBuildPart);
+            return versionNumbersOnly;
+        }
+
+        public static FileVersionInfo VersionInfo()
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-            return fvi.FileVersion;
+            return fvi;
         }
-
+        
         public static string SemverPrereleaseTag()
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
