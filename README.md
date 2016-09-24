@@ -46,7 +46,7 @@ Please either create issues on GitHub, or reach out to Steve on Twitter at [@nyc
   * Compiles and all tests pass.
   * Checked-in to master branch on GitHub.
   * Updated version in both AssemblyInfo.cs files.
-  * Build in release mode and test it out.
+  * Build in release mode, switch the registry to use release mode, and test it out.
   * Run .\Deploy\prepDeploy.ps1
   * Zip up the DLLs with the license, README, and installation instructions (rename all to .txt) and post to GitHub.
   * Add a screenshot via GitHub and edit the README and release FAQ.
