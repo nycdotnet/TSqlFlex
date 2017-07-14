@@ -44,7 +44,7 @@ namespace TSqlFlex.Core
 
             isolatedStore = Utils.getIsolatedStorageFile();
 
-            openNewOutputStream();
+            openNewOutputStream(outputFileName);
         }
 
         private string getNextFileName()
@@ -52,10 +52,10 @@ namespace TSqlFlex.Core
             return "TSQLFlex_" + DateTime.UtcNow.ToString("yyyyMMddhhmmss.fffffff") + "_temp_" + outputFiles.Count + ".txt";
         }
 
-        public void openNewOutputStream()
+        public void openNewOutputStream(string outputFileName = "")
         {
             flushAndCloseOutputStreamIfNeeded();
-            this.currentFileName = getNextFileName();
+            this.currentFileName = String.IsNullOrEmpty(outputFileName) ? getNextFileName() : outputFileName;
             outputFiles.Add(this.currentFileName);
 
             Stream isoStream = new IsolatedStorageFileStream(this.currentFileName, FileMode.OpenOrCreate, FileAccess.Write, isolatedStore);
@@ -115,6 +115,15 @@ namespace TSqlFlex.Core
             outputStreamWriter.Flush();
             outputStreamWriter.Close();
             isoStream.Close();
+        }
+
+        public string getOutputStreamAsString(string streamName)
+        {
+            flushAndCloseOutputStreamIfNeeded();
+
+            var isoStream = new IsolatedStorageFileStream(streamName, FileMode.Open, FileAccess.Read, this.isolatedStore);
+            var reader = new StreamReader(isoStream);
+            return reader.ReadToEnd();
         }
 
         //thanks! http://stackoverflow.com/questions/12970957/when-shall-i-do-a-explicity-flush-while-copying-streams-in-c

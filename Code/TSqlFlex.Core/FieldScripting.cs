@@ -83,6 +83,14 @@ namespace TSqlFlex.Core
                 }
                 return "";
             }
+            else if (fieldInfo.DataType == "datetime2")
+            {
+                if (fieldInfo.NumericScale < 7)
+                {
+                    return $"({fieldInfo.NumericScale.ToString()})";
+                }
+                return "";
+            }
             return "";
         }
 
@@ -571,7 +579,8 @@ namespace TSqlFlex.Core
             if (data is TimeSpan)
             {
                 TimeSpan t = (TimeSpan)data;
-                if (t.Milliseconds == 0)
+                long ticksAfterWholeSecond = t.Ticks - ((long)Math.Floor(t.TotalSeconds) * TimeSpan.TicksPerSecond);
+                if (ticksAfterWholeSecond == 0)
                 {
                     return String.Format("{3}{0}:{1}:{2}{3}",
                         t.Hours.ToString().PadLeft(2, '0'),
@@ -583,7 +592,7 @@ namespace TSqlFlex.Core
                         t.Hours.ToString().PadLeft(2, '0'),
                         t.Minutes.ToString().PadLeft(2, '0'),
                         t.Seconds.ToString().PadLeft(2, '0'),
-                        t.Milliseconds.ToString().PadLeft(3, '0').TrimEnd('0'),
+                        ticksAfterWholeSecond.ToString().PadLeft(7,'0').TrimEnd('0'),
                         quoting);
             }
             else if (data is DateTime)

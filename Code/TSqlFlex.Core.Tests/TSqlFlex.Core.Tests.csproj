@@ -35,9 +35,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft SQL Server\110\SDK\Assemblies\Microsoft.SqlServer.Types.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework, Version=3.4.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.4.1\lib\net35\nunit.framework.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="nunit.framework, Version=3.7.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.7.1\lib\net35\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -57,6 +56,7 @@
     <Compile Include="SchemaScriptingTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TSqlRulesTests.cs" />
+    <Compile Include="XmlSpreadsheetRenderTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TSqlFlex.Core\TSqlFlex.Core.csproj">

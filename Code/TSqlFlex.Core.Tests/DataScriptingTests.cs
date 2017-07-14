@@ -338,19 +338,10 @@ namespace TSqlFlex.Core.Tests
         [Test()]
         public void TIME_HighResolution_Data_ScriptsCorrectly()
         {
-            DateTime baseData = new DateTime(1900,1,1,2,33,44);
+            TimeSpan baseData = new TimeSpan(TimeSpan.TicksPerHour * 2 + TimeSpan.TicksPerMinute * 33 + TimeSpan.TicksPerSecond * 44 + 1234567);
             object data = baseData;
             var fieldInfo = SchemaScriptingTests.FakeColumn("test", "test", 32, "time", false, 0, 0);
-            Assert.AreEqual("'02:33:44'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "time no fractional seconds");
-            Assert.AreEqual("02:33:44", FieldScripting.formatTime(data, false), "time no fractional seconds");
-
-            baseData = new DateTime(1900, 1, 1, 2, 33, 44).AddMilliseconds(100);
-            data = baseData;
-            Assert.AreEqual("'02:33:44.1'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "partial fractional seconds");
-            Assert.AreEqual("02:33:44.1", FieldScripting.formatTime(data, false), "partial fractional seconds");
-
-            baseData = new DateTime(1900, 1, 1, 2, 33, 44).AddTicks(1234567);
-            data = baseData;
+            
             Assert.AreEqual("'02:33:44.1234567'", FieldScripting.valueAsTSQLLiteral(data, fieldInfo), "time fractional seconds");
             Assert.AreEqual("02:33:44.1234567", FieldScripting.formatTime(data, false), "time fractional seconds");
         }
@@ -777,18 +768,15 @@ namespace TSqlFlex.Core.Tests
         [Test()]
         public void ReservedWord_IsScriptedWithBrackets()
         {
-
             string fieldName = "Drop";
             var fieldInfo = SchemaScriptingTests.FakeColumn(fieldName, "test", 32, "int", false, 0, 0);
 
             Assert.AreEqual("[Drop]", FieldScripting.FieldNameOrDefault(fieldInfo,0));
-
         }
 
         [Test()]
         public void FieldWithSpaces_IsScriptedWithBrackets()
         {
-
             string fieldName = "What We Should Be Sending";
             var fieldInfo = SchemaScriptingTests.FakeColumn(fieldName, "test", 32, "int", false, 0, 0);
 
@@ -798,7 +786,6 @@ namespace TSqlFlex.Core.Tests
         [Test()]
         public void FieldWithTab_IsScriptedWithBrackets()
         {
-
             string fieldName = "This\tThat";
             var fieldInfo = SchemaScriptingTests.FakeColumn(fieldName, "test", 32, "int", false, 0, 0);
 
@@ -808,7 +795,6 @@ namespace TSqlFlex.Core.Tests
         [Test()]
         public void FieldWithLineFeed_IsScriptedWithBrackets()
         {
-
             string fieldName = "This\nis";
             var fieldInfo = SchemaScriptingTests.FakeColumn(fieldName, "test", 32, "int", false, 0, 0);
 
@@ -818,7 +804,6 @@ namespace TSqlFlex.Core.Tests
         [Test()]
         public void FieldWithOpenSquareBracket_IsScriptedWithBracketsButNotFurtherEscaped()
         {
-
             string fieldName = "test[ing";
             var fieldInfo = SchemaScriptingTests.FakeColumn(fieldName, "test", 32, "int", false, 0, 0);
 
@@ -828,7 +813,6 @@ namespace TSqlFlex.Core.Tests
         [Test()]
         public void FieldWithCloseSquareBracket_IsScriptedWithBracketsAndAlsoFurtherEscaped()
         {
-
             string fieldName = "test]ing";
             var fieldInfo = SchemaScriptingTests.FakeColumn(fieldName, "test", 32, "int", false, 0, 0);
 
@@ -838,7 +822,6 @@ namespace TSqlFlex.Core.Tests
         [Test()]
         public void FieldWithCarriageReturn_IsScriptedWithBrackets()
         {
-
             string fieldName = "Crazy\rtown";
             var fieldInfo = SchemaScriptingTests.FakeColumn(fieldName, "test", 32, "int", false, 0, 0);
 
@@ -848,25 +831,21 @@ namespace TSqlFlex.Core.Tests
         [Test()]
         public void NonReservedWord_IsScriptedWithoutBrackets()
         {
-
             string fieldName = "TestColumnName";
             var fieldInfo = SchemaScriptingTests.FakeColumn(fieldName, "test", 32, "int", false, 0, 0);
 
             Assert.AreEqual(false, TSqlRules.IsReservedWord(fieldName));
             Assert.AreEqual("TestColumnName", FieldScripting.FieldNameOrDefault(fieldInfo, 0));
-
         }
 
         [Test()]
         public void EmptyColumnName_IsScriptedAnonymously()
         {
-
             string fieldName = "";
             var fieldInfo = SchemaScriptingTests.FakeColumn(fieldName, "test", 32, "int", false, 0, 0);
 
             Assert.AreEqual(false, TSqlRules.IsReservedWord(fieldName));
             Assert.AreEqual("anonymousColumn1", FieldScripting.FieldNameOrDefault(fieldInfo, 0));
-
         }
 
         [Test()]

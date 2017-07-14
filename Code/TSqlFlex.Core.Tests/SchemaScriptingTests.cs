@@ -318,16 +318,24 @@ namespace TSqlFlex.Core.Tests
              FlexResultSet fsr = new FlexResultSet();
 
              var dt = new List<SQLColumn>() {
-                 FakeColumn("DateTime2NotNull", "MyStuff", 8, "datetime2", false, 0, 0),
-                 FakeColumn("DateTime2Null", "MyStuff", 8, "datetime2", true, 0, 0)
+                 FakeColumn("DateTime2_0_NotNull", "MyStuff", 8, "datetime2", false, 0, 0),
+                 FakeColumn("DateTime2_0_Null", "MyStuff", 8, "datetime2", true, 0, 0),
+                 FakeColumn("DateTime2_3_NotNull", "MyStuff", 8, "datetime2", false, 0, 3),
+                 FakeColumn("DateTime2_3_Null", "MyStuff", 8, "datetime2", true, 0, 3),
+                 FakeColumn("DateTime2_7_NotNull", "MyStuff", 8, "datetime2", false, 0, 7),
+                 FakeColumn("DateTime2_7_Null", "MyStuff", 8, "datetime2", true, 0, 7)
              };
 
              fsr.results.Add(new FlexResult());
              fsr.results[0].schema = dt;
 
              var expected = @"CREATE TABLE MyTable(
-    DateTime2NotNull datetime2 NOT NULL,
-    DateTime2Null datetime2 NULL
+    DateTime2_0_NotNull datetime2(0) NOT NULL,
+    DateTime2_0_Null datetime2(0) NULL,
+    DateTime2_3_NotNull datetime2(3) NOT NULL,
+    DateTime2_3_Null datetime2(3) NULL,
+    DateTime2_7_NotNull datetime2 NOT NULL,
+    DateTime2_7_Null datetime2 NULL
 );
 ";
              Assert.AreEqual(expected, fsr.ScriptResultAsCreateTable(0, "MyTable"));

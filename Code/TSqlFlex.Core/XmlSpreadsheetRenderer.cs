@@ -53,7 +53,7 @@ namespace TSqlFlex.Core
                             {
                                 srp.WriteToStream(String.Format("<Cell><Data ss:Type=\"Number\">{0}</Data></Cell>\r\n", escapeForXML(FieldScripting.valueAsTSQLLiteral(fieldData, fieldInfo, false))));
                             }
-                            else if (fieldInfo.DataType == "date" || fieldInfo.DataType == "datetime2" || fieldInfo.DataType == "time" || fieldInfo.DataType == "datetime" ||
+                            else if (fieldInfo.DataType == "date" || fieldInfo.DataType == "datetime2" || fieldInfo.DataType == "datetime" ||
                                 fieldInfo.DataType == "smalldatetime")
                             {
                                 srp.WriteToStream(String.Format("<Cell ss:StyleID=\"s63\"><Data ss:Type=\"DateTime\">{0}.{1}</Data></Cell>\r\n",
@@ -69,6 +69,15 @@ namespace TSqlFlex.Core
                             else if (fieldInfo.DataType == "varbinary" || fieldInfo.DataType == "image")
                             {
                                 srp.WriteToStream(String.Format("<Cell ss:StyleID=\"s64\"><Data ss:Type=\"String\">{0}</Data></Cell>\r\n", escapeForXML(FieldScripting.formatVarbinary(fieldData))));
+                            }
+                            else if (fieldInfo.DataType == "time")
+                            {
+                                srp.WriteToStream(String.Format("<Cell ss:StyleID=\"s65\"><Data ss:Type=\"DateTime\">1899-12-31T{0}:{1}:{2}.{3}</Data></Cell>\r\n",
+                                    ((TimeSpan)fieldData).Hours.ToString("00"),
+                                    ((TimeSpan)fieldData).Minutes.ToString("00"),
+                                    ((TimeSpan)fieldData).Seconds.ToString("00"),
+                                    ((TimeSpan)fieldData).Milliseconds.ToString("000")
+                                    ));
                             }
                             else
                             {

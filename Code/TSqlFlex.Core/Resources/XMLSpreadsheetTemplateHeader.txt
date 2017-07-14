@@ -24,4 +24,7 @@
   <Style ss:ID="s64">
    <NumberFormat ss:Format="@"/>
   </Style>
+  <Style ss:ID="s65">
+   <NumberFormat ss:Format="Long Time"/>
+  </Style>
  </Styles>

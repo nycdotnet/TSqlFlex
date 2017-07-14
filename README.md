@@ -18,6 +18,10 @@ Follow the instructions [here](https://github.com/nycdotnet/TSqlFlex/blob/master
 Please either create issues on GitHub, or reach out to Steve on Twitter at [@nycdotnet](https://twitter.com/nycdotnet).
 
 **Patch notes:**
+  * v0.2.1-beta (2016-07-13):
+      * Fixed scripting of TIME to XML Spreadsheet (no longer crashes)
+      * Improved scripting of TIME to SQL scripts - can include up to 7 digits of scale.
+      * Improved scripting of DATETIME2 to SQL scripts - now includes scale number if relevant.
   * v0.2.0-beta (2016-09-23):
       * Implemented new script as C# feature.
 	  * Many behind-the-scenes code improvements.
