@@ -1,5 +1,5 @@
 ﻿$packageName = "T-SQL Flex";
-$url = "https://github.com/nycdotnet/TSqlFlex/releases/download/0.2.0-beta/TSqlFlex-0.2.0-beta.zip";
+$url = "https://github.com/nycdotnet/TSqlFlex/releases/download/0.2.1-beta/TSqlFlex-0.2.1-beta.zip";
 $installLocation = "$env:ProgramData\T-SQL Flex";
 
 Install-ChocolateyZipPackage "$packageName" "$url" "$installLocation"

@@ -11,11 +11,11 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("TSqlFlex")]
-[assembly: AssemblyCopyright("Copyright © 2015 Steve Ognibene")]
+[assembly: AssemblyCopyright("Copyright © 2017 Steve Ognibene")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("0.2.0.0")]
-[assembly: AssemblyFileVersion("0.2.0.0")]
+[assembly: AssemblyVersion("0.2.1.0")]
+[assembly: AssemblyFileVersion("0.2.1.0")]
 [assembly: AssemblySemverPrereleaseTag("beta")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

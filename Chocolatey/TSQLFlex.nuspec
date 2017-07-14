@@ -4,25 +4,24 @@
   <metadata>
     <id>tsqlflex</id>
     <title>T-SQL Flex</title>
-    <version>0.2.0-beta</version>
+    <version>0.2.1-beta</version>
     <authors>Steve Ognibene</authors>
     <owners>NYCdotNet</owners>
     <summary>SSMS add-in for scripting and Excel export.</summary>
     <description>SSMS add-in for scripting and Excel export.</description>
     <projectUrl>https://github.com/nycdotnet/TSqlFlex</projectUrl>
     <tags>T-SQL Flex SQL Server SSMS</tags>
-    <copyright>2016</copyright>
+    <copyright>2017</copyright>
     <licenseUrl>https://github.com/nycdotnet/TSqlFlex/blob/master/License.md</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
 	<dependencies> 
         <dependency id="sipfw" version="1.0.3.4" />
     </dependencies>
     <releaseNotes>
-      * v0.2.0-beta (2016-09-23):
-      * Implemented new script as C# feature.
-      * Many behind-the-scenes code improvements.
-      * Added escaping for several SQL keywords.
-      * Updated to work with NUnit 3 and RedGate SIP FW 1.0.1.246.
+      * v0.2.1-beta (2016-07-13):
+      * Fixed scripting of TIME to XML Spreadsheet (no longer crashes)
+      * Improved scripting of TIME to SQL scripts - can include up to 7 digits of scale.
+      * Improved scripting of DATETIME2 to SQL scripts - now includes scale number if relevant.
     </releaseNotes>
   </metadata>
   <files>
