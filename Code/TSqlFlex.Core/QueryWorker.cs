@@ -9,7 +9,7 @@ namespace TSqlFlex.Core
 {
     public static class QueryWorker
     {
-        public static void DoSqlQueryWork(System.ComponentModel.DoWorkEventArgs e, BackgroundWorker bw)
+        public static void DoSqlQueryWork(DoWorkEventArgs e, BackgroundWorker bw, Config config)
         {
             FlexResultSet resultSet = null;
             var srp = (SqlRunParameters)e.Argument;
@@ -40,7 +40,7 @@ namespace TSqlFlex.Core
                     }
 
                     currentTask = "while running the query or analyzing the data";
-                    resultSet = FlexResultSet.AnalyzeResultWithRollback(conn, srp, bw);
+                    resultSet = FlexResultSet.AnalyzeResultWithRollback(conn, srp, config, bw);
                     
                     currentTask = "while closing the database connection";
                     conn.Close();

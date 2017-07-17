@@ -15,6 +15,7 @@ namespace TSqlFlex
         private FlexMainWindow flexMainWindow;
         private Guid formGuid = new Guid("579fa20c-38cb-4da6-9f57-6651d10e31d0");
         private Logging logger;
+        private Config config;
 
         private FlexMainWindow TheWindow()
         {
@@ -39,9 +40,10 @@ namespace TSqlFlex
             }
         }
 
-        public RunCommand(ISsmsFunctionalityProvider6 provider, Logging logger)
+        public RunCommand(ISsmsFunctionalityProvider6 provider, Logging logger, Config config)
         {
             this.logger = logger;
+            this.config = config;
             ssmsProvider = provider;
             if (ssmsProvider == null)
             {
@@ -55,7 +57,7 @@ namespace TSqlFlex
         {
             if (formWindow == null)
             {
-                flexMainWindow = new FlexMainWindow(logger);
+                flexMainWindow = new FlexMainWindow(logger, config);
                 formWindow = ssmsProvider.ToolWindow.Create(flexMainWindow, Caption, formGuid, true);
 
                 try

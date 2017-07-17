@@ -19,11 +19,13 @@ namespace TSqlFlex
         private string progressText = "";
         private string lastExportedFilePath = "";
         private Logging logger;
+        private Config config;
         private uint completedResultsCount = 0;
         
-        public FlexMainWindow(Logging instantiatedLogger)
+        public FlexMainWindow(Logging instantiatedLogger, Config instantiatedConfig)
         {
             logger = instantiatedLogger;
+            config = instantiatedConfig;
             logger.LogVerbose("Initializing FlexMainWindow");
             InitializeComponent();
             lblProgress.Text = "";
@@ -174,7 +176,7 @@ namespace TSqlFlex
 
         private void queryWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            QueryWorker.DoSqlQueryWork(e,queryWorker);
+            QueryWorker.DoSqlQueryWork(e, queryWorker, config);
         }
 
         private void queryWorker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)

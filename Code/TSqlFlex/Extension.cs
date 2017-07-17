@@ -9,7 +9,14 @@ namespace TSqlFlex
         private ObjectExplorerNodeDescriptorBase currentNode;
         private ISsmsFunctionalityProvider6 ssmsProvider;
         private RunCommand runCommand;
-        public Logging logger = new Logging();
+        public Config config;
+        public Logging logger;
+
+        public Extension()
+        {
+            config = new Config();
+            logger = new Logging(config);
+        }
 
         public void OnLoad(ISsmsExtendedFunctionalityProvider provider)
         {
@@ -21,7 +28,7 @@ namespace TSqlFlex
                 logger.Log(error);
                 throw new ArgumentException(error);
             }
-            runCommand = new RunCommand(ssmsProvider, logger);
+            runCommand = new RunCommand(ssmsProvider, logger, config);
             runCommand.SetSelectedDBNode(currentNode);
 
             ssmsProvider.AddToolbarItem(runCommand);

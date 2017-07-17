@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.Win32;
 
 namespace TSqlFlex.Core
 {
@@ -12,16 +11,15 @@ namespace TSqlFlex.Core
     {
         public bool verboseLogging { get; set; }
         public bool logToDebugger { get; set; }
+        public Config config;
 
         public Exception lastException = null;
 
         private StreamWriter outputLogStream;
-        private const string SubKey = "Software\\LegendaryApps.com\\T-SQL Flex";
 
-        public Logging()
+        public Logging(Config instantiatedConfig)
         {
-            verboseLogging = false;
-            logToDebugger = false;
+            config = instantiatedConfig;
             initializeLogging();
         }
 
@@ -42,7 +40,7 @@ namespace TSqlFlex.Core
                 verboseLogging = verboseLoggingRegistryValue();
                 lastException = null;
                 var lfn = logFileNameRegistryValue();
-                if (!String.IsNullOrEmpty(lfn) && lastException == null){
+                if (!String.IsNullOrEmpty(lfn)){
                     Stream logStream = new FileStream(lfn, FileMode.Append, FileAccess.Write, FileShare.Read);
                     outputLogStream = new StreamWriter(logStream, Encoding.UTF8);
                     LogVerbose("Opened outputLogStream at " + lfn + ".");
@@ -56,74 +54,19 @@ namespace TSqlFlex.Core
         }
         
 
-        private bool localMachineDWORDEquals1(string subKey, string value)
-        {
-            try
-            {
-                var key = Registry.LocalMachine.OpenSubKey(subKey);
-                if (key == null)
-                {
-                    return false;
-                }
-
-                object data = key.GetValue(value);
-                if (data == null)
-                {
-                    return false;
-                }
-
-                Int32 intData = Convert.ToInt32(data);
-
-                return (intData == 1);
-            }
-            catch (Exception ex)
-            {
-                lastException = ex;
-                return false;
-            }
-        }
-
-
         private bool logToDebuggerRegistryValue()
         {
-            return localMachineDWORDEquals1(SubKey, "LogToDebugger");
+            return config.LogToDebugger;
         }
 
         private bool verboseLoggingRegistryValue()
         {
-            return localMachineDWORDEquals1(SubKey, "VerboseLogging");
+            return config.VerboseLogging;
         }
 
         public string logFileNameRegistryValue()
         {
-            try
-            {
-                var legendaryAppsKey = Registry.LocalMachine.OpenSubKey(SubKey);
-                if (legendaryAppsKey == null)
-                {
-                    return "";
-                }
-
-                object logFileName = legendaryAppsKey.GetValue("LogFileName");
-                if (logFileName == null || !(logFileName is string)) {
-                    return "";
-                }
-
-                string strLogFileName = logFileName.ToString();
-
-                if (string.IsNullOrEmpty(strLogFileName))
-                {
-                    return "";
-                }
-
-                return strLogFileName;
-
-            }
-            catch (Exception ex)
-            {
-                lastException = ex;
-                return "";
-            }
+            return config.LogFileName;
         }
 
         public void LogVerbose(string TextToLog)

@@ -16,13 +16,13 @@ namespace TSqlFlex.Core
 
         public List<FlexResult> results = null;
         public List<Exception> exceptions = null;
-        
+
         public FlexResultSet() {
             results = new List<FlexResult>();
             exceptions = new List<Exception>();
         }
 
-        public static FlexResultSet AnalyzeResultWithRollback(SqlConnection openConnection, SqlRunParameters srp, BackgroundWorker bw = null)
+        public static FlexResultSet AnalyzeResultWithRollback(SqlConnection openConnection, SqlRunParameters srp, Config config, BackgroundWorker bw = null)
         {
 
             FlexResultSet resultSet = new FlexResultSet();
@@ -36,8 +36,8 @@ namespace TSqlFlex.Core
             {
                 srp.command = new SqlCommand(srp.sqlToRun, openConnection, transaction);
                 var cmd = srp.command;
-                cmd.CommandTimeout = 0; // wait forever.
-                
+                cmd.CommandTimeout = config.CommandTimeoutInSeconds;
+
                 //todo: this is a bad way of doing this.  Need to abstract further.
                 bw.ReportProgress(5, "Running query...");
 
