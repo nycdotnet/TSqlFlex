@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSqlFlex", "TSqlFlex\TSqlFlex.csproj", "{5D764D2E-1BB8-41C7-8F82-428C687A2C6A}"
 EndProject
@@ -11,6 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSqlFlex.Core.Tests", "TSql
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{731915D2-50C6-45D7-AF99-EE5D85083991}"
 	ProjectSection(SolutionItems) = preProject
+		..\.gitignore = ..\.gitignore
 		..\Chocolatey\tools\chocolateyInstall.ps1 = ..\Chocolatey\tools\chocolateyInstall.ps1
 		..\Chocolatey\tools\chocolateyUninstall.ps1 = ..\Chocolatey\tools\chocolateyUninstall.ps1
 		..\InstallationInstructions.md = ..\InstallationInstructions.md
@@ -19,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\README.md = ..\README.md
 		..\Chocolatey\TSQLFlex.nuspec = ..\Chocolatey\TSQLFlex.nuspec
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSqlFlex.VsixExtension", "TSqlFlex.VsixExtension\TSqlFlex.VsixExtension.csproj", "{19725CE5-E2CA-4744-823A-921394794935}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,8 +63,23 @@ Global
 		{4BBD123B-0D08-4E16-A990-11A310C522BE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{4BBD123B-0D08-4E16-A990-11A310C522BE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{4BBD123B-0D08-4E16-A990-11A310C522BE}.Release|x86.ActiveCfg = Release|Any CPU
+		{19725CE5-E2CA-4744-823A-921394794935}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19725CE5-E2CA-4744-823A-921394794935}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19725CE5-E2CA-4744-823A-921394794935}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{19725CE5-E2CA-4744-823A-921394794935}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{19725CE5-E2CA-4744-823A-921394794935}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{19725CE5-E2CA-4744-823A-921394794935}.Debug|x86.Build.0 = Debug|Any CPU
+		{19725CE5-E2CA-4744-823A-921394794935}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19725CE5-E2CA-4744-823A-921394794935}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19725CE5-E2CA-4744-823A-921394794935}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{19725CE5-E2CA-4744-823A-921394794935}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{19725CE5-E2CA-4744-823A-921394794935}.Release|x86.ActiveCfg = Release|Any CPU
+		{19725CE5-E2CA-4744-823A-921394794935}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A9B21426-2595-4AF7-801D-D3BF8FE5A322}
 	EndGlobalSection
 EndGlobal
