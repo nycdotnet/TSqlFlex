@@ -139,10 +139,10 @@ namespace TSqlFlex.Core
             try
             {
                 int fieldCount = reader.FieldCount;
-                var data = new List<Object[]>();
+                var data = new List<object[]>();
                 while (reader.Read())
                 {
-                    Object[] values = new Object[fieldCount];
+                    var values = new object[fieldCount];
                     reader.GetValues(values);
                     data.Add(values);
                 }

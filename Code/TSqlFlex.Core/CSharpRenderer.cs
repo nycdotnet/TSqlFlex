@@ -75,11 +75,11 @@ namespace TSqlFlex.Core
 
         public static string DisambiguateAndRenderCSharpProperty(SQLColumn s, Dictionary<string, int> columnNamesAndCounts)
         {
-            string name = CSharpRenderer.FieldNameToCSharpPropertyName(s.ColumnName);
+            string name = FieldNameToCSharpPropertyName(s.ColumnName);
             if (columnNamesAndCounts.ContainsKey(name))
             {
                 columnNamesAndCounts[name] += 1;
-                name = String.Format("{0}_{1}", name, columnNamesAndCounts[name]);
+                name = string.Format("{0}_{1}", name, columnNamesAndCounts[name]);
             }
             else
             {
@@ -91,14 +91,30 @@ namespace TSqlFlex.Core
 
         public static string RenderCSharpProperty(SQLColumn s, string name)
         {
-            if (CSharpRenderer.SqlDataTypeToCSharp.ContainsKey(s.DataType))
+            if (SqlDataTypeToCSharp.ContainsKey(s.DataType))
             {
-                return String.Format(propertyBoilerplate, CSharpRenderer.SqlDataTypeToCSharp[s.DataType], name);
+                return string.Format(propertyBoilerplate,
+                    SqlDataTypeToCSharp[s.DataType],
+                    name,
+                    QuestionMarkOrNot(s));
             }
             else
             {
-                return String.Format(propertyBoilerplate, "object", name);
+                return string.Format(propertyBoilerplate, "object", name);
             }
+        }
+
+        private static string QuestionMarkOrNot(SQLColumn s)
+        {
+            if (!s.AllowNulls)
+            {
+                return "";
+            }
+            if (!SqlDataTypeToCSharp.TryGetValue(s.DataType, out var dataType) || dataType == "string")
+            {
+                return "";
+            }
+            return "?";
         }
 
         public static bool IsCSharpLetterCharacter(char value)
@@ -151,7 +167,7 @@ namespace TSqlFlex.Core
 
         private const string classHeader = "public class {0}\r\n{{\r\n";
         private const string classFooter = "}\r\n";
-        private const string propertyBoilerplate = "    public {0} {1} {{ get; set; }}\r\n";
+        private const string propertyBoilerplate = "    public {0}{2} {1} {{ get; set; }}\r\n";
 
     }
 }

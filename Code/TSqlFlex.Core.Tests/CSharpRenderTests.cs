@@ -132,7 +132,32 @@ namespace TSqlFlex.Core.Tests
     public int anonymousProperty_2 { get; set; }
 }
 ";
-            Assert.AreEqual(srp.resultsText.ToString(), expected);
+            Assert.AreEqual(expected, srp.resultsText.ToString());
+        }
+
+        [Test()]
+        public void NullabilityWorksCorrectly()
+        {
+            var resultSet = new FlexResultSet();
+            var result = new FlexResult();
+            result.schema = new List<SQLColumn>() {
+                new SQLColumn() { ColumnName = "a", DataType = "varchar", AllowNulls = true },
+                new SQLColumn() { ColumnName = "b", DataType = "int", AllowNulls = true },
+                new SQLColumn() { ColumnName = "c", DataType = "smalldatetime", AllowNulls = true }
+            };
+            result.data = new List<object[]>();
+            resultSet.results.Add(result);
+
+            var srp = new SqlRunParameters(new SqlConnectionStringBuilder(), SqlRunParameters.TO_CSHARP, "");
+            CSharpRenderer.renderAsCSharp(resultSet, srp);
+            var expected = @"public class Result0
+{
+    public string a { get; set; }
+    public int? b { get; set; }
+    public DateTime? c { get; set; }
+}
+";
+            Assert.AreEqual(expected, srp.resultsText.ToString());
         }
 
     }
